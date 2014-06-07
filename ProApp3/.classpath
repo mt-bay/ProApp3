@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry exported="true" kind="lib" path="E:/s10532/5CS/5年 プログラミング応用Ⅲ/lib/lwjgl-2.9.1/jar/lwjgl.jar"/>
-	<classpathentry exported="true" kind="lib" path="E:/s10532/5CS/5年 プログラミング応用Ⅲ/lib/slick.jar"/>
+	<classpathentry kind="lib" path="C:/slick/lib/slick.jar"/>
+	<classpathentry kind="lib" path="C:/lwjgl-2.9.1/jar/lwjgl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
