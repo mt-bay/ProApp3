@@ -53,12 +53,12 @@ public class point {
 	 * 戻り値：ユークリッド距離
 	 */
 	public double length(){
-		return lengtgh_body(new point());
+		return length_body(new point());
 	}
 	public double length(point root){
-		return lengtgh_body(root);
+		return length_body(root);
 	}
-	private double lengtgh_body(point o){
+	private double length_body(point o){
 		point p = new point(x - o.x, y - o.y);
 		return Math.sqrt((p.x * p.x) + (p.y * p.y));//√(x^2 + y^2)
 	}

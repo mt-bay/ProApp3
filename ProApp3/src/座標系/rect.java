@@ -1,6 +1,7 @@
 package 座標系;
 
 
+
 /* 長方形クラス
  *
  */
@@ -46,6 +47,23 @@ public class rect {
 
 	/* メソッド */
 
+	/* それぞれの端点を返す
+	 * 引数  ：なし
+	 * 戻り値：左上 or 右上 or 左下 or 右下
+	 */
+	public point UpperLeft (){
+		return new point(location.x         , location.y         );
+	}
+	public point UpperRight(){
+		return new point(location.x + size.x, location.y         );
+	}
+	public point LowerLeft (){
+		return new point(location.x         , location.y + size.y);
+	}
+	public point LowerRight(){
+		return new point(location.x + size.x, location.y + size.y);
+	}
+	
 	/* 変数セット
 	 * 引数  ：セットする変数
 	 * 戻り値：なし
