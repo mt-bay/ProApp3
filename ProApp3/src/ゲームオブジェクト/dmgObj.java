@@ -29,6 +29,8 @@ public class dmgObj extends rect {
 	
 	
 	/* メソッド */
+	
+	
 	/* setter
 	 * 引数：それぞれのデータ
 	 */
