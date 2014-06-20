@@ -23,8 +23,8 @@ public class dmgObj extends rect {
 	/* 値指定型コンストラクタ
 	 * 引数：それぞれのデータ
 	 */
-	public dmgObj(point Loc, point Siz, point Acc, double Atk){
-		set(Loc, Siz, Acc, Atk);
+	public dmgObj(rect Rec, point Acc, double Atk){
+		set(Rec.location, Rec.size, Acc, Atk);
 	}
 	
 	
