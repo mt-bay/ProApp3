@@ -1,8 +1,22 @@
 package ゲームオブジェクト;
 
+import java.util.*;
 
 public class Stage {
-	public mapchip[][] map;
-	public charObj[]   char;
+	/* クラス内変数 */
+	public mapchip[][]        map;
+	public ArrayList<dmgObj>  dmg;
+	public ArrayList<charObj> chr;
+	
+	
+	/* コンストラクタ */
+	public Stage(String mName){
+		
+	}
+	
+	private void mapRead(String mName){
+		
+		
+	}
 
 }
