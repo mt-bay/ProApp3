@@ -1,4 +1,7 @@
+package ゲームオブジェクト;
 
-public class dmgObj {
+import 座標系.rect;
+
+public class dmgObj extends rect {
 
 }
