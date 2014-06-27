@@ -10,7 +10,6 @@ public class mapchip{
 	public static SpriteSheet ssheet;
 	
 	
-	
 	public mapchip(){
 	}
 	
