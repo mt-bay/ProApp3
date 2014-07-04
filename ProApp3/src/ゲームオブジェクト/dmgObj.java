@@ -24,7 +24,7 @@ public class dmgObj extends rect {
 	 * 引数：それぞれのデータ
 	 */
 	public dmgObj(rect Rec, point Acc, double Atk){
-		set(Rec.location, Rec.size, Acc, Atk);
+		set(Rec.location, Rec.size, Acc, Atk);		
 	}
 	
 	
