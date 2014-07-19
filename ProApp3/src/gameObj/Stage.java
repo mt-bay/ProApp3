@@ -1,4 +1,4 @@
-package ゲームオブジェクト;
+package gameObj;
 
 import java.util.*;
 

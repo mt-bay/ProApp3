@@ -1,8 +1,8 @@
-package ゲームオブジェクト;
+package gameObj;
 
 import org.newdawn.slick.SpriteSheet;
 
-import 座標系.point;
+import common.point;
 
 public class mapchip{
 	/* クラス内変数 */

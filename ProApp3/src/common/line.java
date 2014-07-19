@@ -1,4 +1,4 @@
-package 座標系;
+package common;
 
 /* 線分クラス
  * (p0, p1)間をつなぐ線分

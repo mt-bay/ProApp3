@@ -1,25 +1,37 @@
-package ゲームオブジェクト;
+package gameObj;
 
+import common.point;
+import common.rect;
 
-public class itemObj {
-	point  accel;	//移動力
-	double hp;		//体力値
-	
+public class charObj extends rect {
+	public point  accel;	//移動力
+	public double hp;		//体力値
+
 	/* デフォルトコンストラクタ
 	 * 引数：なし
 	 */
-	public itemObj(){
+	public charObj(){
 		set(new point(), new point(), new point(), 0.0);
 	}
 	/* データ指定型コンストラクタ
 	 * 引数：それぞれのデータ
 	 */
-	public itemObj(rect Rec, point Acc, double HP){
+	public charObj(rect Rec, point Acc, double HP){
 		set(Rec.location, Rec.size, Acc, HP);
 	}
 	
-	
 	/* メソッド */
+	/* 状態アップデート
+	 * 引数：なし
+	 */
+	public void update(){
+		
+	}
+	
+	
+	/* 変数セット
+	 * 引数：それぞれのデータ
+	 */
 	private void set(point Loc, point Siz, point Acc, double HP){
 		location = Loc;
 		size     = Siz;

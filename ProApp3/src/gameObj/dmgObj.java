@@ -1,7 +1,7 @@
-package ゲームオブジェクト;
+package gameObj;
 
-import 座標系.point;
-import 座標系.rect;
+import common.point;
+import common.rect;
 
 public class dmgObj extends rect {
 	public point  accel;	//移動力

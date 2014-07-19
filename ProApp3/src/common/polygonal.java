@@ -1,4 +1,4 @@
-package 座標系;
+package common;
 
 import java.util.ArrayList;
 /* 折れ線クラス
