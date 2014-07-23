@@ -5,7 +5,7 @@ package common;
  */
 
 public class line {
-	/* クラス内変数 */
+	/* メンバ変数 */
 	public point p0, p1;//線分
 
 	/* コンストラクタ */

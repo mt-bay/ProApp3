@@ -6,7 +6,7 @@ import java.util.ArrayList;
  */
 
 public class polygonal{
-	/* クラス内変数 */
+	/* メンバ変数 */
 
 	public ArrayList<point> p;//折れ線の要素
 
@@ -48,7 +48,7 @@ public class polygonal{
 		p = new ArrayList<point>(2);
 		p.set(0,l.p0); p.set(1, l.p1);
 	}
-	
+
 	/* 座標指定コンストラクタ
 	 * 引数：point
 	 * 目的：座標1つのみ持っている状態で作成
@@ -57,10 +57,10 @@ public class polygonal{
 		p = new ArrayList<point>(1);
 		p.set(0, P);
 	}
-	
-	
+
+
 	/* メソッド */
-	
+
 	/* 内容追加
 	 * 引数  ：追加する座標
 	 * 戻り値：なし
@@ -69,7 +69,7 @@ public class polygonal{
 	public void add(point value){
 		p.add(value);
 	}
-		
+
 	/* 線分取り出し
 	 * 引数  ：p0に当たる座標のインデックス
 	 * 戻り値：インデックスを基に作成された座標 or null(生成できなかった場合)
@@ -80,7 +80,7 @@ public class polygonal{
 			return null;
 		return new line(p.get(index), p.get(index + 1));
 	}
-	
-	
+
+
 
 }

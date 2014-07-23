@@ -4,6 +4,7 @@ import common.point;
 import common.rect;
 
 public class charObj extends rect {
+	/* メンバ変数 */
 	public point  accel;	//移動力
 	public double hp;		//体力値
 

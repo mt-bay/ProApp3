@@ -6,12 +6,11 @@ package common;
  *
  */
 public class rect {
-	/* クラス内変数 */
+	/* メンバ変数 */
 	public point location;  //座標
 	public point size;      //サイズ
 
 	/* コンストラクタ */
-
 	/* デフォルトコンストラクタ
 	 * 引数：なし
 	 * 目的：座標(0, 0), サイズ(0, 0)の四角形生成
@@ -63,7 +62,7 @@ public class rect {
 	public point LowerRight(){
 		return new point(location.x + size.x, location.y + size.y);
 	}
-	
+
 	/* 変数セット
 	 * 引数  ：セットする変数
 	 * 戻り値：なし

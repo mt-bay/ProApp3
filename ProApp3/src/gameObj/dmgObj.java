@@ -4,9 +4,10 @@ import common.point;
 import common.rect;
 
 public class dmgObj extends rect {
+	/* メンバ変数 */
 	public point  accel;	//移動力
 	public double atk;		//charObj衝突時の体力変動値
-	
+
 	/* コンストラクタ */
 	/* デフォルトコンストラクタ
 	 * 引数：なし
@@ -24,13 +25,13 @@ public class dmgObj extends rect {
 	 * 引数：それぞれのデータ
 	 */
 	public dmgObj(rect Rec, point Acc, double Atk){
-		set(Rec.location, Rec.size, Acc, Atk);		
+		set(Rec.location, Rec.size, Acc, Atk);
 	}
-	
-	
+
+
 	/* メソッド */
-	
-	
+
+
 	/* setter
 	 * 引数：それぞれのデータ
 	 */
