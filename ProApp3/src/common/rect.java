@@ -1,7 +1,6 @@
 package common;
 
 
-
 /* 長方形クラス
  *
  */
@@ -68,9 +67,9 @@ public class rect {
 	 * 戻り値：なし
 	 * 目的  ：引数の変数をセット
 	 */
-	private void set(point Location, point Size){
-		location = new point(Location);
-		size     = new point(Size);
+	protected void set(point _location, point _size){
+		location = new point(_location);
+		size     = new point(_size);
 	}
 
 }

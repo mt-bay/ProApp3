@@ -18,7 +18,7 @@ public class config {
 	private static String     fName  = "config.cfg";
 
 	//キーアサイン関係
-	public  static final int maxKey = 10;	//使用するボタン数(最大)
+	public  static final int maxKey = 10;	//アサインできるボタン数(最大)
 	public  static       int attack;
 	public  static       int jump;
 	public  static       int highsp;
