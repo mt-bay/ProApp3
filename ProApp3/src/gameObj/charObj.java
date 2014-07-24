@@ -5,9 +5,15 @@ import common.rect;
 
 public class charObj extends rect {
 	/* メンバ変数 */
+	//基本的
 	public point  accel;	//移動力
 	public double hp;		//体力値
-
+	
+	//状態変数
+	protected int t_invisible;	//残りの無敵フレーム数
+	
+	
+	
 	/* デフォルトコンストラクタ
 	 * 引数：なし
 	 */
