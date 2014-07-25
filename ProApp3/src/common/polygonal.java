@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class polygonal{
 	/* メンバ変数 */
 
-	public ArrayList<point> p;//折れ線の要素
+	public ArrayList<point<Double>> p;//折れ線の要素
 
 	/* コンストラクタ */
 

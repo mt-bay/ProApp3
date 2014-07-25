@@ -5,56 +5,54 @@ package common;
  */
 
 public class line {
-	/* メンバ変数 */
-	public point p0, p1;//線分
+    /* メンバ変数 */
+    public point<Integer> p0, p1; // 線分
 
-	/* コンストラクタ */
+    /* コンストラクタ */
 
-	/* デフォルトコンストラクタ
-	 * 引数：なし
-	 * 目的：((0, 0), (0, 0))の線分作成
-	 */
-	public line(){
-		set(new point(), new point());
-	}
+    /*
+     * デフォルトコンストラクタ 引数：なし
+     * 目的：((0, 0), (0, 0))の線分作成
+     */
+    public line() {
+        set(new point<Integer>(), new point<Integer>());
+    }
 
-	/* コピーコンストラクタ
-	 * 引数：コピー元
-	 * 目的：内容のコピー
-	 */
-	public line(line obj){
-		set(obj.p0, obj.p1);
-	}
+    /*
+     * コピーコンストラクタ 引数：コピー元 目的：内容のコピー
+     */
+    public line(line obj) {
+        set(obj.p0, obj.p1);
+    }
 
-	/* 座標指定型コンストラクタ
-	 * 引数：p0, p1
-	 * 木tケイ：(p0, p1)の線分作成
-	 */
-	public line(point P0, point P1){
-		set(P0, P1);
-	}
+    /*
+     * 座標指定型コンストラクタ
+     * 引数：p0, p1
+     */
+    public line(point<Integer> P0, point<Integer> P1) {
+        set(P0, P1);
+    }
 
+    /* メソッド */
 
-	/* メソッド */
+    /*
+     * 変数セット
+     * 引数  ：p0, p1
+     * 戻り値：なし
+     */
+    private void set(point<Integer> P0, point<Integer> P1) {
+        p0 = new point<Integer>(P0);
+        p1 = new point<Integer>(P1);
+    }
 
-	/* 変数セット
-	 * 引数：p0, p1
-	 * 目的：変数セット
-	 */
-	private void set(point P0, point P1){
-		p0 = new point(P0);
-		p1 = new point(P1);
-	}
+    /*
+     * 線分の長さを求める
+     * 引数  ：なし
+     * 戻り値：線分の長さ
+     */
+    public double length() {
 
-	/* 線分の長さを求める
-	 * 引数：なし
-	 * 目的：線分の長さを求める
-	 */
-	public double length(){
-
-		return new point(p1.x - p0.x,p1.y - p1.y).length();
-	}
-
-
+        return new point<Integer>(p1.x - p0.x, p1.y - p1.y).length();
+    }
 
 }
