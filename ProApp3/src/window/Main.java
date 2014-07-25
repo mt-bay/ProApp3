@@ -10,6 +10,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+import IO.Log;
+
 
 public class Main extends BasicGame{
 
@@ -25,7 +27,7 @@ public class Main extends BasicGame{
 
 	/* 初期化
 	 * 目的  ：ファイルを読み込んで変数と関連付ける
-	 * 戻り値：void
+	 * 戻り値：なし
 	 * 例外  ：SlickException
 	 */
 	@Override
@@ -37,7 +39,8 @@ public class Main extends BasicGame{
 
 	/* 内容の更新
 	 * 目的  ：内部状態の更新(メインループ)
-	 * 戻り値：void
+	 * 引数  ：なにこれ
+	 * 戻り値：なし
 	 * 例外  ：SlickException
 	 */
 	@SuppressWarnings("static-access")
@@ -48,7 +51,8 @@ public class Main extends BasicGame{
 
 	/* 描画
 	 * 目的  ：画面描画(メインループ)
-	 * 戻り値：void
+	 * 引数  ：なにこれ
+	 * 戻り値：なし
 	 * 例外  ：SlickException
 	 */
 	@Override
