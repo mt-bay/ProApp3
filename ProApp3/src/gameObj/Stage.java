@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Stage {
     /* クラス内変数 */
-    public mapchip[][]        map;
+    public mapObj[][]        map;
     public ArrayList<dmgObj>  dmg;
     public ArrayList<charObj> chr;
     

@@ -10,7 +10,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
-import IO.Log;
+import IO.debugLog;
 
 
 public class Main extends BasicGame{
