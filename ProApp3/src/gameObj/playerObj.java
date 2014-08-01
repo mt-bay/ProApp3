@@ -29,10 +29,19 @@ public class playerObj extends charObj {
     public playerObj() {
         set(new rect()        , new point<Double>(), 0.0d               ,
             Direction.RIGHT   , false              , true               ,
-            null              , false              , -1                 ,
-            new Input[num_prev]);
+            null              , null               , false              ,
+            -1                , new Input[num_prev]);
     }
 
+    public playerObj(playerObj obj){
+    	set(new rect(new point<Double>(obj.location)    , new point<Integer>(obj.size)),
+            new point<Double>(obj.accel), obj.hp        ,
+            obj.dir                     , obj.isGnd     , obj.isGravitied              ,
+            obj.texture                 , obj.i_am_here , obj.isShooting               ,
+            obj.t_deform                , obj.ip_prev);
+            
+    }
+    
     /* メソッド */
     /* 状態アップデート(オーバーライド)
      * 引数  ：なし
@@ -87,20 +96,15 @@ public class playerObj extends charObj {
 
         return cc;
     }
+    
 
     /*
      * 変数セット
      * 引数  ：それぞれのデータ
      */
-    private void set(rect        _rect   , point<Double> _accel       , double  _hp         ,
-                     Direction   _dir    , boolean       _isGnd       , boolean _isGravitied,
-                     SpriteSheet _texture, boolean       _isShooting  , int     _t_deform   ,
-                     Input[]     _ip_prev){
-        isShooting = _isShooting;
-        t_deform   = _t_deform;
-        ip_prev    = _ip_prev;
-
-        set(_rect, _accel, _hp, _dir, _isGnd, _isGravitied, _texture);
+    private void set(rect        _rect   , point<Double> _accel     , double  _hp         ,
+                     Direction   _dir    , boolean       _isGnd     , boolean _isGravitied,
+                     SpriteSheet _texture, Stage         _where_i_am, boolean _isShooting ,
+                     int     _t_deform   , Input[]       _ip_prev){
     }
-
 }

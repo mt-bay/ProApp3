@@ -17,7 +17,7 @@ public class charObj extends rect {
     public SpriteSheet   texture;    // テクスチャ
     public int           t_state;    // テクスチャの参照場所
 
-    private Stage        im_Here;    //自分はどのステージのオブジェクトか
+    public Stage        i_am_here;  //自分はどのステージのオブジェクトか
 
     // 状態変数
     protected int        invisible_c; // 残りの無敵フレーム数
@@ -32,18 +32,18 @@ public class charObj extends rect {
      * 引数：なし
      */
     public charObj() {
-        set(new rect(), new point<Double>(), 0.0,
-                Direction.LEFT, false, false,
-                null);
+        set(new rect()        , new point<Double>(),   0.0,
+                Direction.LEFT, false              , false,
+                null          , null               );
     }
 
     /*
      * データ指定型コンストラクタ
      * 引数：それぞれのデータ
      */
-    public charObj(rect _rect, point<Double> _accel, double _hp,
-            Direction _dir, boolean _isGnd, boolean _isGravitied,
-            String _path_texture) {
+    public charObj(rect      _rect        , point<Double> _accel     , double _hp          ,
+                   Direction _dir         , boolean       _isGnd     , boolean _isGravitied,
+                   String    _path_texture, Stage         _where_i_am){
         SpriteSheet _texture;
         try {
             _texture = new SpriteSheet(_path_texture, _rect.size.x, _rect.size.y);
@@ -52,9 +52,9 @@ public class charObj extends rect {
             dLog.write("SpriteSheet\"" + _path_texture + "\" load failed");
             _texture = null;
         }
-        set(_rect   , _accel, _hp         ,
-            _dir    , _isGnd, _isGravitied,
-            _texture);
+        set(_rect   , _accel     , _hp         ,
+            _dir    , _isGnd     , _isGravitied,
+            _texture, _where_i_am);
     }
 
     /* メソッド */
@@ -92,7 +92,7 @@ public class charObj extends rect {
      */
     protected void set(rect        _rect   , point<Double> _accel, double  _hp         ,
                        Direction   _dir    , boolean       _isGnd, boolean _isGravitied,
-                       SpriteSheet _texture){
+                       SpriteSheet _texture, Stage         _where_i_am){
         accel       = _accel;
         hp          = _hp;
         dir         = _dir;
@@ -101,5 +101,7 @@ public class charObj extends rect {
         texture     = _texture;
 
         set(_rect.location, _rect.size);
+        
+        i_am_here   = _where_i_am;
     }
 }

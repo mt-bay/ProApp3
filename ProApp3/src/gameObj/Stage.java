@@ -1,11 +1,12 @@
 package gameObj;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Stack;
 
 public class Stage {
     /* クラス内変数 */
-    public playerObj          p;
-    public mapObj[][]         mapdata;
+    public playerObj          player_data;
+    public mapObj             map_data;
     public ArrayList<dmgObj>  damage;
     public ArrayList<charObj> person;
     //状態管理
@@ -17,11 +18,18 @@ public class Stage {
 
 
     /* コンストラクタ */
-
+    
+    /* ファイルからステージを生成する
+     * 引数：ファイル名
+     */
     public Stage(String _mName) {
-
+    	
     }
-
-
-
+    
+    
+    
+    private void set(playerObj          _player_data, mapObj _map_data, ArrayList<dmgObj> _damage,
+    		         ArrayList<charObj> _person     ){
+    	player_data = new playerObj(_player_data);
+    }
 }
