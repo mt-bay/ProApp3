@@ -99,10 +99,8 @@ public class mapObj {
                     use_chip        [i][j] =   iBuf / 2;
                 }
             }
-        }catch(FileNotFoundException e){
-            return;
-            
-        }catch(IOException e){
+        }catch(Exception e){
+            dLog.write_exception(e, new Throwable().getStackTrace()[0].getClassName(), new Throwable().getStackTrace()[0].getMethodName());
             return;
         }
     }
