@@ -64,7 +64,6 @@ public class charObj extends rect {
      */
     public CreateCode[] update() {
         CreateCode[] cc = null;
-
         return cc;
     }
 
@@ -74,9 +73,8 @@ public class charObj extends rect {
      * 戻り値
      */
     public void draw() {
-
+        draw(1.0f);
     }
-
     public void draw(float _scale) {
         if (texture == null)
             return;

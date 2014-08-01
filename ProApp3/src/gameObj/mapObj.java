@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
+import IO.debugLog;
 import common.point;
 
 /*
@@ -24,6 +25,9 @@ public class mapObj {
     private Image         img;      //マップ用1枚絵
     private SpriteSheet   ssheet;   //マップチップ
     private int[][]       use_chip; //マップチップのどの要素を使うか
+
+    //デバッグ用データ
+    private debugLog     dLog;
 
     /* コンストラクタ */
     /*
@@ -66,6 +70,7 @@ public class mapObj {
         ssheet     = (_use_img)? null : _ssheet;
         CSVtoMchips(_csv_iscollisionable);
 
+        dLog       = debugLog.getInstance();
         return;
     }
 
@@ -96,6 +101,7 @@ public class mapObj {
             }
         }catch(FileNotFoundException e){
             return;
+            
         }catch(IOException e){
             return;
         }

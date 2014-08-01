@@ -5,6 +5,7 @@
 
 package window;
 
+
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -22,6 +23,12 @@ public class Main extends BasicGame{
 
 	public static void main(String[] args) throws SlickException{
 
+	    debugLog dLog = debugLog.getInstance();
+
+
+	    dLog.delInstance();
+
+	    return;
 	}
 
 
