@@ -18,18 +18,19 @@ public class Stage {
 
 
     /* コンストラクタ */
-    
+
     /* ファイルからステージを生成する
      * 引数：ファイル名
      */
-    public Stage(String _mName) {
-    	
+    public Stage(String _player_filename, String _map_filename, String _dmg_list_filename, String _person_list_filename) {
+        
+        
+        
     }
+
+
     
     
     
-    private void set(playerObj          _player_data, mapObj _map_data, ArrayList<dmgObj> _damage,
-    		         ArrayList<charObj> _person     ){
-    	player_data = new playerObj(_player_data);
-    }
+
 }

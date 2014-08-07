@@ -1,5 +1,9 @@
 package gameObj;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SpriteSheet;
 
@@ -11,14 +15,14 @@ import common.rect;
 public class playerObj extends charObj {
     /* メンバ変数 */
     //状態変数
-    public boolean    isShooting;     //シューティングモードか
-    protected int     t_deform;       //シューティング←→アクションの変形残りフレーム
-    protected Input[] ip_prev;        //過去の入力
-    protected Input   ip_now;         //最新の入力
+    public boolean    is_shooting;           //シューティングモードか
+    protected int     timer_deform;          //シューティング←→アクションの変形残りフレーム
+    protected Input[] ip_prev;               //過去の入力
+    protected Input   ip_now;                //最新の入力
 
     //その他
-    private final int num_prev = 6;   //入力の記憶数
-    private double    act_mv   = 2.5; //アクションモード時の左右移動力
+    private static final int num_prev = 6;   //入力の記憶数
+    private static double    act_mv   = 2.5; //アクションモード時の左右移動力
 
     //ユーザ入力関係
 
@@ -34,14 +38,27 @@ public class playerObj extends charObj {
     }
 
     public playerObj(playerObj obj){
-    	set(new rect(new point<Double>(obj.location)    , new point<Integer>(obj.size)),
-            new point<Double>(obj.accel), obj.hp        ,
-            obj.dir                     , obj.isGnd     , obj.isGravitied              ,
-            obj.texture                 , obj.i_am_here , obj.isShooting               ,
-            obj.t_deform                , obj.ip_prev);
-            
+    	set(new rect(new point<Double>(obj.location)   , new point<Integer>(obj.size)),
+            new point<Double>(obj.accel), obj.hp     ,
+            obj.dir                     , obj.is_gnd , obj.is_gravitied,
+            obj.texture                 , obj.belong , obj.is_shooting ,
+            obj.timer_deform            , obj.ip_prev);
+
     }
-    
+
+    /* ファイルから生成用コンストラクタ
+     * 引数：ファイル名
+     */
+    public playerObj(String filename){
+
+    }
+
+    public playerObj(rect      _rect    , point<Double> _accel              , double  _hp         ,
+                     Direction _dir     , boolean       _is_gnd_and_shooting, boolean _isGravitied,
+                     String    _texture , Stage         _where_i_am){
+       set(_rect, _hp, _dir, _is_gnd_and_shooting, _isGravitied, _texture, _where_i_am);
+    }
+
     /* メソッド */
     /* 状態アップデート(オーバーライド)
      * 引数  ：なし
@@ -51,14 +68,8 @@ public class playerObj extends charObj {
     public CreateCode[] update() {
         CreateCode[] cc = null;
 
-        //変形中 or 変形終了時
-        if (t_deform >= 0) {
-            if (t_deform == 0)
-                isShooting = !isShooting;
-            t_deform--;
-        }
-        //通常時
-        else
+        //変形処理を行い、変形時でなければ通常操作
+        if(!deform())
         {
             //共通操作
             //攻撃(ダメージオブジェクト生成)
@@ -77,9 +88,9 @@ public class playerObj extends charObj {
             }
             //固有操作
             //アクションモード
-            if (!isShooting) {
+            if (!is_shooting) {
                 //ジャンプ
-                if (ip_now.isKeyDown(config.jump) && isGnd) {
+                if (ip_now.isKeyDown(config.jump) && is_gnd) {
                     accel.y = -20.0;
                 }
             }
@@ -96,15 +107,79 @@ public class playerObj extends charObj {
 
         return cc;
     }
-    
+
+    /* アクション←→シューティング処理
+     * 引数  ：なし
+     * 戻り値：変形中かどうか
+     */
+    private boolean deform(){
+        if(timer_deform >= 0){
+            timer_deform--;
+            if(timer_deform == 0)
+                is_shooting = !is_shooting;
+            return true;
+        }
+        return false;
+    }
+
+    /* ファイルからプレイヤーオブジェクトのデータを読み込む
+     * データは1行に格納，各データは空白で区切られ、以下のデータを持っている前提で動作する
+     * 座標_x   座標_y   サイズ_x サイズ_y HP       向き        接地しているか シューティングモードか(重力の影響を受けるか) テクスチャへのパス
+     * <double> <double> <int>    <int>    <double> <Direction> <boolean>      <boolean>                                    <string>
+     * 引数  ：ファイル名
+     * 戻り値：プレイヤーオブジェクト
+     */
+    public static playerObj file_to_playerObj(String _filename, Stage _belong) throws FileNotFoundException{
+        playerObj p_obj = new playerObj();
+        try{
+            BufferedReader bRead = new BufferedReader(new FileReader(_filename));
+            String[] str = bRead.readLine().split(" ");
+
+            p_obj = new playerObj(new rect(new point<Double >(Double.parseDouble(str[ 0]), Double.parseDouble(str[1])),
+                                           new point<Integer>(Integer.parseInt(str[ 2])  , Integer.parseInt(str[3]))) ,
+                                  new point<Double>(0.0d, 0.0d)                                                       ,
+                                  Double.parseDouble(str[ 4])                                                         ,
+                                  Direction.parseDirection(str[ 5])                                                   ,
+                                  Boolean.parseBoolean(str[ 6])                                                       ,
+                                  Boolean.parseBoolean(str[ 7])                                                       ,
+                                  str[8]                                                                              ,
+                                  _belong                                                                             );
+            bRead.close();
+        }catch(Exception e){
+            dLog.write_exception(e,
+                                 new Throwable().getStackTrace()[0].getClassName(),
+                                 new Throwable().getStackTrace()[0].getMethodName());
+        }
+        return p_obj;
+    }
 
     /*
      * 変数セット
      * 引数  ：それぞれのデータ
      */
-    private void set(rect        _rect   , point<Double> _accel     , double  _hp         ,
-                     Direction   _dir    , boolean       _isGnd     , boolean _isGravitied,
-                     SpriteSheet _texture, Stage         _where_i_am, boolean _isShooting ,
-                     int     _t_deform   , Input[]       _ip_prev){
+    private void set(rect    _rect      , double  _hp                       , Direction   _dir         ,
+                     boolean _isGnd     , boolean _is_gravitied_and_shooting, String      _texture_path,
+                     Stage   _where_i_am){
+        SpriteSheet sp;
+        try{
+            sp = new SpriteSheet(_texture_path, _rect.size.x, _rect.size.y);
+        }catch(Exception e){
+            sp = null;
+            dLog.write_exception(e                                                ,
+                                 new Throwable().getStackTrace()[0].getClassName(),
+                                 new Throwable().getStackTrace()[0].getMethodName());
+        }
+        set(_rect, new point<Double>(0.0d, 0.0d), _hp,
+            _dir , _isGnd                       , _is_gravitied_and_shooting,
+            sp   , _where_i_am                  , _is_gravitied_and_shooting,
+            -1   , new Input[num_prev]          );
     }
+
+    private void set(rect        _rect    , point<Double> _accel     , double  _hp         ,
+                     Direction   _dir   , boolean       _isGnd     , boolean _isGravitied,
+                     SpriteSheet _texture , Stage         _where_i_am, boolean _isShooting ,
+                     int         _t_deform, Input[]       _ip_prev   ){
+    }
+
+
 }

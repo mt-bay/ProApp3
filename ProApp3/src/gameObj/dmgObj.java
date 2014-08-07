@@ -46,4 +46,9 @@ public class dmgObj extends rect {
         atk   = _atk;
         set(_location, _size);
     }
+
+    /* ファイル->
+     *
+     */
+
 }

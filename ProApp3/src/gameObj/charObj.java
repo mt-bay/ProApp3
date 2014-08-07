@@ -10,21 +10,22 @@ import common.rect;
 
 public class charObj extends rect {
     /* メンバ変数 */
-    public point<Double> accel;      // 移動力
-    public double        hp;         // 体力値
-    public Direction     dir;        // 向き
-    public boolean       isGnd;      // 接地しているか
-    public SpriteSheet   texture;    // テクスチャ
-    public int           t_state;    // テクスチャの参照場所
+    public           point<Double> accel;             //移動力
+    public           double        hp;                //体力値
+    public           Direction     dir;               //向き
+    public           boolean       is_gnd;            //接地しているか
 
-    public Stage        i_am_here;  //自分はどのステージのオブジェクトか
+    public           SpriteSheet   texture;           //テクスチャ
+    public           int           t_state;           //テクスチャの参照場所
+
+    public           Stage         belong;            //自オブジェクトの所属ステージ
 
     // 状態変数
-    protected int        invisible_c; // 残りの無敵フレーム数
-    public boolean       isGravitied; // 重力に依存するかどうか
+    protected        int           timer_not_visible; //残りの無敵フレーム数
+    public           boolean       is_gravitied;      //重力に依存するかどうか
 
     //その他
-    protected debugLog   dLog;       // デバッグログ
+    protected static debugLog      dLog;       // デバッグログ
 
     /* コンストラクタ・デストラクタ */
     /*
@@ -32,9 +33,9 @@ public class charObj extends rect {
      * 引数：なし
      */
     public charObj() {
-        set(new rect()        , new point<Double>(),   0.0,
-                Direction.LEFT, false              , false,
-                null          , null               );
+        set(new rect()    , new point<Double>(), 0.0  ,
+            Direction.LEFT, false              , false,
+            null          , null               );
     }
 
     /*
@@ -42,8 +43,8 @@ public class charObj extends rect {
      * 引数：それぞれのデータ
      */
     public charObj(rect      _rect        , point<Double> _accel     , double _hp          ,
-                   Direction _dir         , boolean       _isGnd     , boolean _isGravitied,
-                   String    _path_texture, Stage         _where_i_am){
+                   Direction _dir         , boolean       _isGnd     , boolean _is_gravitied,
+                   String    _path_texture, Stage         _belong){
         SpriteSheet _texture;
         try {
             _texture = new SpriteSheet(_path_texture, _rect.size.x, _rect.size.y);
@@ -53,8 +54,8 @@ public class charObj extends rect {
             _texture = null;
         }
         set(_rect   , _accel     , _hp         ,
-            _dir    , _isGnd     , _isGravitied,
-            _texture, _where_i_am);
+            _dir    , _isGnd     , _is_gravitied,
+            _texture, _belong);
     }
 
     /* メソッド */
@@ -69,17 +70,23 @@ public class charObj extends rect {
 
     /*
      * 描画
-     * 引数  ：なし or 描画倍率
-     * 戻り値
+     * 引数  ：なし                 or
+     *         カメラ位置           or
+     *         カメラ位置, 描画倍率
+     * 戻り値：なし
      */
     public void draw() {
-        draw(1.0f);
+        draw(new point<Float>(0.0f, 0.0f), 1.0f);
     }
-    public void draw(float _scale) {
+    public void draw(point<Float> _camera_location){
+        draw(_camera_location, 1.0f);
+    }
+    public void draw(point<Float> _camera_location, float _scale) {
         if (texture == null)
             return;
-
-        point<Float> _loc_f = point.DtoF(location), _size_f = point.ItoF(size);
+        point<Float> _loc_f = new point<Float>(location.x.floatValue() - _camera_location.x,
+                                               location.y.floatValue() - _camera_location.y);
+        point<Float> _size_f = point.ItoF(size);
 
         texture.startUse();
         texture.getSubImage(t_state, 0).drawEmbedded(_loc_f.x, _loc_f.y, _size_f.x, _size_f.y);
@@ -89,19 +96,20 @@ public class charObj extends rect {
     /*
      * 変数セット
      * 引数：それぞれのデータ
+     *
      */
     protected void set(rect        _rect   , point<Double> _accel, double  _hp         ,
                        Direction   _dir    , boolean       _isGnd, boolean _isGravitied,
-                       SpriteSheet _texture, Stage         _where_i_am){
-        accel       = _accel;
-        hp          = _hp;
-        dir         = _dir;
-        isGnd       = _isGnd;
-        isGravitied = _isGravitied;
-        texture     = _texture;
+                       SpriteSheet _texture, Stage         _belong){
+        accel        = _accel;
+        hp           = _hp;
+        dir          = _dir;
+        is_gnd       = _isGnd;
+        is_gravitied = _isGravitied;
+        texture      = _texture;
 
         set(_rect.location, _rect.size);
-        
-        i_am_here   = _where_i_am;
+
+        belong       = _belong;
     }
 }
