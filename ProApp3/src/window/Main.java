@@ -14,13 +14,10 @@ import org.newdawn.slick.SlickException;
 
 import IO.debugLog;
 
-import common.point;
-
 
 public class Main extends BasicGame{
     /* メンバ変数 */
-    public static final point<Integer> WINDOW_SIZE  = new point<Integer>(800, 600);
-    public static final int            FPS   = 30;
+
 
 
 	public Main(String title) {
@@ -29,24 +26,18 @@ public class Main extends BasicGame{
 
 	public static void main(String[] args) throws SlickException{
 
-	    debugLog dLog = debugLog.getInstance();
 
-
-	    /*
-	     * AppGameContainerコンストラクタの引数の扱いは、引数名と違って
-	     * (Game, 縦幅, 横幅, フルスクリーンか) のようだ
-	     */
 	    try{
 	        AppGameContainer app = new AppGameContainer(new Main("ゲーム名"));
-	        app.setDisplayMode(WINDOW_SIZE.x, WINDOW_SIZE.y, false);
-	        app.setTargetFrameRate(FPS);
+	        app.setDisplayMode(window.SIZE.x, window.SIZE.y, false);
+	        app.setTargetFrameRate(window.FPS);
 	        app.start();
 	    }catch(Exception e){
-	        dLog.write_exception(e, new Throwable().getStackTrace()[0].getClassName(), new Throwable().getStackTrace()[0].getMethodName());
+	        debugLog.getInstance().write_exception(e, new Throwable());
 	    }
 
 	    //後処理
-	    dLog.delInstance();
+	    debugLog.delInstance();
 
 	    return;
 	}

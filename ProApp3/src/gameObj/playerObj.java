@@ -7,6 +7,7 @@ import java.io.FileReader;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SpriteSheet;
 
+import window.window;
 import IO.config;
 
 import common.point;
@@ -15,14 +16,17 @@ import common.rect;
 public class playerObj extends charObj {
     /* メンバ変数 */
     //状態変数
-    public boolean    is_shooting;           //シューティングモードか
-    protected int     timer_deform;          //シューティング←→アクションの変形残りフレーム
-    protected Input[] ip_prev;               //過去の入力
-    protected Input   ip_now;                //最新の入力
+    public               point<Integer> size_act;     //アクションモード時のサイズ
+    public               point<Integer> size_stg;     //シューティングモード時のサイズ
+
+    public               boolean        is_shooting;  //シューティングモードか
+    protected            int            timer_deform; //シューティング←→アクションの変形残りフレーム
+    protected            Input[]        ip_prev;      //過去の入力
+    protected            Input          ip_now;       //最新の入力
 
     //その他
-    private static final int num_prev = 6;   //入力の記憶数
-    private static double    act_mv   = 2.5; //アクションモード時の左右移動力
+    private static final int    num_prev = 6;         //入力の記憶数
+    private static       double act_mv   = 2.5;       //アクションモード時の左右移動力
 
     //ユーザ入力関係
 
@@ -108,18 +112,29 @@ public class playerObj extends charObj {
         return cc;
     }
 
-    /* アクション←→シューティング処理
-     * 引数  ：なし
-     * 戻り値：変形中かどうか
+
+    /* 描画(作成中)
+     * テクスチャは2行で収められている前提で、行とモードの関係は以下のようになっているとする
+     *
+     * 1行目：アクションモード
+     * 2行目：シューティングモード
+     *
+     * 引数  ：なし or 描画倍率
+     * 戻り値：なし
      */
-    private boolean deform(){
-        if(timer_deform >= 0){
-            timer_deform--;
-            if(timer_deform == 0)
-                is_shooting = !is_shooting;
-            return true;
+    @Override
+    public void draw(){
+
+    }
+    @Override
+    public void draw(float _scale){
+        if(texture == null)
+            return;
+
+        if(window.comprise(new rect(new point<Double>(location),
+                                    new point<Integer>((is_shooting)? size_stg : size_act)))){
+            point<Float> p_f = window.relative_camera_f(point.DtoF(location));
         }
-        return false;
     }
 
     /* ファイルからプレイヤーオブジェクトのデータを読み込む
@@ -146,12 +161,32 @@ public class playerObj extends charObj {
                                   _belong                                                                             );
             bRead.close();
         }catch(Exception e){
-            dLog.write_exception(e,
-                                 new Throwable().getStackTrace()[0].getClassName(),
-                                 new Throwable().getStackTrace()[0].getMethodName());
+            dLog.write_exception(e, new Throwable());
         }
         return p_obj;
     }
+
+
+    /* アクション←→シューティング処理
+     * 引数  ：なし
+     * 戻り値：変形中かどうか
+     */
+    private boolean deform(){
+        if(timer_deform >= 0){
+            timer_deform--;
+            if(timer_deform == 0){
+                //状態遷移
+                is_shooting  = !is_shooting;
+                is_gravitied = !is_gravitied;
+                //サイズ変更処理
+                location = new point<Double>(location.x +  (size_act.x - size_stg.x)      * ((is_shooting)? -1 : 1),
+                                             location.y + ((size_act.y - size_stg.y) / 2) * ((is_shooting)? -1 : 1));
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     /*
      * 変数セット

@@ -48,7 +48,7 @@ public class debugLog {
      * 引数  ：なし
      * 戻り値：なし
      */
-    public void delInstance(){
+    public static void delInstance(){
         try{
             log.close();
         }catch(IOException e){
@@ -77,10 +77,14 @@ public class debugLog {
      * ログに追記(例外用)
      * 引数  ：例外名，クラス名，メソッド名
      * 戻り値：なし
-     * 備考  ：クラス名は  new Throwable().getStackTrace()[0].getClassName()，
-     *         メソッド名はnew Throwable().getStackTrace()[0].getMethodName()
+     * 備考  ：クラス名, メソッド名は
+     *         new Throwable().getStackTrace()[0].getClassName(),
+     *         new Throwable().getStackTrace()[0].getMethodName()
      *         で取得可能です
      */
+    public void write_exception(Exception _e, Throwable _t){
+        write(_e.getClass() + " at " + _t.getStackTrace()[0].getMethodName() +  " in " + _t.getStackTrace()[0].getClassName() + "(message：" + _e.getMessage() + ")");
+    }
     public void write_exception(Exception _exception, String _class, String _method){
         write(_exception.getClass() + " at " + _method + " in " + _class + "(message：" + _exception.getMessage() + ")");
     }

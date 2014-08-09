@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
+import window.window;
 import IO.debugLog;
 
 import common.point;
+import common.rect;
 
 /*
  * マップオブジェクト
@@ -17,14 +19,15 @@ import common.point;
  */
 public class mapObj {
     /* メンバ変数 */
-    public point<Integer> size_block;        //ブロックサイズ
-    public boolean[][]    is_collisionable;  //接触判定を持つか(ブロックごとに管理)
+    public               point<Integer> size_block;       //ブロックサイズ
+    public               boolean[][]    is_collisionable; //接触判定を持つか(ブロックごとに管理)
+    public               String         map_file_path;    //衝突データ導出に使ったファイルへのパス
 
     //描画関係
     //public double         z;      //仮想Z軸(現在使用予定なし)
-    private Image         img;               //マップ用1枚絵
-    private SpriteSheet   ssheet;            //マップチップ
-    private int[][]       use_chip;          //マップチップのどの要素を使うか
+    private              Image         img;               //マップ用1枚絵
+    private              SpriteSheet   ssheet;            //マップチップ
+    private              int[][]       use_chip;          //マップチップのどの要素を使うか
 
     //デバッグ用データ
     private static final debugLog     dLog = debugLog.getInstance();
@@ -41,11 +44,38 @@ public class mapObj {
     }
 
     /* メソッド */
+    /* 画面描画
+     * 引数  ：なし or 描画倍率
+     * 戻り値：なし
+     */
+    public void draw(){
+        draw(1.0f);
+    }
+    public void draw(float _scale){
+        if(img != null){
+            point<Float> loc_f = window.relative_camera_f(new point<Float>(0.0f, 0.0f));
+            img.draw(loc_f.x, loc_f.y, _scale);
+        }
+        rect chip_loc;
+        if(ssheet != null){
+            for(int i = 0; i < use_chip.length; i++){
+                for(int j = 0; j < use_chip[i].length; j++){
+                    chip_loc = new rect(new point<Double >((double)((size_block.x * _scale) *  j    ), (double)((size_block.y * _scale) * i     )),
+                                        new point<Integer>(    (int)(size_block.x * _scale) * (j + 1),     (int)(size_block.y * _scale) * (i + 1)));
+                    if(window.comprise(chip_loc))
+                        ssheet.getSubImage(0, use_chip[i][j]).
+                               draw(chip_loc.location.x.floatValue(), chip_loc.location.y.floatValue(), _scale);
 
+                }
+            }
+        }
+
+
+    }
 
 
     /* ファイル to マップオブジェクト
-     * ファイルは、1行ごとに区切られている前提で
+     * ファイルは、1行ごとに区切られている前提で、以下の内容で動作する
      * ブロックサイズ_x ブロックサイズ_y  csvファイルへのパス 一枚絵を使うか(falseでスプライトシート) 画像 or スプライトシートへのパス
      * <int>            <int>             <string>            <boolean>                               <string>
      */
@@ -85,7 +115,7 @@ public class mapObj {
             else
             {
                 img        = (_use_img)? new Image(_img_or_spritesheet) : null   ;
-                ssheet     = (_use_img)? null : new SpriteSheet(_img_or_spritesheet, size_block.x, size_block.y);
+                ssheet     = (_use_img)? null                           : new SpriteSheet(_img_or_spritesheet, size_block.x, size_block.y);
             }
             csv_to_mapchips(_csv_iscollisionable);
         }catch(Exception e){
@@ -97,6 +127,7 @@ public class mapObj {
 
         return;
     }
+
 
     /*
      * CSV to マップチップ + 接触判定の有無
