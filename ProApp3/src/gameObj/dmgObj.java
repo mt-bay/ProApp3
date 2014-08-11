@@ -29,7 +29,7 @@ public class dmgObj extends rect {
      * 引数：コピー元
      */
     public dmgObj(dmgObj obj) {
-        init(obj, obj.accel, obj.atk, obj.texture_m);
+        init(obj, obj.accel, obj.atk, obj.texture_m.get_file_path());
     }
 
     /*
@@ -96,19 +96,10 @@ public class dmgObj extends rect {
      */
     private void init(rect   _rect        , point<Double> _accel, double _atk,
                       String _texture_path){
-        set(_rect.location, _rect.size);
+        init(_rect.location, _rect.size);
 
         accel = new point<Double>(accel);
         atk   = _atk;
         texture_m = new texture(_texture_path, size);
     }
-    private void init(rect   _rect        , point<Double> _accel, double _atk,
-            texture _texture){
-        set(_rect.location, _rect.size);
-
-        accel = new point<Double>(accel);
-        atk   = _atk;
-        texture_m = new texture(_texture);
-    }
-
 }

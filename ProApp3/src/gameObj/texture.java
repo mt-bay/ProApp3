@@ -53,6 +53,13 @@ public class texture {
         return;
     }
 
+    /* ファイルパスgetter
+     * 引数  ：なし
+     * 戻り値：ファイルパス
+     */
+    public String get_file_path(){
+        return path;
+    }
 
     /* 初期化
      * 引数  ：必要なデータ

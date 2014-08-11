@@ -13,28 +13,28 @@ public class rect {
      * デフォルトコンストラクタ 引数：なし 目的：座標(0, 0), サイズ(0, 0)の四角形生成
      */
     public rect() {
-        set(new point<Double>(), new point<Integer>());
+        init(new point<Double>(), new point<Integer>());
     }
 
     /*
      * 座標つきコンストラクタ 引数：座標 目的：座標のみ指定，サイズ(0, 0)の四角形生成
      */
     public rect(point<Double> _location) {
-        set(_location, new point<Integer>());
+        init(_location, new point<Integer>());
     }
 
     /*
      * 座標つき正方形コンストラクタ 引数：座標，正方形の1辺のサイズ 目的：座標指定された正方形を生成する
      */
     public rect(point<Double> Loc, int len) {
-        set(Loc, new point<Integer>(len, len));
+        init(Loc, new point<Integer>(len, len));
     }
 
     /*
      * 座標付き長方形コンストラクタ 引数：座標, サイズ 目的：座標, サイズそれぞれを指定した長方形を生成する
      */
     public rect(point<Double> _location, point<Integer> _size) {
-        set(_location, _size);
+        init(_location, _size);
     }
 
     /* メソッド */
@@ -61,7 +61,7 @@ public class rect {
     /*
      * 変数セット 引数 ：セットする変数 戻り値：なし 目的 ：引数の変数をセット
      */
-    protected void set(point<Double > _location, point<Integer> _size) {
+    protected void init(point<Double > _location, point<Integer> _size) {
         location = new point<Double >(_location);
         size     = new point<Integer>(_size);
     }

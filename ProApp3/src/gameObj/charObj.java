@@ -39,6 +39,16 @@ public class charObj extends rect {
              null          , null               );
     }
 
+    /* コピーコンストラクタ
+     * 引数  ：元データ
+     */
+    public charObj(charObj _obj){
+        init(_obj                          , _obj.accel , _obj.hp          ,
+             _obj.dir                      , _obj.is_gnd, _obj.is_gravitied,
+             _obj.texture_m.get_file_path(), _obj.belong);
+
+    }
+
     /*
      * データ指定型コンストラクタ
      * 引数：それぞれのデータ
@@ -117,7 +127,7 @@ public class charObj extends rect {
     protected void init(rect      _rect        , point<Double> _accel , double  _hp         ,
                         Direction _dir         , boolean       _is_gnd, boolean _isGravitied,
                         String    _texture_path, Stage         _belong){
-        set(_rect.location, _rect.size);
+        init(_rect.location, _rect.size);
 
         accel         = new point<Double>(_accel);
         hp            = _hp;
