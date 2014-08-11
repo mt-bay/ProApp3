@@ -4,10 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.SpriteSheet;
-
-import window.window;
 import IO.debugLog;
 
 import common.point;
@@ -20,8 +16,7 @@ public class charObj extends rect {
     public           Direction     dir;               //向き
     public           boolean       is_gnd;            //接地しているか
 
-    public           SpriteSheet   texture;           //テクスチャ
-    public           int           texture_state;     //テクスチャの参照場所
+    public           texture       texture_m;         //テクスチャ
 
     public           Stage         belong;            //自オブジェクトの所属ステージ
 
@@ -38,29 +33,22 @@ public class charObj extends rect {
      * 引数：なし
      */
     public charObj() {
-        set(new rect()    , new point<Double>(), 0.0  ,
-            Direction.LEFT, false              , false,
-            null          , null               );
+
+        init(new rect()    , new point<Double>(), 0.0  ,
+             Direction.LEFT, false              , false,
+             null          , null               );
     }
 
     /*
      * データ指定型コンストラクタ
      * 引数：それぞれのデータ
      */
-    public charObj(rect      _rect        , point<Double> _accel     , double _hp          ,
+    public charObj(rect      _rect        , point<Double> _accel     , double _hp            ,
                    Direction _dir         , boolean       _is_gnd     , boolean _is_gravitied,
-                   String    _path_texture, Stage         _belong){
-        SpriteSheet _texture;
-        try {
-            _texture = new SpriteSheet(_path_texture, _rect.size.x, _rect.size.y);
-        }
-        catch (SlickException e) {
-            dLog.write("SpriteSheet\"" + _path_texture + "\" load failed");
-            _texture = null;
-        }
-        set(_rect   , _accel     , _hp         ,
-            _dir    , _is_gnd     , _is_gravitied,
-            _texture, _belong);
+                   String    _texture_path, Stage         _belong){
+        init(_rect        , _accel      , _hp          ,
+             _dir         , _is_gnd     , _is_gravitied,
+             _texture_path, _belong);
     }
 
     /* メソッド */
@@ -82,16 +70,7 @@ public class charObj extends rect {
         draw(1.0f);
     }
     public void draw(float _scale) {
-        if (texture == null)
-            return;
-
-        if(!window.comprise(this))
-            return;
-        texture.startUse();
-        rect o = window.relative_camera_rect(this);
-        texture.getSubImage(0, texture_state).drawEmbedded(point.DtoF(o.location).x, point.DtoF(o.location).y,
-                                                           point.ItoF(o.size).x     ,point.ItoF(o.size).y    );
-        texture.endUse();
+        texture_m.draw(location.DtoF(), _scale);
     }
 
     /* ファイルからArrayList<charObj>生成
@@ -126,30 +105,26 @@ public class charObj extends rect {
             bRead.close();
 
         }catch(Exception e){
-
         }
-
         return char_obj_al;
     }
 
     /*
-     * 変数セット
-     * 引数：それぞれのデータ
-     *
+     * 初期化
+     * 引数  ：必要なデータ
+     * 戻り値：なし
      */
-    protected void set(rect        _rect   , point<Double> _accel, double  _hp         ,
-                       Direction   _dir    , boolean       _is_gnd, boolean _isGravitied,
-                       SpriteSheet _texture, Stage         _belong){
-        accel         = _accel;
+    protected void init(rect      _rect        , point<Double> _accel , double  _hp         ,
+                        Direction _dir         , boolean       _is_gnd, boolean _isGravitied,
+                        String    _texture_path, Stage         _belong){
+        set(_rect.location, _rect.size);
+
+        accel         = new point<Double>(_accel);
         hp            = _hp;
         dir           = _dir;
         is_gnd        = _is_gnd;
         is_gravitied  = _isGravitied;
-        texture       = _texture;
-
-        texture_state = 0;
-
-        set(_rect.location, _rect.size);
+        texture_m     = new texture(_texture_path, size);
 
         belong       = _belong;
     }

@@ -29,8 +29,6 @@ public class mapObj {
     private              SpriteSheet   ssheet;            //マップチップ
     private              int[][]       use_chip;          //マップチップのどの要素を使うか
 
-    //デバッグ用データ
-    private static final debugLog     dLog = debugLog.getInstance();
 
     /* コンストラクタ */
     /*
@@ -39,7 +37,7 @@ public class mapObj {
      */
     public mapObj(point<Integer> _size_block, String      _csv_iscollisionable, boolean _use_img,
                   String         _img_or_spritesheet){
-        set(_size_block, _csv_iscollisionable,  _use_img, _img_or_spritesheet);
+        init(_size_block, _csv_iscollisionable,  _use_img, _img_or_spritesheet);
 
     }
 
@@ -60,11 +58,12 @@ public class mapObj {
         if(ssheet != null){
             for(int i = 0; i < use_chip.length; i++){
                 for(int j = 0; j < use_chip[i].length; j++){
-                    chip_loc = new rect(new point<Double >((double)((size_block.x * _scale) *  j    ), (double)((size_block.y * _scale) * i     )),
-                                        new point<Integer>(    (int)(size_block.x * _scale) * (j + 1),     (int)(size_block.y * _scale) * (i + 1)));
-                    if(window.comprise(chip_loc))
+                    chip_loc = new rect(new point<Double >((double)((size_block.x * _scale) *  j), (double)((size_block.y * _scale) * i     )),
+                                        new point<Integer>(    (int)(size_block.x * _scale)      ,    (int) (size_block.y * _scale)));
+                    if(window.comprise(chip_loc)){
                         ssheet.getSubImage(0, use_chip[i][j]).
                                draw(chip_loc.location.x.floatValue(), chip_loc.location.y.floatValue(), _scale);
+                    }
 
                 }
             }
@@ -91,11 +90,8 @@ public class mapObj {
                                Boolean.parseBoolean(str[3])                                          ,
                                str[4]                                                                );
         }catch(Exception e){
-            dLog.write_exception(e                                    ,
-                    new Throwable().getStackTrace()[0].getClassName() ,
-                    new Throwable().getStackTrace()[0].getMethodName());
+            debugLog.getInstance().write_exception(e, new Throwable());
         }
-
         return m_obj;
     }
 
@@ -104,8 +100,8 @@ public class mapObj {
      * 引数  ：それぞれのデータ
      * 戻り値：なし
      */
-    private void set(point<Integer> _size_block, String _csv_iscollisionable, boolean _use_img,
-                     String         _img_or_spritesheet){
+    private void init(point<Integer> _size_block, String _csv_iscollisionable, boolean _use_img,
+                      String         _img_or_spritesheet){
         try{
             size_block = new point<Integer>(_size_block);
             if(_img_or_spritesheet == ""){
@@ -119,9 +115,7 @@ public class mapObj {
             }
             csv_to_mapchips(_csv_iscollisionable);
         }catch(Exception e){
-            dLog.write_exception(e                                                 ,
-                                 new Throwable().getStackTrace()[0].getClassName() ,
-                                 new Throwable().getStackTrace()[0].getMethodName());
+            debugLog.getInstance().write_exception(e, new Throwable());
         }
 
 
@@ -162,7 +156,7 @@ public class mapObj {
                 }
             }
         }catch(Exception e){
-            dLog.write_exception(e, new Throwable().getStackTrace()[0].getClassName(), new Throwable().getStackTrace()[0].getMethodName());
+            debugLog.getInstance().write_exception(e, new Throwable());
             return;
         }
     }

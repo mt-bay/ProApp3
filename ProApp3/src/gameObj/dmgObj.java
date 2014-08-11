@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-import org.newdawn.slick.SpriteSheet;
-
-import window.window;
 import IO.debugLog;
 
 import common.point;
@@ -14,19 +11,17 @@ import common.rect;
 
 public class dmgObj extends rect {
     /* メンバ変数 */
-    public point<Double>  accel;        // 移動力
-    public double         atk;          // charObj衝突時の体力変動値
+    public  point<Double>  accel;     // 移動力
+    public  double         atk;       // charObj衝突時の体力変動値
 
-    public SpriteSheet    texture;      //テクスチャ
-    public String         texture_path; //テクスチャへのパス
-    public int            use_texture;  //テクスチャのどこを使うか
+    private texture        texture_m; //テクスチャ
 
     /* コンストラクタ */
     /*
      * デフォルトコンストラクタ 引数：なし
      */
     public dmgObj() {
-        set(new rect(), new point<Double>(), 0.0, "");
+        init(new rect(), new point<Double>(), 0.0, "");
     }
 
     /*
@@ -34,7 +29,7 @@ public class dmgObj extends rect {
      * 引数：コピー元
      */
     public dmgObj(dmgObj obj) {
-        set(obj.location, obj.size, obj.accel, obj.atk, obj.texture_path);
+        init(obj, obj.accel, obj.atk, obj.texture_m);
     }
 
     /*
@@ -42,7 +37,7 @@ public class dmgObj extends rect {
      * 引数：それぞれのデータ
      */
     public dmgObj(rect _rect, point<Double> _accel, double _atk, String _texture_path) {
-        set(_rect, _accel, _atk, _texture_path);
+        init(_rect, _accel, _atk, _texture_path);
     }
 
 
@@ -55,12 +50,7 @@ public class dmgObj extends rect {
         draw(1.0f);
     }
     public void draw(float _scale){
-        if(texture == null)
-            return;
-        if(window.comprise(this)){
-
-
-        }
+        texture_m.draw(location.DtoF(), _scale);
     }
 
     /* ファイルからArrayList<dmgObj>生成
@@ -101,27 +91,24 @@ public class dmgObj extends rect {
 
 
     /*
-     * setter
+     * 初期化
      * 引数：それぞれのデータ
      */
-    private void set(rect   _rect        , point<Double> _accel, double _atk,
-                     String _texture_path){
-        set(_rect.location, _rect.size, _accel, _atk, _texture_path);
-    }
-    private void set(point<Double> _location, point<Integer> _size        , point<Double> _accel,
-                     double        _atk     , String         _texture_path){
-        set(_location, _size);
+    private void init(rect   _rect        , point<Double> _accel, double _atk,
+                      String _texture_path){
+        set(_rect.location, _rect.size);
 
         accel = new point<Double>(accel);
         atk   = _atk;
-        texture_path = _texture_path;
-        try{
-            texture = new SpriteSheet(texture_path, size.x, size.y);
-        }catch(Exception e){
-            debugLog.getInstance().write_exception(e, new Throwable());
-        }
+        texture_m = new texture(_texture_path, size);
+    }
+    private void init(rect   _rect        , point<Double> _accel, double _atk,
+            texture _texture){
+        set(_rect.location, _rect.size);
 
-
+        accel = new point<Double>(accel);
+        atk   = _atk;
+        texture_m = new texture(_texture);
     }
 
 }

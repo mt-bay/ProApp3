@@ -43,6 +43,10 @@ public class point<T> {
      * 引数  ：point<Double >
      * 戻り値：point<Integer>
      */
+    public        point<Integer> DtoI(){
+        return new point<Integer>(((Double)x).intValue() ,
+                                  ((Double)y).intValue());
+    }
     public static point<Integer> DtoI(point<Double> _p){
         return new point<Integer>(_p.x.intValue(), _p.y.intValue());
     }
@@ -51,6 +55,10 @@ public class point<T> {
      * 引数  ：point<Double>
      * 戻り値：point<Float>
      */
+    public        point<Float> DtoF(){
+        return new point<Float>(((Double)x).floatValue() ,
+                                ((Double)y).floatValue());
+    }
     public static point<Float> DtoF(point<Double> _p){
         return new point<Float>(_p.x.floatValue(), _p.y.floatValue());
     }
@@ -60,6 +68,10 @@ public class point<T> {
      * 引数  ：point<Float>
      * 戻り値：point<Double>
      */
+    public point<Double> FtoD(){
+        return new point<Double>(((Float)x).doubleValue() ,
+                                 ((Float)y).doubleValue());
+    }
     public static point<Double> FtoD(point<Float> _p){
         return new point<Double>(_p.x.doubleValue(), _p.y.floatValue());
     }
@@ -68,6 +80,10 @@ public class point<T> {
      * 引数  ：point<Float>
      * 戻り値：point<Integer>
      */
+    public point<Integer> FtoI(){
+        return new point<Integer>(((Float)x).intValue() ,
+                                  ((Float)y).intValue());
+    }
     public static point<Integer> FtoI(point<Float> _p){
         return new point<Integer>(_p.x.intValue(), _p.y.intValue());
     }
@@ -77,6 +93,10 @@ public class point<T> {
      * 引数  ：point<Integer>
      * 戻り値：point<Double>
      */
+    public point<Double> ItoD(){
+        return new point<Double>(((Integer)x).doubleValue() ,
+                                 ((Integer)y).doubleValue());
+    }
     public static point<Double> ItoD(point<Integer> _p){
         return new point<Double>(_p.x.doubleValue(), _p.y.doubleValue());
     }
@@ -85,6 +105,10 @@ public class point<T> {
      * 引数  ：point<Integer>
      * 戻り値：point<Float>
      */
+    public point<Float> ItoF(){
+        return new point<Float>(((Integer)x).floatValue() ,
+                                ((Integer)y).floatValue());
+    }
     public static point<Float> ItoF(point<Integer> _p){
         return new point<Float>(_p.x.floatValue(), _p.y.floatValue());
     }

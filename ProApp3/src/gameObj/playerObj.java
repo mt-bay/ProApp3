@@ -7,7 +7,6 @@ import java.io.FileReader;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SpriteSheet;
 
-import window.window;
 import IO.config;
 
 import common.point;
@@ -16,8 +15,10 @@ import common.rect;
 public class playerObj extends charObj {
     /* メンバ変数 */
     //状態変数
-    public               point<Integer> size_act;     //アクションモード時のサイズ
-    public               point<Integer> size_stg;     //シューティングモード時のサイズ
+    public               point<Integer> size_act;      //アクションモード時のサイズ
+    private              texture        texture_act_m; //アクションモード用テクスチャ
+    public               point<Integer> size_stg;      //シューティングモード時のサイズ
+    private              texture        texture_stg_m; //シューティングモード用テクスチャ
 
     public               boolean        is_shooting;  //シューティングモードか
     protected            int            timer_deform; //シューティング←→アクションの変形残りフレーム
@@ -35,18 +36,18 @@ public class playerObj extends charObj {
      * 引数：なし
      */
     public playerObj() {
-        set(new rect()        , new point<Double>(), 0.0d               ,
-            Direction.RIGHT   , false              , true               ,
-            null              , null               , false              ,
-            -1                , new Input[num_prev]);
+        init(new rect()        , new point<Double>(), 0.0d               ,
+             Direction.RIGHT   , false              , true               ,
+             null              , null               , false              ,
+             -1                , new Input[num_prev]);
     }
 
     public playerObj(playerObj obj){
-    	set(new rect(new point<Double>(obj.location)   , new point<Integer>(obj.size)),
-            new point<Double>(obj.accel), obj.hp     ,
-            obj.dir                     , obj.is_gnd , obj.is_gravitied,
-            obj.texture                 , obj.belong , obj.is_shooting ,
-            obj.timer_deform            , obj.ip_prev);
+    	init(new rect(new point<Double>(obj.location)   , new point<Integer>(obj.size)),
+             new point<Double>(obj.accel), obj.hp     ,
+             obj.dir                     , obj.is_gnd , obj.is_gravitied,
+             obj.texture                 , obj.belong , obj.is_shooting ,
+             obj.timer_deform            , obj.ip_prev);
 
     }
 
@@ -60,7 +61,7 @@ public class playerObj extends charObj {
     public playerObj(rect      _rect    , point<Double> _accel              , double  _hp         ,
                      Direction _dir     , boolean       _is_gnd_and_shooting, boolean _isGravitied,
                      String    _texture , Stage         _where_i_am){
-       set(_rect, _hp, _dir, _is_gnd_and_shooting, _isGravitied, _texture, _where_i_am);
+       init(_rect, _hp, _dir, _is_gnd_and_shooting, _isGravitied, _texture, _where_i_am);
     }
 
     /* メソッド */
@@ -128,12 +129,8 @@ public class playerObj extends charObj {
     }
     @Override
     public void draw(float _scale){
-        if(texture == null)
-            return;
-
-        if(window.comprise(new rect(new point<Double>(location),
-                                    new point<Integer>((is_shooting)? size_stg : size_act)))){
-            point<Float> p_f = window.relative_camera_f(point.DtoF(location));
+        if(is_shooting){
+            texture_act_m.draw(location.DtoF(), _scale);
         }
     }
 
@@ -189,12 +186,12 @@ public class playerObj extends charObj {
 
 
     /*
-     * 変数セット
+     * 初期化
      * 引数  ：それぞれのデータ
      */
-    private void set(rect    _rect      , double  _hp                       , Direction   _dir         ,
-                     boolean _isGnd     , boolean _is_gravitied_and_shooting, String      _texture_path,
-                     Stage   _where_i_am){
+    private void init(rect    _rect      , double  _hp                       , Direction   _dir         ,
+                      boolean _isGnd     , boolean _is_gravitied_and_shooting, String      _texture_path,
+                      Stage   _belong){
         SpriteSheet sp;
         try{
             sp = new SpriteSheet(_texture_path, _rect.size.x, _rect.size.y);
@@ -204,17 +201,16 @@ public class playerObj extends charObj {
                                  new Throwable().getStackTrace()[0].getClassName(),
                                  new Throwable().getStackTrace()[0].getMethodName());
         }
-        set(_rect, new point<Double>(0.0d, 0.0d), _hp,
-            _dir , _isGnd                       , _is_gravitied_and_shooting,
-            sp   , _where_i_am                  , _is_gravitied_and_shooting,
-            -1   , new Input[num_prev]          );
+        init(_rect, new point<Double>(0.0d, 0.0d), _hp,
+             _dir , _isGnd                       , _is_gravitied_and_shooting,
+             sp   , _where_i_am                  , _is_gravitied_and_shooting,
+             -1   , new Input[num_prev]          );
     }
 
-    private void set(rect        _rect    , point<Double> _accel     , double  _hp         ,
-                     Direction   _dir   , boolean       _isGnd     , boolean _isGravitied,
-                     SpriteSheet _texture , Stage         _where_i_am, boolean _isShooting ,
-                     int         _t_deform, Input[]       _ip_prev   ){
+    private void init(rect        _rect    , point<Double> _accel     , double  _hp         ,
+                      Direction   _dir     , boolean       _isGnd     , boolean _isGravitied,
+                      SpriteSheet _texture , Stage         _where_i_am, boolean _isShooting ,
+                      int         _t_deform, Input[]       _ip_prev   ){
     }
-
 
 }
