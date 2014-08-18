@@ -27,6 +27,7 @@ public class mapObj {
     //public double         z;      //仮想Z軸(現在使用予定なし)
     private              Image         img;               //マップ用1枚絵
     private              SpriteSheet   ssheet;            //マップチップ
+    private              boolean       use_img;           //描画の際、1枚絵を使うかどうか
     private              int[][]       use_chip;          //マップチップのどの要素を使うか
 
 
@@ -50,26 +51,30 @@ public class mapObj {
         draw(1.0f);
     }
     public void draw(float _scale){
-        if(img != null){
+        if((use_img == false && ssheet == null) ||
+           (use_img == true  && img    == null))
+            return;
+
+        //1枚絵を仕様する際
+        if(use_img){
             point<Float> loc_f = window.relative_camera_f(new point<Float>(0.0f, 0.0f));
             img.draw(loc_f.x, loc_f.y, _scale);
+            return;
         }
-        rect chip_loc;
-        if(ssheet != null){
-            for(int i = 0; i < use_chip.length; i++){
-                for(int j = 0; j < use_chip[i].length; j++){
-                    chip_loc = new rect(new point<Double >((double)((size_block.x * _scale) *  j), (double)((size_block.y * _scale) * i     )),
-                                        new point<Integer>(    (int)(size_block.x * _scale)      ,    (int) (size_block.y * _scale)));
-                    if(window.comprise(chip_loc)){
-                        ssheet.getSubImage(0, use_chip[i][j]).
-                               draw(chip_loc.location.x.floatValue(), chip_loc.location.y.floatValue(), _scale);
-                    }
 
+        //マップチップを使用する際
+        rect chip_loc;
+        for(int i = 0; i < use_chip.length; i++){
+            for(int j = 0; j < use_chip[i].length; j++){
+                chip_loc = new rect(new point<Double >((double)(size_block.x * _scale *  j), (double)(size_block.y * _scale * i)) ,
+                                    new point<Integer>((int)   (size_block.x * _scale     ), (int)   (size_block.y * _scale    )));
+                if(window.comprise(chip_loc)){
+                    ssheet.getSubImage(0, use_chip[i][j]).
+                           draw(chip_loc.location.x.floatValue(), chip_loc.location.y.floatValue(), _scale);
                 }
             }
         }
-
-
+        return;
     }
 
 
@@ -104,6 +109,8 @@ public class mapObj {
                       String         _img_or_spritesheet){
         try{
             size_block = new point<Integer>(_size_block);
+            csv_to_mapchips(_csv_iscollisionable);
+            use_img = _use_img;
             if(_img_or_spritesheet == ""){
                 img    = null;
                 ssheet = null;
@@ -113,18 +120,16 @@ public class mapObj {
                 img        = (_use_img)? new Image(_img_or_spritesheet) : null   ;
                 ssheet     = (_use_img)? null                           : new SpriteSheet(_img_or_spritesheet, size_block.x, size_block.y);
             }
-            csv_to_mapchips(_csv_iscollisionable);
         }catch(Exception e){
             debugLog.getInstance().write_exception(e, new Throwable());
         }
-
 
         return;
     }
 
 
     /*
-     * CSV to マップチップ + 接触判定の有無
+     * CSVファイルからマップチップ + 接触判定の有無
      *   ・CSVでの値 / 2 = マップチップの番号
      *   ・CSVでの値が{奇数 = 接触判定有，偶数 = 接触判定無}
      * 引数  ：CSVファイルへのパス
@@ -160,4 +165,5 @@ public class mapObj {
             return;
         }
     }
+
 }

@@ -44,14 +44,17 @@ public class texture {
     }
     public void draw(point<Float> _location, float _scale){
         point<Float> l_relate = window.relative_camera_f(_location);
-        if(window.comprise(new rect(l_relate.FtoD(), size))){
-            texture.startUse();
-            texture.getSubImage(0, use_number).draw(l_relate.x, l_relate.y);
-            texture.endUse();
-        }
+
+        if(!window.comprise(new rect(l_relate.FtoI(), size)))
+            return;
+
+        texture.startUse();
+        texture.getSubImage(0, use_number).draw(l_relate.x, l_relate.y);
+        texture.endUse();
 
         return;
     }
+
 
     /* ファイルパスgetter
      * 引数  ：なし

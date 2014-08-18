@@ -11,6 +11,8 @@ import common.rect;
 
 public class charObj extends rect {
     /* メンバ変数 */
+
+    public           point<Double> location_mod;      //位置情報の小数部
     public           point<Double> accel;             //移動力
     public           double        hp;                //体力値
     public           Direction     dir;               //向き
@@ -23,6 +25,8 @@ public class charObj extends rect {
     // 状態変数
     protected        int           timer_not_visible; //残りの無敵フレーム数
     public           boolean       is_gravitied;      //重力に依存するかどうか
+
+    public           boolean        is_dead;      //オブジェクトがそのフレームで消えるか
 
     //その他
     protected static debugLog      dLog;       // デバッグログ
@@ -66,9 +70,8 @@ public class charObj extends rect {
      * 状態アップデート
      * 引数：なし
      */
-    public CreateCode[] update() {
-        CreateCode[] cc = null;
-        return cc;
+    public void update() {
+
     }
 
     /*
@@ -102,8 +105,8 @@ public class charObj extends rect {
 
             while((line = bRead.readLine()) != null){
                 str = line.split(" ");
-                char_obj_al.add(new charObj(new rect(new point<Double> (Double.parseDouble(str[0]), Double.parseDouble(str[1])) ,
-                                                     new point<Integer>(Integer.parseInt(str[2])  , Integer.parseInt(str[3])  )),
+                char_obj_al.add(new charObj(new rect(new point<Double >(Double.parseDouble(str[0]), Double.parseDouble(str[1])) ,
+                                                     new point<Integer>(Integer.parseInt  (str[2]), Integer.parseInt  (str[3]))),
                                             new point<Double>(Double.parseDouble(str[4]), Double.parseDouble(str[5]))           ,
                                             Double.   parseDouble   (str[6])                                                    ,
                                             Direction.parseDirection(str[7])                                                    ,
@@ -119,6 +122,7 @@ public class charObj extends rect {
         return char_obj_al;
     }
 
+
     /*
      * 初期化
      * 引数  ：必要なデータ
@@ -128,6 +132,8 @@ public class charObj extends rect {
                         Direction _dir         , boolean       _is_gnd, boolean _isGravitied,
                         String    _texture_path, Stage         _belong){
         init(_rect.location, _rect.size);
+
+        location_mod  = new point<Double>(0.0d, 0.0d);
 
         accel         = new point<Double>(_accel);
         hp            = _hp;

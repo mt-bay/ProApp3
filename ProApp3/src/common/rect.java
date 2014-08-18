@@ -13,7 +13,7 @@ public class rect {
      * デフォルトコンストラクタ 引数：なし 目的：座標(0, 0), サイズ(0, 0)の四角形生成
      */
     public rect() {
-        init(new point<Double>(), new point<Integer>());
+        init(new point<Double>(0, 0), new point<Integer>(0, 0));
     }
 
     /*
@@ -59,11 +59,45 @@ public class rect {
     }
 
     /*
+     * 引数の長方形と自オブジェクトが交差 or 内包 or 被内包の関係にあるか
+     * 引数  ：調査する長方形
+     * 戻り値：交差 or 内包 or 被内包の関係にあるか
+     */
+    public boolean is_contact(rect _obj){
+        //内包
+        if(this.UpperLeft ().x >= _obj.UpperLeft ().x &&
+           this.UpperRight().x <= _obj.UpperRight().x &&
+           this.UpperLeft ().y <= _obj.UpperLeft ().y &&
+           this.LowerLeft ().y >= _obj.LowerLeft ().y)
+            return true;
+
+        //被内包
+        if(this.UpperLeft ().x <= _obj.UpperLeft ().x &&
+           this.UpperRight().x >= _obj.UpperRight().x &&
+           this.UpperLeft ().y >= _obj.UpperLeft ().y &&
+           this.LowerLeft ().y <= _obj.LowerLeft ().y)
+            return true;
+
+        //交差
+        if(this.UpperRight().x >= _obj.UpperLeft ().x && //自分の右端より対象の左端が左
+           this.UpperLeft ().x <= _obj.UpperRight().x && //自分の左端より対象の右端が右
+           this.LowerLeft ().y >= _obj.UpperLeft ().y && //自分の下端より対象の上端が上
+           this.UpperLeft ().y <= _obj.LowerLeft ().y)   //自分の上端より対象の下端が下
+            return true;
+
+        //どれでもない
+        return false;
+    }
+
+    /*
      * 変数セット 引数 ：セットする変数 戻り値：なし 目的 ：引数の変数をセット
      */
-    protected void init(point<Double > _location, point<Integer> _size) {
+    protected void init(point<Double> _location, point<Integer> _size) {
         location = new point<Double >(_location);
         size     = new point<Integer>(_size);
     }
+
+
+
 
 }
