@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import org.newdawn.slick.Input;
 
 import IO.config;
+import IO.debugLog;
 
 import common.point;
 import common.rect;
@@ -30,6 +31,10 @@ public class playerObj extends charObj {
 
     /* 定数 */
     private static       double ACT_MV     = 2.5;       //アクションモード時の左右移動力
+
+    private static final double DAMAGE_RATE_ACT = 1.0d; //アクションモード時のダメージ比率
+    private static final double DAMAGE_RATE_STG = 2.0d; //シューティングモード時のダメージ比率
+
     private static final int    TIMER_STOP = -1;        //タイマー変数の停止状態用
 
     //ユーザ入力関係
@@ -55,11 +60,11 @@ public class playerObj extends charObj {
                      point<Integer> _size_shooting, String         _texture_path_stg, point<Double> _accel           ,
                      double _hp, Direction _dir, boolean _is_gnd,
                      boolean _is_gravitied_and_shooting, Stage _belong){
-       init(_location, _size_action, _texture_path_act,
-            _size_shooting, _texture_path_stg, _accel,
-            _hp, _dir, _is_gnd,
-            _is_gravitied_and_shooting, TIMER_STOP, TIMER_STOP,
-            _belong);
+       init(_location, _size_action   , _texture_path_act,
+            _size_shooting            , _texture_path_stg, _accel    ,
+            _hp                       , _dir             , _is_gnd   ,
+            _is_gravitied_and_shooting, TIMER_STOP       , TIMER_STOP,
+            _belong                   );
     }
 
     /* メソッド */
@@ -118,17 +123,17 @@ public class playerObj extends charObj {
      */
     @Override
     public void draw(){
-
+        draw(1.0f);
     }
     @Override
     public void draw(float _scale){
         //シューティングモード時の描画
         if(is_shooting){
-            texture_stg_m.draw(location.DtoF(), _scale);
+            texture_stg_m.draw(location.DtoF(), belong, _scale);
         }
         //アクションモード時の描画
         else{
-            texture_act_m.draw(location.DtoF(), _scale);
+            texture_act_m.draw(location.DtoF(), belong, _scale);
 
         }
     }
@@ -174,7 +179,7 @@ public class playerObj extends charObj {
                                   _belong                                                                     );//どのステージに所属しているか
             bRead.close();
         }catch(Exception e){
-            dLog.write_exception(e, new Throwable());
+            debugLog.getInstance().write_exception(e, new Throwable());
         }
         return p_obj;
     }
@@ -200,6 +205,110 @@ public class playerObj extends charObj {
         return false;
     }
 
+    /*
+     * 移動
+     * ブレゼンハムの直線描画アルゴリズムを基にする
+     * 引数  ：なし
+     * 戻り値：なし
+     */
+    @Override
+    public void move(){
+        //ローカル変数宣言
+        //直線描画用
+        point<Integer> location_i = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
+        point<Integer> dest_i     = new point<Integer>((int)new BigDecimal(location.x + accel.x).setScale(0, BigDecimal.ROUND_UP).doubleValue(), //目的位置(int)
+                                                       (int)new BigDecimal(location.y + accel.y).setScale(0, BigDecimal.ROUND_UP).doubleValue());
+        point<Integer> accel_i    = new point<Integer>(location_i.x - dest_i.x, location_i.y - dest_i.y); //移動サイズ(int)
+
+        point<Integer> inc_i      = new point<Integer>((accel_i.x > 0)? 1 : -1 , (accel_i.y > 0)? 1 : -1); //加算する方向
+
+        double         error      =0.5 * ((Math.abs(accel_i.x) > Math.abs(accel_i.y))? accel_i.x : accel_i.y); //誤差
+        //処理
+
+        //x軸の方が大きい場合
+        if(Math.abs(accel_i.x) > Math.abs(accel_i.y)){
+            for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.x) < Math.abs(accel_i.x); p.x += inc_i.x){
+                location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+
+                process_contract(new point<Integer>(inc_i.x, 0));
+
+                error      += accel_i.y;
+                if(error >= accel_i.x.doubleValue()){
+                    location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+
+                    process_contract(new point<Integer>(0, inc_i.y));
+
+                    p.y        += inc_i.y;
+                }
+
+
+            }
+        }
+        //y軸の方が大きい場合
+        else
+        {
+            for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.y) < Math.abs(accel_i.y); p.y += inc_i.y){
+                location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+
+                process_contract(new point<Integer>(0, inc_i.y));
+
+                error += accel_i.x;
+                if(error >= accel.y.doubleValue()){
+                    location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+
+                    process_contract(new point<Integer>(inc_i.x, 0));
+
+                    p.x += inc_i.x;
+                }
+
+
+            }
+        }
+    }
+
+    /*
+     * 衝突処理
+     * 引数  ：移動量
+     * 戻り値：なし
+     */
+    @Override
+    protected void process_contract(point<Integer> move){
+        //マップオブジェクト
+        if(move.y != 0)
+            is_gnd = false;
+        if(belong.map_data.is_contract(this.to_rect())){
+            location.x -= move.x; location.y -= move.y;
+            if(move.y > 0)
+                is_gnd = true;
+        }
+
+        for(int i = 0; i < belong.damage.size(); i++){
+            if(belong.damage.get(i).is_contact(this.to_rect()))
+                receve_damage(belong.damage.get(i));
+        }
+    }
+
+    /*
+     * ダメージ処理
+     * 引数  ：ダメージ源
+     * 戻り値：なし
+     */
+    @Override
+    protected void receve_damage(dmgObj _source){
+        if(_source == null)
+            return;
+        if(!_source.force_m.is_attackable(this.force_m))
+            return;
+        if(_source.is_dead)
+            return;
+
+        hp -= _source.atk * ((is_shooting)? DAMAGE_RATE_STG : DAMAGE_RATE_ACT);
+        _source.is_dead = true;
+        if(hp < 0.0d)
+            is_dead = true;
+
+        return;
+    }
 
     /*
      * 初期化
@@ -229,25 +338,5 @@ public class playerObj extends charObj {
         belong        = _belong;
     }
 
-    /*
-     * 移動
-     * ブレゼンハムの直線描画アルゴリズムを基にする
-     * 引数  ：なし
-     * 戻り値：なし
-     */
-    public void move(){
-        //ローカル変数宣言
-        //直線描画用
-        point<Integer> location_i = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
-        point<Integer> dest_i     = new point<Integer>((int)new BigDecimal(location.x + accel.x).setScale(0, BigDecimal.ROUND_UP).doubleValue(), //目的位置(int)
-                                                       (int)new BigDecimal(location.y + accel.y).setScale(0, BigDecimal.ROUND_UP).doubleValue());
-        point<Integer> accel_i    = new point<Integer>(location_i.x - dest_i.x, location_i.y - dest_i.y); //移動サイズ(int)
-        point<Integer> pocessed   = new point<Integer>(0, 0);
-
-        //処理
-        //
-
-
-    }
 
 }

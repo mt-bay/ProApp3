@@ -39,13 +39,13 @@ public class texture {
     /* 描画
      * 引数：テクスチャの現在位置 (, 描画倍率)
      */
-    public void draw(point<Float> _location){
-        draw(_location, 1.0f);
+    public void draw(point<Float> _location, Stage _camera){
+        draw(_location, _camera, 1.0f);
     }
-    public void draw(point<Float> _location, float _scale){
-        point<Float> l_relate = window.relative_camera_f(_location);
+    public void draw(point<Float> _location, Stage _camera, float _scale){
+        point<Float> l_relate = _camera.relative_camera_f(_location);
 
-        if(!window.comprise(new rect(l_relate.FtoI(), size)))
+        if(!window.comprise(new rect(l_relate.FtoD(), size), _camera))
             return;
 
         texture.startUse();
