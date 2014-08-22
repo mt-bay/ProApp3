@@ -1,4 +1,4 @@
-package gameObj;
+package stage;
 
 
 /*

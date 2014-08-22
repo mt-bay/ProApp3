@@ -64,7 +64,8 @@ public class Main extends BasicGame{
 	@SuppressWarnings("static-access")
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException{
-
+	    
+	    
 	}
 
 	/* 描画

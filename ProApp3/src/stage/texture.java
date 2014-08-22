@@ -1,4 +1,4 @@
-package gameObj;
+package stage;
 
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;

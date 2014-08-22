@@ -1,4 +1,4 @@
-package gameObj;
+package stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -84,18 +84,44 @@ public class mapObj {
      * 引数  ：対象の四角形
      * 戻り値：交差 or 内包 or 被内包の関係にあるか
      */
-    public boolean is_contract(rect _obj){
+    public boolean is_collision(rect _obj){
         rect r;
 
         for(int i = 0; i < is_collisionable.length; i++){
             for(int j = 0; j < is_collisionable[i].length; j++){
                 r = get_map_chip(j, i);
-                if(r.is_contact(_obj))
+                if(r.is_collision(_obj))
                     return true;
             }
         }
 
         return false;
+    }
+
+    /*
+     * 対象の四角形がマップ内に内包されているか
+     * 引数  ：対象の四角形
+     * 戻り値：内包されているか
+     */
+    public boolean is_field_conntraction(rect _obj){
+        point<Integer> f_s = get_field_size();
+        if(_obj.UpperLeft(). x > 0.0d                &&
+           _obj.UpperLeft(). y > 0.0d                &&
+           _obj.LowerRight().x < f_s.x.doubleValue() &&
+           _obj.LowerRight().y < f_s.x.doubleValue() )
+            return true;
+        else
+            return false;
+    }
+
+    /*
+     * マップ全体のサイズを返す
+     * 引数  ：なし
+     * 戻り値：マップ全体のサイズ
+     */
+    public point<Integer> get_field_size(){
+        return new point<Integer>(size_block.x * is_collisionable[0].length,
+                                  size_block.y * is_collisionable.length);
     }
 
     /* ファイル to マップオブジェクト

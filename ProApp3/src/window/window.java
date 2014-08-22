@@ -1,7 +1,6 @@
 package window;
 
-import gameObj.Stage;
-
+import stage.Stage;
 import common.point;
 import common.rect;
 

@@ -63,7 +63,7 @@ public class rect {
      * 引数  ：調査する長方形
      * 戻り値：交差 or 内包 or 被内包の関係にあるか
      */
-    public boolean is_contact(rect _obj){
+    public boolean is_collision(rect _obj){
         //内包
         if(this.UpperLeft ().x >= _obj.UpperLeft ().x &&
            this.UpperRight().x <= _obj.UpperRight().x &&
