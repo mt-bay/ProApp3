@@ -2,6 +2,7 @@ package stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
@@ -130,19 +131,23 @@ public class mapObj {
      * <int>            <int>             <string>            <boolean>                               <string>
      */
     public static mapObj file_to_mapObj(String _file_path, Stage _belong){
-        mapObj m_obj = null;
+        mapObj m_obj       = null;
+        String script_path = ((Paths.get(_file_path).getParent() == null)?
+                                  "" : Paths.get(_file_path).getParent().toString() + "\\");
+
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
             String[] str = bRead.readLine().split(" ");
             bRead.close();
 
             m_obj = new mapObj(new point<Integer>(Integer.parseInt(str[0]), Integer.parseInt(str[1])),
-                               str[2]                                                                ,
+                               script_path + str[2]                                                  ,
                                Boolean.parseBoolean(str[3])                                          ,
-                               str[4]                                                                ,
+                               script_path + str[4]                                                  ,
                                _belong                                                               );
         }catch(Exception e){
             debugLog.getInstance().write_exception(e, new Throwable());
+            debugLog.getInstance().write("    filename : " + _file_path);
         }
         return m_obj;
     }

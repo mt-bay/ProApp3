@@ -1,14 +1,15 @@
 package stage;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigDecimal;
+import java.nio.file.Paths;
 
 import org.newdawn.slick.Input;
 
 import IO.config;
 import IO.debugLog;
+
 import common.point;
 import common.rect;
 
@@ -55,15 +56,19 @@ public class playerObj extends charObj {
     }
 
 
-    public playerObj(point<Double > _location     , point<Integer> _size_action     , String        _texture_path_act,
-                     point<Integer> _size_shooting, String         _texture_path_stg, point<Double> _accel           ,
-                     double _hp, Direction _dir, boolean _is_gnd,
-                     boolean _is_gravitied_and_shooting, Stage _belong){
-       init(_location, _size_action   , _texture_path_act,
-            _size_shooting            , _texture_path_stg, _accel    ,
-            _hp                       , _dir             , _is_gnd   ,
-            _is_gravitied_and_shooting, TIMER_STOP       , TIMER_STOP,
-            _belong                   );
+    public playerObj(point<Double > _location              , point<Integer> _size_action     , String        _texture_path_act,
+                     point<Integer> _size_shooting         , String         _texture_path_stg, point<Double> _accel           ,
+                     double         _hp                    , Direction      _dir             , boolean       _is_gnd          ,
+                     boolean _is_gravitied_and_not_shooting, Stage _belong){
+        try{
+        init(_location, _size_action       , _texture_path_act,
+             _size_shooting                , _texture_path_stg, _accel    ,
+             _hp                           , _dir             , _is_gnd   ,
+             _is_gravitied_and_not_shooting, TIMER_STOP       , TIMER_STOP,
+             _belong                       );
+        }catch(Exception e){
+            debugLog.getInstance().write_exception(e, new Throwable());
+        }
     }
 
     /* メソッド */
@@ -153,32 +158,59 @@ public class playerObj extends charObj {
      * <double> <double> <int>                        <int>                        <String>
      * シューティングモード時のサイズ_x シューティングモード時のサイズ_y シューティングモード時のテクスチャへのファイルパス
      * <int>                            <int>                            <String>
-     * 加速度_x 加速度_y  HP       向き        接地しているか シューティングモードか(重力の影響を受けるか)
+     * 加速度_x 加速度_y  HP       向き        接地しているか シューティングモードか(重力の影響を受けないか)
      * <double> <double>  <double> <Direction> <boolean>      <boolean>
      *
      * 引数  ：ファイル名
      * 戻り値：プレイヤーオブジェクト
      */
-    public static playerObj file_to_playerObj(String _filename, Stage _belong) throws FileNotFoundException{
-        playerObj p_obj = new playerObj();
-        try{
-            BufferedReader bRead = new BufferedReader(new FileReader(_filename));
-            String[] str = bRead.readLine().split(" ");
+    public static playerObj file_to_playerObj(String _file_path, Stage _belong) /*throws FileNotFoundException*/{
+        playerObj p_obj = null;
+        String    script_path = ((Paths.get(_file_path).getParent() == null)?
+                                     "" : Paths.get(_file_path).getParent().toString() + "\\");
 
-            p_obj = new playerObj(new point<Double >(Double.parseDouble(str[ 0]), Double.parseDouble(str[ 1])), //座標
+
+        try{
+            BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
+            String[] str = bRead.readLine().split(" ");
+            bRead.close();
+
+            debugLog.getInstance().write("current dir : " + script_path);
+            for(int i = 0; i < str.length; i++)
+                debugLog.getInstance().write("str[" + i + "] : " +str[i]);
+
+
+            debugLog.getInstance().write("str[" +  0 + "] : " + Double.parseDouble(str[ 0]));
+            debugLog.getInstance().write("str[" +  1 + "] : " + Double.parseDouble(str[ 1]));
+            debugLog.getInstance().write("str[" +  2 + "] : " + Integer.parseInt(str[ 2]));
+            debugLog.getInstance().write("str[" +  3 + "] : " + Integer.parseInt(str[ 3]));
+            debugLog.getInstance().write("str[" +  4 + "] : " + script_path + str[ 4]);
+            debugLog.getInstance().write("str[" +  5 + "] : " + Integer.parseInt(str[ 5]));
+            debugLog.getInstance().write("str[" +  6 + "] : " + Integer.parseInt(str[ 6]));
+            debugLog.getInstance().write("str[" +  7 + "] : " + script_path + str[ 7]);
+            debugLog.getInstance().write("str[" +  8 + "] : " + Double.parseDouble(str[ 8]));
+            debugLog.getInstance().write("str[" +  9 + "] : " + Double.parseDouble(str[ 9]));
+            debugLog.getInstance().write("str[" + 10 + "] : " + Double.parseDouble(str[10]));
+            debugLog.getInstance().write("str[" + 11 + "] : " + Direction.parseDirection(str[11]));
+            debugLog.getInstance().write("str[" + 12 + "] : " + Boolean.parseBoolean(str[12]));
+            debugLog.getInstance().write("str[" + 13 + "] : " + Boolean.parseBoolean(str[13]));
+
+
+            return new playerObj(new point<Double >(Double.parseDouble(str[ 0]), Double.parseDouble(str[ 1])), //座標
                                   new point<Integer>(Integer.parseInt  (str[ 2]), Integer.parseInt  (str[ 3])), //アクションモード時のサイズ
-                                  str[ 4]                                                                     , //アクションモード時のテクスチャへのパス
+                                  script_path + str[ 4]                                                       , //アクションモード時のテクスチャへのパス
                                   new point<Integer>(Integer.parseInt(str[ 5])  , Integer.parseInt(str[ 6]))  , //シューティングモード時のサイズ
-                                  str[ 7]                                                                     , //シューティングモード時のテクスチャへのパス
+                                  script_path + str[ 7]                                                       , //シューティングモード時のテクスチャへのパス
                                   new point<Double> (Double.parseDouble(str[ 8]), Double.parseDouble(str[ 9])), //加速度
                                   Double.parseDouble(str[10])                                                 , //HP
                                   Direction.parseDirection(str[11])                                           , //向き
                                   Boolean.parseBoolean(str[12])                                               , //接地しているか
                                   Boolean.parseBoolean(str[13])                                               , //シューティングモードか(重力の影響を受けるか)
                                   _belong                                                                     );//どのステージに所属しているか
-            bRead.close();
         }catch(Exception e){
             debugLog.getInstance().write_exception(e, new Throwable());
+            debugLog.getInstance().write("    filename : " + _file_path);
+            System.exit(1);
         }
         return p_obj;
     }
@@ -313,11 +345,11 @@ public class playerObj extends charObj {
      * 初期化
      * 引数  ：それぞれのデータ
      */
-    private void init(point<Double > _location                 , point<Integer> _size_action     , String        _texture_path_act ,
-                      point<Integer> _size_shooting            , String         _texture_path_stg, point<Double> _accel            ,
-                      double         _hp                       , Direction      _dir             , boolean       _is_gnd           ,
-                      boolean        _is_gravitied_and_shooting, int           _timer_deform     , int           _timer_not_visible,
-                      Stage          _belong                   ){
+    private void init(point<Double > _location                     , point<Integer> _size_action     , String        _texture_path_act ,
+                      point<Integer> _size_shooting                , String         _texture_path_stg, point<Double> _accel            ,
+                      double         _hp                           , Direction      _dir             , boolean       _is_gnd           ,
+                      boolean        _is_gravitied_and_not_shooting, int           _timer_deform     , int           _timer_not_visible,
+                      Stage          _belong                       ){
         //それぞれの変数を適した形で初期化
         location          = new point<Double >(_location);
         size_act          = new point<Integer>(_size_action);
@@ -329,7 +361,8 @@ public class playerObj extends charObj {
         hp                = _hp;
         dir               = _dir;
         is_gnd            = _is_gnd;
-        is_shooting       = is_gravitied =_is_gravitied_and_shooting;
+        is_gravitied      = _is_gravitied_and_not_shooting;
+        is_shooting       = !_is_gravitied_and_not_shooting;
         timer_deform      = _timer_deform;
         timer_not_visible = _timer_not_visible;
 

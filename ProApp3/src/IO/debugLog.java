@@ -66,6 +66,7 @@ public class debugLog {
         try {
             log.write(str);
             log.newLine();
+            log.flush();
         }
         catch (IOException e) {
             //何もしません

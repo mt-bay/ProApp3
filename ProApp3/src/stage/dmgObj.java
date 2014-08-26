@@ -3,6 +3,7 @@ package stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigDecimal;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import IO.debugLog;
@@ -90,7 +91,9 @@ public class dmgObj extends rect {
      * 戻り値：生成されたダメージオブジェクトリスト
      */
     public static ArrayList<dmgObj> file_to_dmgObj_ArrayList(String _file_path, Stage _belong){
-        ArrayList<dmgObj> d_obj_al = new ArrayList<dmgObj>();
+        ArrayList<dmgObj> d_obj_al    = new ArrayList<dmgObj>();
+        String            script_path = ((Paths.get(_file_path).getParent() == null)?
+                                             "" : Paths.get(_file_path).getParent().toString() + "\\");
 
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
@@ -105,7 +108,7 @@ public class dmgObj extends rect {
                                         Double.parseDouble(str[6])                                                          ,
                                         Force.parceForce(str[7])                                                            ,
                                         Integer.parseInt(str[8])                                                            ,
-                                        str[9]                                                                              ,
+                                        script_path + str[9]                                                                ,
                                         _belong                                                                             ));
             }
 

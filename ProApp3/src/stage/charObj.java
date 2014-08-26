@@ -3,6 +3,7 @@ package stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigDecimal;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import common.point;
@@ -117,6 +118,8 @@ public class charObj extends rect {
      */
     public static ArrayList<charObj> file_to_charObj_ArrayList(String _file_path, Stage _belong){
         ArrayList<charObj> char_obj_al = new ArrayList<charObj>();
+        String             script_path = ((Paths.get(_file_path).getParent() == null)?
+                                             "" : Paths.get(_file_path).getParent().toString() + "\\");
 
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
@@ -133,7 +136,7 @@ public class charObj extends rect {
                                             Boolean.  parseBoolean  (str[8])                                                    ,
                                             Boolean.  parseBoolean  (str[9])                                                    ,
                                             Force.    parceForce    (str[10])                                                   ,
-                                            str[11]                                                                             ,
+                                            script_path + str[11]                                                               ,
                                             _belong                                                                             ));
             }
             bRead.close();

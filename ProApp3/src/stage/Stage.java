@@ -2,13 +2,14 @@ package stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Queue;
 
+import window.window;
+
 import common.point;
 import common.rect;
-
-import window.window;
 
 public class Stage {
     /* 定数 */
@@ -35,33 +36,41 @@ public class Stage {
      * ファイルからステージを生成する
      * ファイルの内容は1行ごとに区切られ、
      *
+     * マップオブジェクト    読み込み用スクリプトへの相対パス
+     * ダメージオブジェクト  読み込み用スクリプトへの相対パス
      * プレイヤーオブジェクト読み込み用スクリプトへの相対パス
-     * マップオブジェクト読み込み用スクリプトへの相対パス
-     * ダメージオブジェクト読み込み用スクリプWトへの相対パス
      * キャラクタオブジェクト読み込み用スクリプトへの相対パス
      *
      * を読み込む
      * 引数：ファイル名
      */
-    public Stage(String _file_name) {
+    public Stage(String _file_path) {
         try{
-            BufferedReader bRead = new BufferedReader(new FileReader(_file_name));
-            String         str   = "";
+            BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
+
+            String         str         = "";
+            String         script_path = (Paths.get(_file_path).getParent() == null)?
+                                          null : Paths.get(_file_path).getParent().toString() + "\\";
 
             str         = bRead.readLine();
-            player_data = playerObj.file_to_playerObj(str, this);
+            map_data    = mapObj.file_to_mapObj(script_path + str, this);
+            System.out.println("map : " + ((map_data == null)? "null" : "not null"));
 
             str         = bRead.readLine();
-            map_data    = mapObj.file_to_mapObj(str, this);
+            damage      = dmgObj.file_to_dmgObj_ArrayList(script_path + str, this);
+            System.out.println("dmg : " + ((damage == null)? "null" : "not null"));
 
             str         = bRead.readLine();
-            damage      = dmgObj.file_to_dmgObj_ArrayList(str, this);
+            player_data = playerObj.file_to_playerObj(script_path + str, this);
+            System.out.println("ply : " + ((player_data == null)? "null" : "not null"));
 
             str         = bRead.readLine();
-            person      = charObj.file_to_charObj_ArrayList(str, this);
+            person      = charObj.file_to_charObj_ArrayList(script_path + str, this);
+            System.out.println("chr : " + ((person == null)? "null" : "not null"));
 
             bRead.close();
         }catch(Exception e){
+            System.out.println("read failed : " + _file_path);
         }
 
 
