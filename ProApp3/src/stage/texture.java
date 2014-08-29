@@ -1,9 +1,13 @@
 package stage;
 
-import org.newdawn.slick.SlickException;
+import java.io.File;
+
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
 import window.window;
+import IO.debugLog;
 
 import common.point;
 import common.rect;
@@ -12,7 +16,7 @@ import common.rect;
  * SpriteSheet管理用
  */
 public class texture {
-    private SpriteSheet    texture;
+    private SpriteSheet    texture_m;
 
     private String         path;
     public  point<Integer> size;
@@ -39,18 +43,18 @@ public class texture {
     /* 描画
      * 引数：テクスチャの現在位置 (, 描画倍率)
      */
-    public void draw(point<Float> _location, Stage _camera){
-        draw(_location, _camera, 1.0f);
+    public void draw(Graphics g, point<Float> _location, Stage _camera){
+        draw(g, _location, _camera, 1.0f);
     }
-    public void draw(point<Float> _location, Stage _camera, float _scale){
-        point<Float> l_relate = _camera.relative_camera_f(_location);
+    public void draw(Graphics g,point<Float> _location, Stage _camera, float _scale){
 
-        if(!window.comprise(new rect(l_relate.FtoD(), size), _camera))
+
+        if(!window.comprise(new rect(_location.FtoD(), size), _camera)){
+            System.out.println("this is not comp");
             return;
-
-        texture.startUse();
-        texture.getSubImage(0, use_number).draw(l_relate.x, l_relate.y);
-        texture.endUse();
+        }
+        point<Float> l_relate = _camera.relative_camera_f(_location);
+        g.drawImage(texture_m.getSubImage(use_number, 0), l_relate.x, l_relate.y);
 
         return;
     }
@@ -73,9 +77,15 @@ public class texture {
         size       = _size;
         use_number = 0;
         try{
-            texture = new SpriteSheet(path, size.x, size.y);
-        }catch(SlickException e){
-            texture = null;
+
+            texture_m = (new File(path).exists())?
+                    new SpriteSheet(new Image(_path), size.x, size.y) :
+                    null                                              ;
+        }catch(Exception e){
+            e.printStackTrace();
+            debugLog.getInstance().write_exception(e);
+            debugLog.getInstance().write("    filename : " + _path);
+            texture_m = null;
         }
     }
 }

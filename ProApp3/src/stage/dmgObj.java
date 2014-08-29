@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Graphics;
+
 import IO.debugLog;
 
 import common.point;
@@ -64,11 +66,11 @@ public class dmgObj extends rect {
      * 引数  ：なし or 描画倍率
      * 戻り値：なし
      */
-    public void draw(){
-        draw(1.0f);
+    public void draw(Graphics g){
+        draw(g, 1.0f);
     }
-    public void draw(float _scale){
-        texture_m.draw(location.DtoF(), belong, _scale);
+    public void draw(Graphics g, float _scale){
+        texture_m.draw(g, location.DtoF(), belong, _scale);
     }
 
     /*
@@ -114,9 +116,7 @@ public class dmgObj extends rect {
 
             bRead.close();
         }catch(Exception e){
-            debugLog.getInstance().write_exception(e,
-                                                   new Throwable().getStackTrace()[0].getClassName(),
-                                                   new Throwable().getStackTrace()[0].getMethodName());
+            debugLog.getInstance().write_exception(e);
         }
 
         return d_obj_al;

@@ -3,6 +3,8 @@ package IO;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /*
  * ログファイル出力用クラス
@@ -75,18 +77,17 @@ public class debugLog {
     }
 
     /*
-     * ログに追記(例外用)
-     * 引数  ：例外名，クラス名，メソッド名
+     * printStackTraceをログに追記
+     * 引数  ：例外
      * 戻り値：なし
-     * 備考  ：クラス名, メソッド名は
-     *         new Throwable().getStackTrace()[0].getClassName(),
-     *         new Throwable().getStackTrace()[0].getMethodName()
-     *         で取得可能です
      */
-    public void write_exception(Exception _e, Throwable _t){
-        write(_e.getClass() + " at " + _t.getStackTrace()[0].getMethodName() +  " in " + _t.getStackTrace()[0].getClassName() + "(message：" + _e.getMessage() + ")");
-    }
-    public void write_exception(Exception _exception, String _class, String _method){
-        write(_exception.getClass() + " at " + _method + " in " + _class + "(message：" + _exception.getMessage() + ")");
+    public void write_exception(Exception e){
+        StringWriter sw = new StringWriter();
+        PrintWriter  pw = new PrintWriter(sw);
+
+        e.printStackTrace(pw);
+        pw.flush();
+
+        write(sw.toString());
     }
 }

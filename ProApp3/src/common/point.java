@@ -113,6 +113,13 @@ public class point<T> {
         return new point<Float>(_p.x.floatValue(), _p.y.floatValue());
     }
 
+    /* ToString
+     * 引数  ：なし
+     * 戻り値：文字列化した自オブジェクトデータ
+     */
+    public String toString(){
+        return "(" + x.toString() + ", " + y.toString() + ")";
+    }
 
 
     /*

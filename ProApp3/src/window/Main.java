@@ -9,6 +9,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import stage.Stage;
@@ -17,7 +18,10 @@ import IO.debugLog;
 public class Main extends BasicGame {
      /* メンバ変数 */
 
+    public static Input user_input;
+
     public static Stage stg_test;
+
 
 
     public Main(String title) {
@@ -26,14 +30,18 @@ public class Main extends BasicGame {
 
     public static void main(String[] args) throws SlickException {
 
+
+
+
         try {
+
             AppGameContainer app = new AppGameContainer(new Main("ゲーム名"));
             app.setDisplayMode(window.SIZE.x, window.SIZE.y, false);
             app.setTargetFrameRate(window.FPS);
             app.start();
         }
         catch (Exception e) {
-            debugLog.getInstance().write_exception(e, new Throwable());
+            debugLog.getInstance().write_exception(e);
         }
 
         //後処理
@@ -51,8 +59,9 @@ public class Main extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
-        //初期化ルーチン
+        user_input = gc.getInput();
         stg_test = new Stage("stage\\test.stage");
+
 
     }
 
@@ -66,7 +75,9 @@ public class Main extends BasicGame {
     @SuppressWarnings("static-access")
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
+        user_input = gc.getInput();
         stg_test.update();
+        System.out.println(stg_test.camera_location.toString());
     }
 
     /*
@@ -78,6 +89,6 @@ public class Main extends BasicGame {
      */
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
-        stg_test.draw();
+        stg_test.draw(g);
     }
 }

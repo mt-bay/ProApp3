@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Graphics;
+
 import common.point;
 import common.rect;
 
@@ -40,7 +42,7 @@ public class charObj extends rect {
 
         init(new rect()    , new point<Double>(), 0.0  ,
              Direction.LEFT, false              , false,
-             Force.NEUTRAL , null               , null );
+             Force.NEUTRAL , ""                 , null );
     }
 
     /* コピーコンストラクタ
@@ -79,11 +81,11 @@ public class charObj extends rect {
      * 引数  ：なし or 描画倍率
      * 戻り値：なし
      */
-    public void draw(){
-        draw(1.0f);
+    public void draw(Graphics g){
+        draw(g, 1.0f);
     }
-    public void draw(float _scale) {
-        texture_m.draw(location.DtoF(), belong, _scale);
+    public void draw(Graphics g, float _scale) {
+        texture_m.draw(g, location.DtoF(), belong, _scale);
     }
 
     /*
@@ -251,7 +253,7 @@ public class charObj extends rect {
         is_gnd        = _is_gnd;
         is_gravitied  = _is_gravitied;
         force_m       = _force;
-        texture_m     = new texture(_texture_path, size);
+        texture_m     = new texture(_texture_path, _rect.size);
 
         belong       = _belong;
     }

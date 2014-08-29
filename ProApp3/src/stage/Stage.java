@@ -2,21 +2,30 @@ package stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 
+import org.newdawn.slick.Graphics;
+
 import window.window;
+import IO.debugLog;
 
 import common.point;
 import common.rect;
 
+
 public class Stage {
     /* 定数 */
     // プレイヤオブジェクトの、下底の中心をどこに映すか
-    public final point<Float> PLAYER_SHOOT = new point<Float>((window.SIZE.x * 3 / 4), window.SIZE.y  / 2);
+    public final point<Float> PLAYER_SHOOT = new point<Float>((window.SIZE.x.floatValue() * 3 / 4), window.SIZE.y.floatValue()  / 2);
 
     /* メンバ変数・インスタンス */
+    public point<Double>     gravitiy;
+
+
     public playerObj          player_data;     //プレイヤーオブジェクト
     public mapObj             map_data;        //マップオブジェクト
     public ArrayList<dmgObj>  damage;          //ダメージオブジェクト
@@ -52,27 +61,35 @@ public class Stage {
             String         script_path = (Paths.get(_file_path).getParent() == null)?
                                           null : Paths.get(_file_path).getParent().toString() + "\\";
 
-            str         = bRead.readLine();
-            map_data    = mapObj.file_to_mapObj(script_path + str, this);
-            System.out.println("map : " + ((map_data == null)? "null" : "not null"));
+            str         = script_path + bRead.readLine();
+            debugLog.getInstance().write(str + " load.");
+            map_data    = mapObj.file_to_mapObj(str, this);
 
-            str         = bRead.readLine();
-            damage      = dmgObj.file_to_dmgObj_ArrayList(script_path + str, this);
-            System.out.println("dmg : " + ((damage == null)? "null" : "not null"));
+            str         = script_path + bRead.readLine();
+            debugLog.getInstance().write(str + " load.");
+            damage      = dmgObj.file_to_dmgObj_ArrayList(str, this);
 
-            str         = bRead.readLine();
-            player_data = playerObj.file_to_playerObj(script_path + str, this);
-            System.out.println("ply : " + ((player_data == null)? "null" : "not null"));
+            str         = script_path + bRead.readLine();
+            debugLog.getInstance().write(str + " load.");
+            player_data = playerObj.file_to_playerObj(str, this);
 
-            str         = bRead.readLine();
-            person      = charObj.file_to_charObj_ArrayList(script_path + str, this);
-            System.out.println("chr : " + ((person == null)? "null" : "not null"));
+            str         = script_path + bRead.readLine();
+            debugLog.getInstance().write(str + " load.");
+            person      = charObj.file_to_charObj_ArrayList(str, this);
 
             bRead.close();
-        }catch(Exception e){
-            System.out.println("read failed : " + _file_path);
+        }catch(IOException e){
+            debugLog.getInstance().write("read failed : " + _file_path);
+        }
+        catch(Exception e){
+            debugLog.getInstance().write_exception(e);
         }
 
+        create_dmg    = new LinkedList<dmgObj>();
+        create_person = new LinkedList<charObj>();
+
+
+        camera_position_correction();
 
     }
 
@@ -151,15 +168,19 @@ public class Stage {
      * 引数  ：なし
      * 戻り値：なし
      */
-    public void draw(){
-        map_data.draw();
+    public void draw(Graphics g){
+        /*
+        map_data.draw(g);
         for(int i = 0; i < person.size(); i++){
-            person.get(i).draw();
+            person.get(i).draw(g);
         }
-        player_data.draw();
+
         for(int i = 0; i < person.size(); i++){
-            damage.get(i).draw();
+            damage.get(i).draw(g);
         }
+        */
+
+        player_data.draw(g);
     }
 
     /*

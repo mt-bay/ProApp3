@@ -5,8 +5,10 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
+import window.Main;
 import IO.config;
 import IO.debugLog;
 
@@ -44,7 +46,11 @@ public class playerObj extends charObj {
      * 引数：なし
      */
     public playerObj() {
-
+        init(new point<Double >(0, 0), new point<Integer>(0, 0),                      "",
+             new point<Integer>(0, 0),                       "", new point<Double>(0, 0),
+                                 50.0,          Direction.RIGHT,                   false,
+                                false,               TIMER_STOP,              TIMER_STOP,
+             null);
     }
 
     public playerObj(playerObj obj){
@@ -60,15 +66,11 @@ public class playerObj extends charObj {
                      point<Integer> _size_shooting         , String         _texture_path_stg, point<Double> _accel           ,
                      double         _hp                    , Direction      _dir             , boolean       _is_gnd          ,
                      boolean _is_gravitied_and_not_shooting, Stage _belong){
-        try{
         init(_location, _size_action       , _texture_path_act,
              _size_shooting                , _texture_path_stg, _accel    ,
              _hp                           , _dir             , _is_gnd   ,
              _is_gravitied_and_not_shooting, TIMER_STOP       , TIMER_STOP,
              _belong                       );
-        }catch(Exception e){
-            debugLog.getInstance().write_exception(e, new Throwable());
-        }
     }
 
     /* メソッド */
@@ -83,17 +85,18 @@ public class playerObj extends charObj {
         if(deform())
             return;
 
+
         //共通操作
         //攻撃(ダメージオブジェクト生成)
-        if (ip_now.isKeyDown(config.attack)) {
+        if (Main.user_input.isKeyDown(config.attack)) {
          }
 
         //左右移動
-        if (ip_now.isKeyDown(config.left)) {
+        if (Main.user_input.isKeyDown(config.left)) {
             accel.x = -ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
             dir = Direction.LEFT;
         }
-        else if (ip_now.isKeyDown(config.right)) {
+        else if (Main.user_input.isKeyDown(config.right)) {
             accel.x = ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
             dir = Direction.RIGHT;
         }
@@ -102,17 +105,17 @@ public class playerObj extends charObj {
         if (!is_shooting) {
 
             //ジャンプ
-            if (ip_now.isKeyDown(config.jump) && is_gnd) {
+            if (Main.user_input.isKeyDown(config.jump) && is_gnd) {
                 accel.y = -20.0;
             }
         }
 
         else {
             //上下操作
-            if (ip_now.isKeyDown(config.down)) {
+            if (Main.user_input.isKeyDown(config.down)) {
                 accel.y = ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
             }
-            else if (ip_now.isKeyDown(config.up)) {
+            else if (Main.user_input.isKeyDown(config.up)) {
                 accel.y = -ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
             }
         }
@@ -126,18 +129,18 @@ public class playerObj extends charObj {
      * 戻り値：なし
      */
     @Override
-    public void draw(){
-        draw(1.0f);
+    public void draw(Graphics g){
+        draw(g, 1.0f);
     }
     @Override
-    public void draw(float _scale){
+    public void draw(Graphics g, float _scale){
         //シューティングモード時の描画
         if(is_shooting){
-            texture_stg_m.draw(location.DtoF(), belong, _scale);
+            texture_stg_m.draw(g, location.DtoF(), belong, _scale);
         }
         //アクションモード時の描画
         else{
-            texture_act_m.draw(location.DtoF(), belong, _scale);
+            texture_act_m.draw(g, location.DtoF(), belong, _scale);
 
         }
     }
@@ -165,7 +168,6 @@ public class playerObj extends charObj {
      * 戻り値：プレイヤーオブジェクト
      */
     public static playerObj file_to_playerObj(String _file_path, Stage _belong) /*throws FileNotFoundException*/{
-        playerObj p_obj = null;
         String    script_path = ((Paths.get(_file_path).getParent() == null)?
                                      "" : Paths.get(_file_path).getParent().toString() + "\\");
 
@@ -175,44 +177,32 @@ public class playerObj extends charObj {
             String[] str = bRead.readLine().split(" ");
             bRead.close();
 
-            debugLog.getInstance().write("current dir : " + script_path);
-            for(int i = 0; i < str.length; i++)
-                debugLog.getInstance().write("str[" + i + "] : " +str[i]);
 
+            point<Double >  _loc                    = new point<Double >(Double.parseDouble(str[ 0]),  //座標
+                                                                         Double.parseDouble(str[ 1]));
+            point<Integer> _size_act                = new point<Integer>(Integer.parseInt  (str[ 2]),  //アクションモード時のサイズ
+                                                                         Integer.parseInt  (str[ 3]));
+            String         _texture_act             = script_path +                         str[ 4];   //アクションモード時のテクスチャへのパス
+            point<Integer> _size_stg                = new point<Integer>(Integer.parseInt  (str[ 5]),  //シューティングモード時のサイズ
+                                                                         Integer.parseInt  (str[ 6]));
+            String         _texture_stg             = script_path +                         str[ 7];   //シューティングモード時のテクスチャへのパス
+            point<Double > _accel                   = new point<Double> (Double.parseDouble(str[ 8]),  //加速度
+                                                                         Double.parseDouble(str[ 9]));
+            double         _hp                      = Double.parseDouble                   (str[10]);  //HP
+            Direction      _dir                     = Direction.parseDirection             (str[11]);  //向き
+            boolean        _is_gnd                  = Boolean.parseBoolean                 (str[12]);  //接地しているか
+            boolean        _is_shooting_and_not_gnd = Boolean.parseBoolean                 (str[13]);  //シューティングモードか(重力の影響を受けるか)
 
-            debugLog.getInstance().write("str[" +  0 + "] : " + Double.parseDouble(str[ 0]));
-            debugLog.getInstance().write("str[" +  1 + "] : " + Double.parseDouble(str[ 1]));
-            debugLog.getInstance().write("str[" +  2 + "] : " + Integer.parseInt(str[ 2]));
-            debugLog.getInstance().write("str[" +  3 + "] : " + Integer.parseInt(str[ 3]));
-            debugLog.getInstance().write("str[" +  4 + "] : " + script_path + str[ 4]);
-            debugLog.getInstance().write("str[" +  5 + "] : " + Integer.parseInt(str[ 5]));
-            debugLog.getInstance().write("str[" +  6 + "] : " + Integer.parseInt(str[ 6]));
-            debugLog.getInstance().write("str[" +  7 + "] : " + script_path + str[ 7]);
-            debugLog.getInstance().write("str[" +  8 + "] : " + Double.parseDouble(str[ 8]));
-            debugLog.getInstance().write("str[" +  9 + "] : " + Double.parseDouble(str[ 9]));
-            debugLog.getInstance().write("str[" + 10 + "] : " + Double.parseDouble(str[10]));
-            debugLog.getInstance().write("str[" + 11 + "] : " + Direction.parseDirection(str[11]));
-            debugLog.getInstance().write("str[" + 12 + "] : " + Boolean.parseBoolean(str[12]));
-            debugLog.getInstance().write("str[" + 13 + "] : " + Boolean.parseBoolean(str[13]));
-
-
-            return new playerObj(new point<Double >(Double.parseDouble(str[ 0]), Double.parseDouble(str[ 1])), //座標
-                                  new point<Integer>(Integer.parseInt  (str[ 2]), Integer.parseInt  (str[ 3])), //アクションモード時のサイズ
-                                  script_path + str[ 4]                                                       , //アクションモード時のテクスチャへのパス
-                                  new point<Integer>(Integer.parseInt(str[ 5])  , Integer.parseInt(str[ 6]))  , //シューティングモード時のサイズ
-                                  script_path + str[ 7]                                                       , //シューティングモード時のテクスチャへのパス
-                                  new point<Double> (Double.parseDouble(str[ 8]), Double.parseDouble(str[ 9])), //加速度
-                                  Double.parseDouble(str[10])                                                 , //HP
-                                  Direction.parseDirection(str[11])                                           , //向き
-                                  Boolean.parseBoolean(str[12])                                               , //接地しているか
-                                  Boolean.parseBoolean(str[13])                                               , //シューティングモードか(重力の影響を受けるか)
-                                  _belong                                                                     );//どのステージに所属しているか
+            return new playerObj(_loc                    , _size_act   , _texture_act,
+                                 _size_stg               , _texture_stg, _accel      ,
+                                 _hp                     , _dir        , _is_gnd     ,
+                                 _is_shooting_and_not_gnd, _belong     );
         }catch(Exception e){
-            debugLog.getInstance().write_exception(e, new Throwable());
+            e.printStackTrace();
+            debugLog.getInstance().write_exception(e);
             debugLog.getInstance().write("    filename : " + _file_path);
-            System.exit(1);
         }
-        return p_obj;
+        return new playerObj();
     }
 
 
@@ -368,6 +358,7 @@ public class playerObj extends charObj {
 
         //参照を受け取る
         belong        = _belong;
+
     }
 
 

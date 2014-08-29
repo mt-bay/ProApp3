@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
@@ -49,18 +50,16 @@ public class mapObj {
      * 引数  ：なし or 描画倍率
      * 戻り値：なし
      */
-    public void draw(){
-        draw(1.0f);
-    }
-    public void draw(float _scale){
+    public void draw(Graphics g){
         if((use_img == false && ssheet == null) ||
            (use_img == true  && img    == null))
             return;
 
-        //1枚絵を仕様する際
+        //1枚絵を使用する際
+        point<Float> loc_f;
         if(use_img){
-            point<Float> loc_f = belong.relative_camera_f(new point<Float>(0.0f, 0.0f));
-            img.draw(loc_f.x, loc_f.y, _scale);
+            loc_f = belong.relative_camera_f(new point<Float>(0.0f, 0.0f));
+            g.drawImage(img, loc_f.x, loc_f.y);
             return;
         }
 
@@ -68,11 +67,14 @@ public class mapObj {
         rect chip_loc;
         for(int i = 0; i < use_chip.length; i++){
             for(int j = 0; j < use_chip[i].length; j++){
-                chip_loc = get_map_chip(j, i, _scale);
+
+                chip_loc = get_map_chip(j, i);
 
                 if(window.comprise(chip_loc, belong)){
-                    ssheet.getSubImage(0, use_chip[i][j]).
-                           draw(chip_loc.location.x.floatValue(), chip_loc.location.y.floatValue(), _scale);
+                    loc_f = belong.relative_camera_f(chip_loc.location.DtoF());
+
+                    g.drawImage(ssheet.getSubImage(use_chip[i][j], 0), loc_f.x, loc_f.y);
+                    ssheet.getSubImage(use_chip[i][j], 0);
                 }
             }
         }
@@ -146,7 +148,7 @@ public class mapObj {
                                script_path + str[4]                                                  ,
                                _belong                                                               );
         }catch(Exception e){
-            debugLog.getInstance().write_exception(e, new Throwable());
+            debugLog.getInstance().write_exception(e);
             debugLog.getInstance().write("    filename : " + _file_path);
         }
         return m_obj;
@@ -183,12 +185,12 @@ public class mapObj {
             else
             {
                 img        = (_use_img)? new Image(_img_or_spritesheet) : null   ;
-                ssheet     = (_use_img)? null                           : new SpriteSheet(_img_or_spritesheet, size_block.x, size_block.y);
+                ssheet     = (_use_img)? null                           : new SpriteSheet(new Image(_img_or_spritesheet), size_block.x, size_block.y);
             }
 
             belong = _belong;
         }catch(Exception e){
-            debugLog.getInstance().write_exception(e, new Throwable());
+            debugLog.getInstance().write_exception(e);
         }
 
         return;
@@ -228,7 +230,7 @@ public class mapObj {
                 }
             }
         }catch(Exception e){
-            debugLog.getInstance().write_exception(e, new Throwable());
+            debugLog.getInstance().write_exception(e);
             return;
         }
     }
