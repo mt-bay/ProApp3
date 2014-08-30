@@ -5,13 +5,14 @@ import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
+import window.Main;
 import window.window;
 import IO.debugLog;
-
 import common.point;
 import common.rect;
 
@@ -76,8 +77,10 @@ public class mapObj {
 
                     g.drawImage(ssheet.getSubImage(use_chip[i][j], 0), loc_f.x, loc_f.y);
 
-                    if(is_collisionable[i][j])
-                    g.drawRect(loc_f.x, loc_f.y, size_block.x, size_block.y);
+                    if(Main._DEBUG){
+                        g.setColor(new Color((is_collisionable[i][j])? 0x000000 : 0xffffff));
+                        g.drawRect(loc_f.x, loc_f.y, size_block.x.floatValue(), size_block.y.floatValue());
+                    }
 
                     ssheet.getSubImage(use_chip[i][j], 0);
                 }

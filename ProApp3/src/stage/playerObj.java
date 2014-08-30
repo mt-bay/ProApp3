@@ -5,12 +5,13 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import window.window;
 import window.Main;
 import IO.config;
 import IO.debugLog;
-
 import common.point;
 import common.rect;
 
@@ -28,12 +29,12 @@ public class playerObj extends charObj {
 
     /* 定数 */
     //モード共通
-    private static final double HISPEED_RATE    =   1.25d; //高速移動時の移動力倍率
+    private static final double HISPEED_RATE    =   1.5d; //高速移動時の移動力倍率
 
     //アクションモード用
     private static final double ACT_MV_GND      =   8.5d;  //接地時の左右移動力
     private static final double ACT_MV_JUMP     = -20.0d;  //ジャンプ時の上方向移動力
-    private static final double ACT_MV_NOT_GND  =   3.5d;  //非接地時の左右移動力
+    private static final double ACT_MV_NOT_GND  =   8.5d;  //非接地時の左右移動力
     private static final double ACT_DAMAGE_RATE =   1.0d;  //ダメージ倍率
 
     //シューティングモード用
@@ -104,24 +105,14 @@ public class playerObj extends charObj {
         if (Main.user_input.isKeyDown(config.getInstance().attack)) {
          }
 
-        //左右移動
-        // 右
-        if (Main.user_input.isKeyDown(config.getInstance().left)) {
-            accel.x = -1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
-            dir = Direction.LEFT;
-        }
-        // 左
-        else if (Main.user_input.isKeyDown(config.getInstance().right)) {
-            accel.x = +1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
-            dir = Direction.RIGHT;
-        }
-        else{
-            accel.x = 0.0;
-        }
-
         //固有操作
         //アクションモード
         if (!is_shooting) {
+            //ジャンプ
+            if (Main.user_input.isKeyDown(config.getInstance().jump) && is_gnd) {
+                accel.y = ACT_MV_JUMP;
+            }
+
             //左右移動
             // 右
             if (Main.user_input.isKeyDown(config.getInstance().right)) {
@@ -136,11 +127,6 @@ public class playerObj extends charObj {
             // 入力なし
             else{
                 accel.x = 0.0;
-            }
-
-            //ジャンプ
-            if (Main.user_input.isKeyDown(config.getInstance().jump) && is_gnd) {
-                accel.y = ACT_MV_JUMP;
             }
 
             //高速移動
@@ -205,11 +191,28 @@ public class playerObj extends charObj {
         //シューティングモード時の描画
         if(is_shooting){
             texture_stg_m.draw(g, location.DtoF(), belong, _scale);
+
+            if(Main._DEBUG){
+                if(window.comprise(this.to_rect(), belong)){
+                    rect r = belong.relative_camera_rect(this.to_rect());
+                    g.setColor(new Color(0x00ff00));
+                    g.drawRect(r.location.x.floatValue(), r.location.y.floatValue(),
+                               r.size.x.floatValue()    , r.size.y.floatValue());
+                }
+            }
+
         }
         //アクションモード時の描画
         else{
             texture_act_m.draw(g, location.DtoF(), belong, _scale);
-
+            if(Main._DEBUG){
+                if(window.comprise(this.to_rect(), belong)){
+                    rect r = belong.relative_camera_rect(this.to_rect());
+                    g.setColor(new Color(0x00ff00));
+                    g.drawRect(r.location.x.floatValue(), r.location.y.floatValue(),
+                               r.size.x.floatValue()    , r.size.y.floatValue());
+                }
+            }
         }
     }
 
@@ -331,7 +334,7 @@ public class playerObj extends charObj {
                 process_contract(move_this_pr, move_actual);
 
                 error      += Math.abs(accel.y);
-                if(error >= Math.abs(accel_i.x.doubleValue())){
+                if(error >= Math.abs(accel.x.doubleValue())){
                     move_this_pr.x = 0.0d;
                     move_this_pr.y = (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
 
@@ -340,10 +343,9 @@ public class playerObj extends charObj {
 
                     process_contract(move_this_pr, move_actual);
 
+                    error -= Math.abs(accel.x.doubleValue());
                     p.y        += inc_i.y;
                 }
-
-
             }
         }
         //y軸の方が大きい場合
@@ -368,7 +370,8 @@ public class playerObj extends charObj {
 
                     process_contract(move_this_pr, move_actual);
 
-                    p.x += inc_i.x;
+                    error -= Math.abs(accel.y.doubleValue());
+                    p.x   += inc_i.x;
                 }
             }
         }

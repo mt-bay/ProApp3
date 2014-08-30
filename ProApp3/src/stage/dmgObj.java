@@ -6,10 +6,12 @@ import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import window.Main;
+import window.window;
 import IO.debugLog;
-
 import common.point;
 import common.rect;
 
@@ -71,6 +73,14 @@ public class dmgObj extends rect {
     }
     public void draw(Graphics g, float _scale){
         texture_m.draw(g, location.DtoF(), belong, _scale);
+        if(Main._DEBUG){
+            if(window.comprise(this, belong)){
+                rect r = belong.relative_camera_rect(this);
+                g.setColor(new Color(0xff0000));
+                g.drawRect(r.location.x.floatValue(), r.location.y.floatValue(),
+                           r.size.x.floatValue()    , r.size.y.floatValue());
+            }
+        }
     }
 
     /*

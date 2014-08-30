@@ -10,9 +10,9 @@ import java.util.Queue;
 
 import org.newdawn.slick.Graphics;
 
+import window.Main;
 import window.window;
 import IO.debugLog;
-
 import common.point;
 import common.rect;
 
@@ -209,6 +209,7 @@ public class Stage {
     public void draw(Graphics g){
 
         map_data.draw(g);
+
         for(int i = 0; i < person.size(); i++){
             person.get(i).draw(g);
         }
