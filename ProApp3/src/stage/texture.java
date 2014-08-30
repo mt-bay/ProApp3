@@ -21,6 +21,7 @@ public class texture {
     private String         path;
     public  point<Integer> size;
     public  int            use_number;
+    public  Direction      direction_m;
 
     /* コンストラクタ */
 /*    private texture(){
@@ -48,11 +49,10 @@ public class texture {
     }
     public void draw(Graphics g,point<Float> _location, Stage _camera, float _scale){
 
-
         if(!window.comprise(new rect(_location.FtoD(), size), _camera)){
-            System.out.println("this is not comp");
             return;
         }
+
         point<Float> l_relate = _camera.relative_camera_f(_location);
         g.drawImage(texture_m.getSubImage(use_number, 0), l_relate.x, l_relate.y);
 

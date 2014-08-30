@@ -1,6 +1,7 @@
 package window;
 
 import stage.Stage;
+
 import common.point;
 import common.rect;
 
@@ -25,12 +26,12 @@ public class window {
 
         rect o = _camera.relative_camera_rect(_obj);
         //x軸での判定
-        if(o.LowerRight().x <                      0.0d ||
-           o.UpperLeft() .x > (double)_camera.camera_location.x)
+        if(o.LowerRight().x <                       0.0d ||
+           o.UpperLeft() .x > window.SIZE.x.doubleValue())
             return false;
         //y軸での判定
-        if(o.LowerRight().y <                      0.0d ||
-           o.UpperLeft() .y > (double)_camera.camera_location.y)
+        if(o.LowerRight().y <                       0.0d ||
+           o.UpperLeft() .y > window.SIZE.y.doubleValue())
             return false;
 
         return true;

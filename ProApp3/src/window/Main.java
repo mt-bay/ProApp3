@@ -72,12 +72,10 @@ public class Main extends BasicGame {
      * 戻り値：なし
      * 例外  ：SlickException
      */
-    @SuppressWarnings("static-access")
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
         user_input = gc.getInput();
         stg_test.update();
-        System.out.println(stg_test.camera_location.toString());
     }
 
     /*

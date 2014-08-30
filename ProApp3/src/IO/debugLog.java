@@ -33,12 +33,10 @@ public class debugLog {
      * 引数  ：なし
      * 戻り値：インスタンス
      */
-    public static debugLog getInstance() {
+    public static synchronized debugLog getInstance() {
         if (instance == null) {
-            synchronized (debugLog.instance) {
-                if (instance == null) {
-                    instance = new debugLog();
-                }
+            if (instance == null) {
+                instance = new debugLog();
             }
         }
         return instance;

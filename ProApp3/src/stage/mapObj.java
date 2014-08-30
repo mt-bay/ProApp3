@@ -73,7 +73,12 @@ public class mapObj {
                 if(window.comprise(chip_loc, belong)){
                     loc_f = belong.relative_camera_f(chip_loc.location.DtoF());
 
+
                     g.drawImage(ssheet.getSubImage(use_chip[i][j], 0), loc_f.x, loc_f.y);
+
+                    if(is_collisionable[i][j])
+                    g.drawRect(loc_f.x, loc_f.y, size_block.x, size_block.y);
+
                     ssheet.getSubImage(use_chip[i][j], 0);
                 }
             }
@@ -93,8 +98,10 @@ public class mapObj {
         for(int i = 0; i < is_collisionable.length; i++){
             for(int j = 0; j < is_collisionable[i].length; j++){
                 r = get_map_chip(j, i);
-                if(r.is_collision(_obj))
-                    return true;
+                if(is_collisionable[i][j]){
+                    if(r.is_collision(_obj))
+                        return true;
+                }
             }
         }
 

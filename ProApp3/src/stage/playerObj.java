@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.nio.file.Paths;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
 import window.Main;
 import IO.config;
@@ -27,17 +26,25 @@ public class playerObj extends charObj {
     protected            int            timer_deform; //シューティング←→アクションの変形残りフレーム
     protected            int            timer_reload; //攻撃操作の、再攻撃待機タイマー
 
-    protected            Input          ip_now;       //最新の入力
-
-
-
     /* 定数 */
-    private static       double ACT_MV     = 2.5;       //アクションモード時の左右移動力
+    //モード共通
+    private static final double HISPEED_RATE    =   1.25d; //高速移動時の移動力倍率
 
-    private static final double DAMAGE_RATE_ACT = 1.0d; //アクションモード時のダメージ比率
-    private static final double DAMAGE_RATE_STG = 2.0d; //シューティングモード時のダメージ比率
+    //アクションモード用
+    private static final double ACT_MV_GND      =   8.5d;  //接地時の左右移動力
+    private static final double ACT_MV_JUMP     = -20.0d;  //ジャンプ時の上方向移動力
+    private static final double ACT_MV_NOT_GND  =   3.5d;  //非接地時の左右移動力
+    private static final double ACT_DAMAGE_RATE =   1.0d;  //ダメージ倍率
 
+    //シューティングモード用
+    private static final double STG_MV_LR       =   4.0d;  //左右移動力
+    private static final double STG_MV_UD       =   2.0d;  //上下移動力
+    private static final double STG_DAMAGE_RATE =   2.0d;  //ダメージ倍率
+
+    //その他
     private static final int    TIMER_STOP = -1;        //タイマー変数の停止状態用
+
+
 
     //ユーザ入力関係
 
@@ -85,38 +92,99 @@ public class playerObj extends charObj {
         if(deform())
             return;
 
+        //前処理
+        //重力値分の移動力補正
+        if(is_gravitied){
+            accel.x += belong.gravitiy.x;
+            accel.y += belong.gravitiy.y;
+        }
 
         //共通操作
         //攻撃(ダメージオブジェクト生成)
-        if (Main.user_input.isKeyDown(config.attack)) {
+        if (Main.user_input.isKeyDown(config.getInstance().attack)) {
          }
 
         //左右移動
-        if (Main.user_input.isKeyDown(config.left)) {
-            accel.x = -ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
+        // 右
+        if (Main.user_input.isKeyDown(config.getInstance().left)) {
+            accel.x = -1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
             dir = Direction.LEFT;
         }
-        else if (Main.user_input.isKeyDown(config.right)) {
-            accel.x = ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
+        // 左
+        else if (Main.user_input.isKeyDown(config.getInstance().right)) {
+            accel.x = +1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
             dir = Direction.RIGHT;
         }
+        else{
+            accel.x = 0.0;
+        }
+
         //固有操作
         //アクションモード
         if (!is_shooting) {
+            //左右移動
+            // 右
+            if (Main.user_input.isKeyDown(config.getInstance().right)) {
+                accel.x = +1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
+                dir = Direction.RIGHT;
+            }
+            // 左
+            else if (Main.user_input.isKeyDown(config.getInstance().left)) {
+                accel.x = -1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
+                dir = Direction.LEFT;
+            }
+            // 入力なし
+            else{
+                accel.x = 0.0;
+            }
 
             //ジャンプ
-            if (Main.user_input.isKeyDown(config.jump) && is_gnd) {
-                accel.y = -20.0;
+            if (Main.user_input.isKeyDown(config.getInstance().jump) && is_gnd) {
+                accel.y = ACT_MV_JUMP;
             }
-        }
 
-        else {
-            //上下操作
-            if (Main.user_input.isKeyDown(config.down)) {
-                accel.y = ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
+            //高速移動
+            if(Main.user_input.isKeyDown(config.getInstance().highsp)){
+                accel.x *= HISPEED_RATE;
             }
-            else if (Main.user_input.isKeyDown(config.up)) {
-                accel.y = -ACT_MV * ((ip_now.isKeyDown(config.highsp) ? 1 : 2));
+
+        }
+        // シューティングモード
+        else {
+            //左右移動
+            // 右
+            if (Main.user_input.isKeyDown(config.getInstance().right)) {
+                accel.x = +1.0 * STG_MV_LR;
+                dir = Direction.RIGHT;
+            }
+            // 左
+            else if (Main.user_input.isKeyDown(config.getInstance().left)) {
+                accel.x = -1.0 * STG_MV_LR;
+                dir = Direction.LEFT;
+            }
+            // 入力なし
+            else{
+                accel.x = 0.0;
+            }
+
+            //上下操作
+            // 上
+            if (Main.user_input.isKeyDown(config.getInstance().up)) {
+                accel.y = -1.0 * STG_MV_UD;
+            }
+            // 下
+            else if (Main.user_input.isKeyDown(config.getInstance().down)) {
+                accel.y = +1.0 * STG_MV_UD;
+            }
+            // 入力なし
+            else{
+                accel.y = 0.0;
+            }
+
+            //高速移動
+            if(Main.user_input.isKeyDown(config.getInstance().highsp)){
+                accel.x *= HISPEED_RATE;
+                accel.y *= HISPEED_RATE;
             }
         }
 
@@ -171,12 +239,10 @@ public class playerObj extends charObj {
         String    script_path = ((Paths.get(_file_path).getParent() == null)?
                                      "" : Paths.get(_file_path).getParent().toString() + "\\");
 
-
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
             String[] str = bRead.readLine().split(" ");
             bRead.close();
-
 
             point<Double >  _loc                    = new point<Double >(Double.parseDouble(str[ 0]),  //座標
                                                                          Double.parseDouble(str[ 1]));
@@ -234,30 +300,45 @@ public class playerObj extends charObj {
      */
     @Override
     public void move(){
+
         //ローカル変数宣言
-        //直線描画用
-        point<Integer> location_i = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
-        point<Integer> dest_i     = new point<Integer>((int)new BigDecimal(location.x + accel.x).setScale(0, BigDecimal.ROUND_UP).doubleValue(), //目的位置(int)
-                                                       (int)new BigDecimal(location.y + accel.y).setScale(0, BigDecimal.ROUND_UP).doubleValue());
-        point<Integer> accel_i    = new point<Integer>(location_i.x - dest_i.x, location_i.y - dest_i.y); //移動サイズ(int)
+        point<Double>  move_actual  = new point<Double>(0.0, 0.0); //実際の移動量
+        //直線用
+        point<Integer> location_i   = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
+        point<Integer> dest_i       = new point<Integer>((int)(new BigDecimal(location.x + accel.x).                                                 //目的位置(int)
+                                                                 setScale(0, BigDecimal.ROUND_DOWN).doubleValue() + ((accel.x < 0)? -1.0d : 1.0d)),
+                                                       (int)(new BigDecimal(location.y + accel.y).
+                                                                 setScale(0, BigDecimal.ROUND_DOWN).doubleValue() + ((accel.y < 0)? -1.0d : 1.0d)));
+        point<Integer> accel_i      = new point<Integer>(dest_i.x - location_i.x, dest_i.y - location_i.y); //移動サイズ(int)
 
-        point<Integer> inc_i      = new point<Integer>((accel_i.x > 0)? 1 : -1 , (accel_i.y > 0)? 1 : -1); //加算する方向
+        point<Integer> inc_i        = new point<Integer>((accel_i.x > 0)? 1 : -1 , (accel_i.y > 0)? 1 : -1); //加算する方向
 
-        double         error      =0.5 * ((Math.abs(accel_i.x) > Math.abs(accel_i.y))? accel_i.x : accel_i.y); //誤差
+        point<Double>  move_this_pr = new point<Double>(0.0d, 0.0d);  //1プロセス中の移動量
+
+        double         error      = 0.5 * Math.abs(((Math.abs(accel_i.x) > Math.abs(accel_i.y))? accel_i.y : accel_i.x)); //誤差
+
         //処理
 
         //x軸の方が大きい場合
         if(Math.abs(accel_i.x) > Math.abs(accel_i.y)){
             for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.x) < Math.abs(accel_i.x); p.x += inc_i.x){
-                location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                move_this_pr.x = (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                move_this_pr.y = 0.0d;
 
-                process_contract(new point<Integer>(inc_i.x, 0));
+                location.x    += move_this_pr.x;
+                move_actual.x += move_this_pr.x;
 
-                error      += accel_i.y;
-                if(error >= accel_i.x.doubleValue()){
-                    location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+                process_contract(move_this_pr, move_actual);
 
-                    process_contract(new point<Integer>(0, inc_i.y));
+                error      += Math.abs(accel.y);
+                if(error >= Math.abs(accel_i.x.doubleValue())){
+                    move_this_pr.x = 0.0d;
+                    move_this_pr.y = (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+
+                    location.y    += move_this_pr.y;
+                    move_actual.y += move_this_pr.y;
+
+                    process_contract(move_this_pr, move_actual);
 
                     p.y        += inc_i.y;
                 }
@@ -269,22 +350,30 @@ public class playerObj extends charObj {
         else
         {
             for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.y) < Math.abs(accel_i.y); p.y += inc_i.y){
-                location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+                move_this_pr.x = 0.0d;
+                move_this_pr.y = (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
 
-                process_contract(new point<Integer>(0, inc_i.y));
+                location.y    += move_this_pr.y;
+                move_actual.y += move_this_pr.y;
 
-                error += accel_i.x;
-                if(error >= accel.y.doubleValue()){
-                    location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                process_contract(move_this_pr, move_actual);
 
-                    process_contract(new point<Integer>(inc_i.x, 0));
+                error += Math.abs(accel.x);
+                if(error >= Math.abs(accel.y.doubleValue())){
+                    move_this_pr.x = (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                    move_this_pr.y = 0.0d;
+
+                    location.x    += move_this_pr.x;
+                    move_actual.x += move_this_pr.x;
+
+                    process_contract(move_this_pr, move_actual);
 
                     p.x += inc_i.x;
                 }
-
-
             }
         }
+
+        accel = new point<Double>(move_actual);
     }
 
     /*
@@ -293,16 +382,21 @@ public class playerObj extends charObj {
      * 戻り値：なし
      */
     @Override
-    protected void process_contract(point<Integer> move){
+    protected void process_contract(point<Double> move, point<Double> move_actual){
         //マップオブジェクト
-        if(move.y != 0)
+        if(Math.abs(move.y) >= 1.0){
             is_gnd = false;
+        }
         if(belong.map_data.is_collision(this.to_rect())){
-            location.x -= move.x; location.y -= move.y;
+            location.x    -= move.x; location.y    -= move.y;
+            move_actual.x -= move.x; move_actual.y -= move.y;
+
+
             if(move.y > 0)
                 is_gnd = true;
         }
 
+        //ダメージオブジェクト
         for(int i = 0; i < belong.damage.size(); i++){
             if(belong.damage.get(i).is_collision(this.to_rect()))
                 receve_damage(belong.damage.get(i));
@@ -323,7 +417,7 @@ public class playerObj extends charObj {
         if(_source.is_dead)
             return;
 
-        hp -= _source.atk * ((is_shooting)? DAMAGE_RATE_STG : DAMAGE_RATE_ACT);
+        hp -= _source.atk * ((is_shooting)? STG_DAMAGE_RATE : ACT_DAMAGE_RATE);
         _source.is_dead = true;
         if(hp < 0.0d)
             is_dead = true;
@@ -338,7 +432,7 @@ public class playerObj extends charObj {
     private void init(point<Double > _location                     , point<Integer> _size_action     , String        _texture_path_act ,
                       point<Integer> _size_shooting                , String         _texture_path_stg, point<Double> _accel            ,
                       double         _hp                           , Direction      _dir             , boolean       _is_gnd           ,
-                      boolean        _is_gravitied_and_not_shooting, int           _timer_deform     , int           _timer_not_visible,
+                      boolean        _is_shooting_and_not_gravitied, int           _timer_deform     , int           _timer_not_visible,
                       Stage          _belong                       ){
         //それぞれの変数を適した形で初期化
         location          = new point<Double >(_location);
@@ -351,8 +445,8 @@ public class playerObj extends charObj {
         hp                = _hp;
         dir               = _dir;
         is_gnd            = _is_gnd;
-        is_gravitied      = _is_gravitied_and_not_shooting;
-        is_shooting       = !_is_gravitied_and_not_shooting;
+        is_shooting       = _is_shooting_and_not_gravitied;
+        is_gravitied      = !_is_shooting_and_not_gravitied;
         timer_deform      = _timer_deform;
         timer_not_visible = _timer_not_visible;
 

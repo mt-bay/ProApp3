@@ -157,6 +157,7 @@ public class charObj extends rect {
      */
     public void move(){
         //ローカル変数宣言
+        point<Double>  move_actual = new point<Double>(0.0, 0.0);
         //直線描画用
         point<Integer> location_i = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
         point<Integer> dest_i     = new point<Integer>((int)new BigDecimal(location.x + accel.x).setScale(0, BigDecimal.ROUND_UP).doubleValue(), //目的位置(int)
@@ -165,21 +166,31 @@ public class charObj extends rect {
 
         point<Integer> inc_i      = new point<Integer>((accel_i.x > 0)? 1 : -1 , (accel_i.y > 0)? 1 : -1); //加算する方向
 
+        point<Double>  move_this_pr = new point<Double>(0.0d, 0.0d);  //1プロセス中の移動量
+
         double         error      =0.5 * ((Math.abs(accel_i.x) > Math.abs(accel_i.y))? accel_i.x : accel_i.y); //誤差
         //処理
 
         //x軸の方が大きい場合
         if(Math.abs(accel_i.x) > Math.abs(accel_i.y)){
             for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.x) < Math.abs(accel_i.x); p.x += inc_i.x){
-                location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                move_this_pr.x = (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                move_this_pr.y = 0.0d;
 
-                process_contract(new point<Integer>(inc_i.x, 0));
+                location.x     += move_this_pr.x;
+                move_actual.x  += move_this_pr.x;
+
+                process_contract(move_this_pr, move_actual);
 
                 error      += accel_i.y;
                 if(error >= accel_i.x.doubleValue()){
-                    location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+                    move_this_pr.x = 0.0d;
+                    move_this_pr.y = (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
 
-                    process_contract(new point<Integer>(0, inc_i.y));
+                    location.y    += move_this_pr.y;
+                    move_actual.y += move_this_pr.y;
+
+                    process_contract(move_this_pr, move_actual);
 
                     p.y        += inc_i.y;
                 }
@@ -191,15 +202,23 @@ public class charObj extends rect {
         else
         {
             for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.y) < Math.abs(accel_i.y); p.y += inc_i.y){
-                location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+                move_this_pr.x = 0.0d;
+                move_this_pr.y = (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
 
-                process_contract(new point<Integer>(0, inc_i.y));
+                location.y    += move_this_pr.y;
+                move_actual.y += move_this_pr.y;
+
+                process_contract(move_this_pr, move_actual);
 
                 error += accel_i.x;
                 if(error >= accel.y.doubleValue()){
-                    location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                    move_this_pr.x = (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                    move_this_pr.y = 0.0d;
 
-                    process_contract(new point<Integer>(inc_i.x, 0));
+                    location.x     += move_this_pr.x;
+                    move_actual.x  += move_this_pr.x;
+
+                    process_contract(move_this_pr, move_actual);
 
                     p.x += inc_i.x;
                 }
@@ -215,14 +234,15 @@ public class charObj extends rect {
      * 引数  ：移動量
      * 戻り値：なし
      */
-    protected void process_contract(point<Integer> move){
+    protected void process_contract(point<Double> move, point<Double> move_actual){
         //交差判定
         // マップオブジェクト
         if(move.y != 0)
             is_gnd = false;
 
         if(belong.map_data.is_collision(this)){
-            location.x -= move.x.doubleValue(); location.y -= move.y.doubleValue();
+            location.x    -= move.x.doubleValue(); location.y    -= move.y.doubleValue();
+            move_actual.x -= move.x.doubleValue(); move_actual.y -= move.y.doubleValue();
 
             if(move.y > 0)
                 is_gnd = true;
