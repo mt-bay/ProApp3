@@ -8,10 +8,10 @@ import java.nio.file.Paths;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import window.window;
 import window.Main;
-import IO.config;
+import window.window;
 import IO.debugLog;
+
 import common.point;
 import common.rect;
 
@@ -102,25 +102,26 @@ public class playerObj extends charObj {
 
         //共通操作
         //攻撃(ダメージオブジェクト生成)
-        if (Main.user_input.isKeyDown(config.getInstance().attack)) {
+        if (Main.user_input.get(0).attack) {
          }
 
         //固有操作
         //アクションモード
         if (!is_shooting) {
             //ジャンプ
-            if (Main.user_input.isKeyDown(config.getInstance().jump) && is_gnd) {
-                accel.y = ACT_MV_JUMP;
+            if (Main.user_input.get(0).jump && is_gnd) {
+                if(!Main.user_input.get(1).jump)
+                    accel.y = ACT_MV_JUMP;
             }
 
             //左右移動
             // 右
-            if (Main.user_input.isKeyDown(config.getInstance().right)) {
+            if (Main.user_input.get(0).right) {
                 accel.x = +1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
                 dir = Direction.RIGHT;
             }
             // 左
-            else if (Main.user_input.isKeyDown(config.getInstance().left)) {
+            else if (Main.user_input.get(0).left) {
                 accel.x = -1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
                 dir = Direction.LEFT;
             }
@@ -130,7 +131,7 @@ public class playerObj extends charObj {
             }
 
             //高速移動
-            if(Main.user_input.isKeyDown(config.getInstance().highsp)){
+            if(Main.user_input.get(0).highsp){
                 accel.x *= HISPEED_RATE;
             }
 
@@ -139,12 +140,12 @@ public class playerObj extends charObj {
         else {
             //左右移動
             // 右
-            if (Main.user_input.isKeyDown(config.getInstance().right)) {
+            if (Main.user_input.get(0).right){
                 accel.x = +1.0 * STG_MV_LR;
                 dir = Direction.RIGHT;
             }
             // 左
-            else if (Main.user_input.isKeyDown(config.getInstance().left)) {
+            else if (Main.user_input.get(0).left) {
                 accel.x = -1.0 * STG_MV_LR;
                 dir = Direction.LEFT;
             }
@@ -155,11 +156,11 @@ public class playerObj extends charObj {
 
             //上下操作
             // 上
-            if (Main.user_input.isKeyDown(config.getInstance().up)) {
+            if (Main.user_input.get(0).up) {
                 accel.y = -1.0 * STG_MV_UD;
             }
             // 下
-            else if (Main.user_input.isKeyDown(config.getInstance().down)) {
+            else if (Main.user_input.get(0).down) {
                 accel.y = +1.0 * STG_MV_UD;
             }
             // 入力なし
@@ -168,7 +169,7 @@ public class playerObj extends charObj {
             }
 
             //高速移動
-            if(Main.user_input.isKeyDown(config.getInstance().highsp)){
+            if(Main.user_input.get(0).highsp){
                 accel.x *= HISPEED_RATE;
                 accel.y *= HISPEED_RATE;
             }

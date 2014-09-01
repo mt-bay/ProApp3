@@ -59,9 +59,13 @@ public class debugLog {
 
     /*
      * ログに追記
-     * 引数  ：追加する内容
+     * 引数  ：なし         or
+     *         追加する内容
      * 戻り値：なし
      */
+    public void write(){
+        write("");
+    }
     public void write(String str) {
         try {
             log.write(str);

@@ -10,9 +10,9 @@ import java.util.Queue;
 
 import org.newdawn.slick.Graphics;
 
-import window.Main;
 import window.window;
 import IO.debugLog;
+
 import common.point;
 import common.rect;
 
@@ -67,24 +67,26 @@ public class Stage {
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
 
+            debugLog.getInstance().write("stage load : " + _file_path);
+
             String         str         = "";
             String         script_path = (Paths.get(_file_path).getParent() == null)?
                                           null : Paths.get(_file_path).getParent().toString() + "\\";
 
             str          = script_path + bRead.readLine();
-            debugLog.getInstance().write(str + " load.");
+            debugLog.getInstance().write("    mapObj load : " + str);
             map_data     = mapObj.file_to_mapObj(str, this);
 
             str          = script_path + bRead.readLine();
-            debugLog.getInstance().write(str + " load.");
+            debugLog.getInstance().write("    dmgObj load : " + str);
             damage       = dmgObj.file_to_dmgObj_ArrayList(str, this);
 
             str          = script_path + bRead.readLine();
-            debugLog.getInstance().write(str + " load.");
+            debugLog.getInstance().write("    plyObj load : " + str);
             player_data  = playerObj.file_to_playerObj(str, this);
 
             str          = script_path + bRead.readLine();
-            debugLog.getInstance().write(str + " load.");
+            debugLog.getInstance().write("    chrObj load : " + str);
             person       = charObj.file_to_charObj_ArrayList(str, this);
 
             String[] elm = bRead.readLine().split(" ");
@@ -106,6 +108,7 @@ public class Stage {
 
         camera_position_correction();
 
+        debugLog.getInstance().write();
     }
 
     /* メソッド */
