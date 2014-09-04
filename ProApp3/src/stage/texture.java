@@ -48,6 +48,8 @@ public class texture {
         draw(g, _location, _camera, 1.0f);
     }
     public void draw(Graphics g,point<Float> _location, Stage _camera, float _scale){
+        if(texture_m == null)
+            return;
 
         if(!window.comprise(new rect(_location.FtoD(), size), _camera)){
             return;

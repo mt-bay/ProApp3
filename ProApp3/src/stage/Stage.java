@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import menu.stageSelector;
+
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import window.Main;
 import window.window;
 import IO.debugLog;
 
@@ -24,6 +28,9 @@ public class Stage {
 
     /* メンバ変数・インスタンス */
     public point<Double>     gravitiy;
+
+    //親オブジェクト
+    public stageSelector        belong;          //親オブジェクト
 
     //現フレームのオブジェクト
     public playerObj            player_data;     //プレイヤーオブジェクト
@@ -63,7 +70,9 @@ public class Stage {
      * を読み込む
      * 引数：ファイル名
      */
-    public Stage(String _file_path) {
+    public Stage(String _file_path, stageSelector _belong) {
+        belong = _belong;
+
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
 
@@ -71,21 +80,21 @@ public class Stage {
 
             String         str         = "";
             String         script_path = (Paths.get(_file_path).getParent() == null)?
-                                          null : Paths.get(_file_path).getParent().toString() + "\\";
+                                          "" : Paths.get(_file_path).getParent().toString() + "\\";
 
-            str          = script_path + bRead.readLine();
+            str          = window.file_path_corres(script_path + bRead.readLine());
             debugLog.getInstance().write("    mapObj load : " + str);
             map_data     = mapObj.file_to_mapObj(str, this);
 
-            str          = script_path + bRead.readLine();
+            str          = window.file_path_corres(script_path + bRead.readLine());
             debugLog.getInstance().write("    dmgObj load : " + str);
             damage       = dmgObj.file_to_dmgObj_ArrayList(str, this);
 
-            str          = script_path + bRead.readLine();
+            str          = window.file_path_corres(script_path + bRead.readLine());
             debugLog.getInstance().write("    plyObj load : " + str);
             player_data  = playerObj.file_to_playerObj(str, this);
 
-            str          = script_path + bRead.readLine();
+            str          = window.file_path_corres(script_path + bRead.readLine());
             debugLog.getInstance().write("    chrObj load : " + str);
             person       = charObj.file_to_charObj_ArrayList(str, this);
 
@@ -95,9 +104,11 @@ public class Stage {
             bRead.close();
         }catch(IOException e){
             debugLog.getInstance().write("read failed : " + _file_path);
+            reflesh();
         }
         catch(Exception e){
             debugLog.getInstance().write_exception(e);
+            reflesh();
         }
 
         create_dmg    = new LinkedList<dmgObj>();
@@ -144,6 +155,11 @@ public class Stage {
      * 戻り値：なし
      */
     public void update(){
+        //処理を抜ける場合
+        if(Main.user_input.get(0).quit){
+            reflesh();
+        }
+
         //状態アップデート
         // プレイヤーオブジェクト
         add_playerObj_prev();
@@ -204,6 +220,15 @@ public class Stage {
 
     }
 
+    /*
+     * 親オブジェクトに処理を返す
+     * 引数  ：なし
+     * 戻り値：なし
+     */
+    public void reflesh(){
+        belong.index_is_run = false;
+    }
+
 
     /* ステージの描画
      * 引数  ：なし
@@ -221,8 +246,17 @@ public class Stage {
             damage.get(i).draw(g);
         }
 
-
         player_data.draw(g);
+
+        if(Main._DEBUG){
+            Color prev_color = g.getColor();
+
+            g.setFont(Main.debug_ttf);
+            g.setColor(Main.DEBUG_FONT_COLOR);
+            g.drawString("player - location = " + player_data.location.toString(), Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * 3.0f);
+            g.drawString("player - is_gnd   = " + player_data.is_gnd             , Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * 4.0f);
+            g.setColor(prev_color);
+        }
     }
 
     /*

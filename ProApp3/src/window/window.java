@@ -1,5 +1,7 @@
 package window;
 
+import java.io.File;
+
 import stage.Stage;
 
 import common.point;
@@ -37,7 +39,40 @@ public class window {
         return true;
     }
 
+    /*
+     * ファイルパスを各OSの形式に合った形に変更する
+     * 引数  ：元のファイルパス
+     * 戻り値：各OSの形式に変換したファイルパス
+     */
+    public static String file_path_corres(String _file_path){
+        String return_str = "";
+        for(int i = 0; i < _file_path.length(); i++){
+            if((_file_path.charAt(i) == '/' ) ||
+               (_file_path.charAt(i) == '\\')){
 
+                return_str += File.separator;
+            }
+            else{
+                return_str += _file_path.charAt(i);
+            }
+        }
+        return return_str;
+    }
 
+    /*
+     * ファイルパスから、拡張子を除いたファイル名を取得する
+     * 引数  ：ファイルパス
+     * 戻り値：ファイル名
+     */
+    public static String get_file_name_prefix(String _file_path){
+        File   f         = new File(_file_path);
+        String fname     = f.getName();
+        int    ext_point = fname.lastIndexOf(".");
+
+        if(ext_point != -1)
+            fname = fname.substring(0, ext_point);
+
+        return fname;
+    }
 
 }

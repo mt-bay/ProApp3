@@ -20,16 +20,18 @@ import common.point;
 public class selector {
     /* メンバ変数 */
     //要素関係
-    protected        int               index;      //選択中の要素
-    protected        ArrayList<String> index_name; //要素名
-    protected        int               length;     //選択し得る要素数
-    protected        boolean           do_loop;    //カーソルが要素からあふれる場合、ループさせるか
+    protected               int               index;      //選択中の要素
+    protected               ArrayList<String> index_name; //要素名
+    protected               int               length;     //選択し得る要素数
+    protected               boolean           do_loop;    //カーソルが要素からあふれる場合、ループさせるか
 
     //描画関係
-    protected        int               drawable;   //描画可能な要素数
-    protected        float             font_size;  //文字列描画時のサイズ
-    protected        String            font_name;  //描画時のフォント名
-    protected        TrueTypeFont      ttf_m;      //描画時のフォント
+    protected               int               drawable;   //描画可能な要素数
+    protected               float             font_size;  //文字列描画時のサイズ
+    protected               TrueTypeFont      ttf_m;      //描画時のフォント
+
+    /* 定数 */
+    protected static final  String            FONT_NAME = "Consolas";  //描画時のフォント名
 
 
     /* コンストラクタ */
@@ -46,9 +48,9 @@ public class selector {
      * 引数  ：各種データ
      */
     public selector(ArrayList<String> _index_name, int    _drawable , boolean _do_loop,
-                    float             _font_size , String _font_name){
+                    float             _font_size ){
         init(_index_name, _drawable , _do_loop,
-             _font_size , _font_name);
+             _font_size );
 
     }
 
@@ -72,10 +74,10 @@ public class selector {
         index += var;
         if(do_loop){
             if(index > get_max()){
-                index   = index % length;
+                index   = get_min();
             }
             if(index < get_min()){
-                index   = get_max() - Math.abs(index % length);
+                index   = get_max();
             }
             return;
         }
@@ -127,7 +129,7 @@ public class selector {
 
     /*
      * 描画
-     * 引数  ：グラフィックス, 左上座標
+     * 引数  ：グラフィックス, 中心上座標
      * 戻り値：なし
      */
     public void draw(Graphics g, point<Float> _upper_center){
@@ -169,21 +171,21 @@ public class selector {
      * 戻り値：なし
      */
     protected void init(ArrayList<String> _index_name, int    _drawable , boolean _do_loop,
-                        float             _font_size , String _font_name){
+                        float             _font_size ){
         index = 0;
 
         for(int i = 0; i < _index_name.size(); i++)
             index_name.add(new String(_index_name.get(i)));
 
-        length = _index_name.size();
+        length    = _index_name.size();
 
-        drawable = _drawable;
-        do_loop  = _do_loop;
+        drawable  = _drawable;
+        do_loop   = _do_loop;
         font_size = _font_size;
 
-        font_name = _font_name;
+
         try{
-            ttf_m = new TrueTypeFont(new java.awt.Font(font_name, 0, (int)font_size), false);
+            ttf_m = new TrueTypeFont(new java.awt.Font(FONT_NAME, 0, (int)font_size), false);
         }
         catch(Exception e){
             debugLog.getInstance().write_exception(e);
@@ -196,7 +198,7 @@ public class selector {
      * 引数  ：長さを取得したい文字列
      * 戻り値：長さ
      */
-    private float get_string_width(String _source){
+    protected float get_string_width(String _source){
         float  str_wid   = 0.0f;
         char[] source_ca = _source.toCharArray();
         for(int i = 0; i < _source.length(); i++){
@@ -221,28 +223,37 @@ public class selector {
      * 引数  ：なし
      * 戻り値：描画可能な要素インデックスが入っている配列
      */
-    private int[] get_drawable_index(){
+    protected int[] get_drawable_index(){
         ArrayList<Integer> dw_index = new ArrayList<Integer>(); //描画する要素
+        int draw_min = index - (drawable / 2) - ((drawable % 2 == 0)? 1 : 0); //描画可能な要素番号の最小値導出
+        int draw_max = draw_min + (drawable - 1);                             //描画可能な要素番号の最大値導出
 
+        //描画要素数が配列長と同じか、それ以上の場合
         if(drawable >= length){
             for(int i = 0; i < length; i++){
                 dw_index.add(i);
             }
-            int[] rt_index = new int[dw_index.size()]; //戻り値用配列
-            for(int i = 0; i < dw_index.size(); i++)    //要素代入
-                rt_index[i] = dw_index.get(i).intValue();
-
-            return rt_index;
-
+        }
+        //描画可能な要素番号の最小値が、配列の要素番号の最小値を下回っている場合
+        else if(draw_min < get_min()){
+            for(int i = 0; i < drawable; i++){
+                dw_index.add(i);
+            }
+        }
+        //描画可能な要素番号の最大値が、配列の要素番号の最大値を上回っている場合
+        else if(draw_max > get_max()){
+            for(int i = drawable - 1; i >= 0; i--){
+                dw_index.add(get_max() - drawable);
+            }
+        }
+        //どれでもない場合
+        else{
+            for(int i = 0; i < drawable; i++){
+                dw_index.add(get_relative_index(draw_min + i));
+            }
         }
 
-        int draw_min = index - (drawable / 2) - ((drawable % 2 == 0)? 1 : 0); //描画可能な要素数の最小値導出
-        dw_index.add(get_relative_index(draw_min + 0)); //最初の要素追加
-        for(int i = 1; i < drawable; i++){
-            if(dw_index.get(dw_index.size() - 1) != get_relative_index(draw_min + i)) //前要素と同じ値を取得していなければ
-                dw_index.add(get_relative_index(draw_min + i)); //要素追加
-        }
-
+        //int型配列に変換
         int[] rt_index = new int[dw_index.size()]; //戻り値用配列
         for(int i = 0; i < dw_index.size(); i++)    //要素代入
             rt_index[i] = dw_index.get(i).intValue();
@@ -264,14 +275,6 @@ public class selector {
         if(buf_index < get_min())
             buf_index = get_min();
 
-        /*
-        if(do_loop){
-            while(buf_index > get_max() &&
-                  buf_index < get_min()){
-                buf_index += ((buf_index < get_min())? 1 : -1) * (get_max() + 0);
-            }
-        }
-        */
         return buf_index;
     }
 

@@ -3,6 +3,7 @@ package menu;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.TrueTypeFont;
 
@@ -15,17 +16,20 @@ import common.point;
 /* メインメニュークラス */
 public class mainMenu extends selector{
     /* メンバ変数 */
-    public boolean       elm_is_run; //選択している要素が実行中か
+    public boolean       index_is_run; //選択している要素が実行中か
     public Main          belong;
-    public configMenu    config;     //コンフィグメニュー
-    public stageSelector stage;      //ステージ選択メニュー
+    public configMenu    cfg_menu;   //コンフィグメニュー
+    public stageSelector stg_select; //ステージ選択メニュー
 
     /* コンストラクタ */
     public mainMenu(Main _belong){
         ArrayList<String> elm_name = new ArrayList<String>();
         elm_name.add("Stage select"); elm_name.add("config"); elm_name.add("exit");
+        stg_select = new stageSelector(this);
+        cfg_menu   = new configMenu(this);
 
-        init(elm_name, 3, true, 24, "メイリオ", _belong);
+        init(elm_name,       3, true,
+                   18, _belong);
 
     }
 
@@ -36,16 +40,16 @@ public class mainMenu extends selector{
      * 引数  ：なし
      * 戻り値：なし
      */
-    public void update(){
+    public void update(GameContainer gc){
         //選択中の要素を実行中の時
-        if(elm_is_run){
+        if(index_is_run){
             switch(index){
                 case 0:
-                    stage.update();
+                    stg_select.update(gc);
                     break;
 
                 case 1:
-                    config.update();
+                    cfg_menu.update(gc);
                     break;
 
                 case 2:
@@ -56,11 +60,16 @@ public class mainMenu extends selector{
             return;
         }
 
+        //BGMの設定
+
+
         //このメニューをカレントで実行中の時
         //indexの内容実行
         if(Main.user_input.get(0).ok){
-            elm_is_run = true;
-            return;
+            if(!Main.user_input.get(1).ok){
+                index_is_run = true;
+                return;
+            }
         }
 
         //indexの上下操作
@@ -85,14 +94,16 @@ public class mainMenu extends selector{
      * 戻り値：なし
      */
     public void draw(Graphics g){
-        if(elm_is_run){
+        //背景描画
+
+        if(index_is_run){
             switch(index){
                 case 0:
-                    stage.draw();
+                    stg_select.draw(g);
                     break;
 
                 case 1:
-                    config.draw();
+                    cfg_menu.draw(g);
                     break;
 
                 case 2:
@@ -101,10 +112,16 @@ public class mainMenu extends selector{
             }
             return;
         }
-
         //このメニューをカレントで実行中の時
-        g.setBackground(new Color(0xffffff));
+        g.setBackground(new Color(0xa8bb70));  //背景色設定
+
         super.draw(g, new point<Float>(window.SIZE.x.floatValue() / 2.0f, 300.0f));
+        if(Main._DEBUG){
+            Color base_color = g.getColor();
+            g.setColor(new Color(0x0000ff));
+            g.drawLine(window.SIZE.x.floatValue() / 2.0f, 0.0f, window.SIZE.x.floatValue() / 2.0f, window.SIZE.y.floatValue());
+            g.setColor(base_color);
+        }
     }
 
     /*
@@ -113,7 +130,7 @@ public class mainMenu extends selector{
      * 戻り値：なし
      */
     public void reflesh(){
-        elm_is_run = false;
+        index_is_run = false;
     }
 
     /*
@@ -122,7 +139,7 @@ public class mainMenu extends selector{
      * 戻り値：なし
      */
     protected void init(ArrayList<String> _index_name, int    _drawable , boolean _do_loop,
-                        float             _font_size , String _font_name, Main    _belong ){
+                        float             _font_size , Main    _belong ){
         index = 0;
 
         index_name = new ArrayList<String>();
@@ -135,9 +152,8 @@ public class mainMenu extends selector{
         do_loop  = _do_loop;
         font_size = _font_size;
 
-        font_name = _font_name;
         try{
-            ttf_m = new TrueTypeFont(new java.awt.Font(font_name, 0, (int)font_size), false);
+            ttf_m = new TrueTypeFont(new java.awt.Font(FONT_NAME, java.awt.Font.BOLD, (int)font_size), false);
         }
         catch(Exception e){
             debugLog.getInstance().write_exception(e);
@@ -145,7 +161,8 @@ public class mainMenu extends selector{
             ttf_m = null;
         }
 
-        elm_is_run = false;
+        index_is_run = false;
+
 
         belong = _belong;
     }

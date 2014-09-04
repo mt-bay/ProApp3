@@ -12,6 +12,7 @@ import org.newdawn.slick.Graphics;
 import window.Main;
 import window.window;
 import IO.debugLog;
+
 import common.point;
 import common.rect;
 
@@ -120,7 +121,7 @@ public class dmgObj extends rect {
                                         Double.parseDouble(str[6])                                                          ,
                                         Force.parceForce(str[7])                                                            ,
                                         Integer.parseInt(str[8])                                                            ,
-                                        script_path + str[9]                                                                ,
+                                        window.file_path_corres(script_path + str[9])                                       ,
                                         _belong                                                                             ));
             }
 

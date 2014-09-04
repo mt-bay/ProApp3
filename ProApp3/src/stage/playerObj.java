@@ -10,6 +10,7 @@ import org.newdawn.slick.Graphics;
 
 import window.Main;
 import window.window;
+import AI.action_opcode;
 import IO.debugLog;
 
 import common.point;
@@ -22,19 +23,21 @@ public class playerObj extends charObj {
     private              texture        texture_act_m; //アクションモード用テクスチャ
     public               point<Integer> size_stg;      //シューティングモード時のサイズ
     private              texture        texture_stg_m; //シューティングモード用テクスチャ
-    public               boolean        is_shooting;  //シューティングモードか
+    public               boolean        is_shooting;   //シューティングモードか
+    //使用AI
+    public               action_opcode  ai;            //使用するAI
     //タイマー変数
-    protected            int            timer_deform; //シューティング←→アクションの変形残りフレーム
-    protected            int            timer_reload; //攻撃操作の、再攻撃待機タイマー
+    protected            int            timer_deform;  //シューティング←→アクションの変形残りフレーム
+    protected            int            timer_reload;  //攻撃操作の、再攻撃待機タイマー
 
     /* 定数 */
     //モード共通
-    private static final double HISPEED_RATE    =   1.5d; //高速移動時の移動力倍率
+    private static final double HIGHSPEED_RATE  =   1.5d; //高速移動時の移動力倍率
 
     //アクションモード用
-    private static final double ACT_MV_GND      =   8.5d;  //接地時の左右移動力
+    private static final double ACT_MV_LR       =   8.5d;  //接地時の左右移動力
     private static final double ACT_MV_JUMP     = -20.0d;  //ジャンプ時の上方向移動力
-    private static final double ACT_MV_NOT_GND  =   8.5d;  //非接地時の左右移動力
+//    private static final double ACT_MV_NOT_GND  =   8.5d;  //非接地時の左右移動力
     private static final double ACT_DAMAGE_RATE =   1.0d;  //ダメージ倍率
 
     //シューティングモード用
@@ -88,93 +91,34 @@ public class playerObj extends charObj {
      */
     @Override
     public void update() {
-
-        //変形処理を行い、変形時でなければ通常操作
-        if(deform())
-            return;
-
         //前処理
-        //重力値分の移動力補正
+        // AIの状態更新
+        ai.update(this);
+        // 重力値分の移動力補正
         if(is_gravitied){
             accel.x += belong.gravitiy.x;
             accel.y += belong.gravitiy.y;
         }
 
-        //共通操作
-        //攻撃(ダメージオブジェクト生成)
-        if (Main.user_input.get(0).attack) {
-         }
+        //変形中なら処理を抜ける
+        if(deform())
+            return;
 
-        //固有操作
-        //アクションモード
-        if (!is_shooting) {
-            //ジャンプ
-            if (Main.user_input.get(0).jump && is_gnd) {
-                if(!Main.user_input.get(1).jump)
-                    accel.y = ACT_MV_JUMP;
-            }
+        //通常操作
+        // 左右移動
+        //  左
+        if(ai.move_lr == action_opcode.MOVE_LR_LEFT)
+            accel.x -= (is_shooting)? STG_MV_LR  : ACT_MV_LR;
 
-            //左右移動
-            // 右
-            if (Main.user_input.get(0).right) {
-                accel.x = +1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
-                dir = Direction.RIGHT;
-            }
-            // 左
-            else if (Main.user_input.get(0).left) {
-                accel.x = -1.0 * ((is_gnd)? ACT_MV_GND : ACT_MV_NOT_GND);
-                dir = Direction.LEFT;
-            }
-            // 入力なし
-            else{
-                accel.x = 0.0;
-            }
+        if(ai.move_lr == action_opcode.MOVE_LR_LEFT_HIGHSPEED)
+            accel.x -= ((is_shooting)? STG_MV_LR : ACT_MV_LR) * HIGHSPEED_RATE;
 
-            //高速移動
-            if(Main.user_input.get(0).highsp){
-                accel.x *= HISPEED_RATE;
-            }
+        //  右
+        if(ai.move_lr == action_opcode.MOVE_LR_RIGHT)
+            accel.x += (is_shooting)? STG_MV_LR : ACT_MV_LR;
 
-        }
-        // シューティングモード
-        else {
-            //左右移動
-            // 右
-            if (Main.user_input.get(0).right){
-                accel.x = +1.0 * STG_MV_LR;
-                dir = Direction.RIGHT;
-            }
-            // 左
-            else if (Main.user_input.get(0).left) {
-                accel.x = -1.0 * STG_MV_LR;
-                dir = Direction.LEFT;
-            }
-            // 入力なし
-            else{
-                accel.x = 0.0;
-            }
-
-            //上下操作
-            // 上
-            if (Main.user_input.get(0).up) {
-                accel.y = -1.0 * STG_MV_UD;
-            }
-            // 下
-            else if (Main.user_input.get(0).down) {
-                accel.y = +1.0 * STG_MV_UD;
-            }
-            // 入力なし
-            else{
-                accel.y = 0.0;
-            }
-
-            //高速移動
-            if(Main.user_input.get(0).highsp){
-                accel.x *= HISPEED_RATE;
-                accel.y *= HISPEED_RATE;
-            }
-        }
-
+        if(ai.move_lr == action_opcode.MOVE_LR_RIGHT_HIGHSPEED)
+            accel.x += ((is_shooting)? STG_MV_LR : ACT_MV_LR) * HIGHSPEED_RATE;
     }
 
 
@@ -252,10 +196,10 @@ public class playerObj extends charObj {
                                                                          Double.parseDouble(str[ 1]));
             point<Integer> _size_act                = new point<Integer>(Integer.parseInt  (str[ 2]),  //アクションモード時のサイズ
                                                                          Integer.parseInt  (str[ 3]));
-            String         _texture_act             = script_path +                         str[ 4];   //アクションモード時のテクスチャへのパス
+            String         _texture_act             = window.file_path_corres(script_path + str[ 4]);  //アクションモード時のテクスチャへのパス
             point<Integer> _size_stg                = new point<Integer>(Integer.parseInt  (str[ 5]),  //シューティングモード時のサイズ
                                                                          Integer.parseInt  (str[ 6]));
-            String         _texture_stg             = script_path +                         str[ 7];   //シューティングモード時のテクスチャへのパス
+            String         _texture_stg             = window.file_path_corres(script_path + str[ 7]);  //シューティングモード時のテクスチャへのパス
             point<Double > _accel                   = new point<Double> (Double.parseDouble(str[ 8]),  //加速度
                                                                          Double.parseDouble(str[ 9]));
             double         _hp                      = Double.parseDouble                   (str[10]);  //HP
@@ -454,6 +398,7 @@ public class playerObj extends charObj {
         timer_deform      = _timer_deform;
         timer_not_visible = _timer_not_visible;
 
+        ai                = new action_opcode(action_opcode.AI_USER_INPUT);
         //参照を受け取る
         belong        = _belong;
 

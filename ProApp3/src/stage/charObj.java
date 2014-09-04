@@ -11,6 +11,7 @@ import org.newdawn.slick.Graphics;
 
 import window.Main;
 import window.window;
+
 import common.point;
 import common.rect;
 
@@ -149,7 +150,7 @@ public class charObj extends rect {
                                             Boolean.  parseBoolean  (str[8])                                                    ,
                                             Boolean.  parseBoolean  (str[9])                                                    ,
                                             Force.    parceForce    (str[10])                                                   ,
-                                            script_path + str[11]                                                               ,
+                                            window.file_path_corres(script_path + str[11])                                      ,
                                             _belong                                                                             ));
             }
             bRead.close();

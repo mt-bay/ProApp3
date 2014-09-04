@@ -13,6 +13,7 @@ import org.newdawn.slick.SpriteSheet;
 import window.Main;
 import window.window;
 import IO.debugLog;
+
 import common.point;
 import common.rect;
 
@@ -153,9 +154,9 @@ public class mapObj {
             bRead.close();
 
             m_obj = new mapObj(new point<Integer>(Integer.parseInt(str[0]), Integer.parseInt(str[1])),
-                               script_path + str[2]                                                  ,
+                               window.file_path_corres(script_path + str[2])                         ,
                                Boolean.parseBoolean(str[3])                                          ,
-                               script_path + str[4]                                                  ,
+                               window.file_path_corres(script_path + str[4])                         ,
                                _belong                                                               );
         }catch(Exception e){
             debugLog.getInstance().write_exception(e);
