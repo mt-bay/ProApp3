@@ -14,6 +14,7 @@ public class window {
     /* 定数 */
     public static final point<Integer> SIZE           = new point<Integer>(800, 600);
     public static final int            FPS            = 30;
+    public static final float          SCALE          = 1.0f;
 
     /* メンバ変数 */
 
@@ -28,15 +29,24 @@ public class window {
 
         rect o = _camera.relative_camera_rect(_obj);
         //x軸での判定
-        if(o.LowerRight().x <                       0.0d ||
-           o.UpperLeft() .x > window.SIZE.x.doubleValue())
+        if(o.LowerRight().x <                   0.0d ||
+           o.UpperLeft() .x > scaled_window_size().x)
             return false;
         //y軸での判定
-        if(o.LowerRight().y <                       0.0d ||
-           o.UpperLeft() .y > window.SIZE.y.doubleValue())
+        if(o.LowerRight().y <                   0.0d ||
+           o.UpperLeft() .y > scaled_window_size().y)
             return false;
 
         return true;
+    }
+
+    /*
+     * 倍率に合ったウィンドウサイズを得る
+     * 引数  ：なし
+     * 戻り値：ウィンドウサイズ
+     */
+    public static point<Float> scaled_window_size(){
+        return new point<Float>(SIZE.x.floatValue() / SCALE, SIZE.y.floatValue() / SCALE);
     }
 
     /*

@@ -24,7 +24,7 @@ import common.rect;
 public class Stage {
     /* 定数 */
     // プレイヤオブジェクトの、下底の中心をどこに映すか
-    public final point<Float> PLAYER_SHOOT = new point<Float>((window.SIZE.x.floatValue() * 3 / 4), window.SIZE.y.floatValue()  / 2);
+    public final point<Float> PLAYER_SHOOT = new point<Float>((window.scaled_window_size().x  / 2), window.scaled_window_size().y / 4);
 
     /* メンバ変数・インスタンス */
     public point<Double>     gravitiy;
@@ -188,6 +188,19 @@ public class Stage {
         //カメラ位置修正
         camera_position_correction();
 
+        //削除処理
+        // キャラクタオブジェクト
+        for(int i = 0; i < person.size(); i++){
+            if(person.get(i).is_dead)
+                person.remove(i);
+        }
+
+        // ダメージオブジェクト
+        for(int i = 0; i < damage.size(); i++){
+            if(damage.get(i).is_dead)
+                damage.remove(i);
+        }
+
         //追加処理
         // キャラクタオブジェクト
         while(!create_person.isEmpty())
@@ -215,7 +228,7 @@ public class Stage {
 
         //規定の数より不足している場合
         while(player_prev.size() < PREV_MAX){
-            player_prev.add(player_data);
+            player_prev.add(new playerObj(player_data));
         }
 
     }
@@ -242,7 +255,7 @@ public class Stage {
             person.get(i).draw(g);
         }
 
-        for(int i = 0; i < person.size(); i++){
+        for(int i = 0; i < damage.size(); i++){
             damage.get(i).draw(g);
         }
 
@@ -253,8 +266,14 @@ public class Stage {
 
             g.setFont(Main.debug_ttf);
             g.setColor(Main.DEBUG_FONT_COLOR);
-            g.drawString("player - location = " + player_data.location.toString(), Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * 3.0f);
-            g.drawString("player - is_gnd   = " + player_data.is_gnd             , Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * 4.0f);
+            int line = 2;
+            g.drawString("camera = " + camera_location, Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
+            g.drawString("player - location = " + player_data.location.toString(), Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
+            g.drawString("player - is_gnd   = " + player_data.is_gnd             , Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
+            g.drawString("player - ai - move    = " + player_data.ai.move  , Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
+            g.drawString("player - ai - attack  = " + player_data.ai.attack, Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
+            g.drawString("player - timer_reload = " + player_data.timer_reload.toString(), Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE  * (float)++line);
+
             g.setColor(prev_color);
         }
     }
@@ -266,7 +285,7 @@ public class Stage {
      */
     private void camera_position_correction(){
         rect shoot_area = new rect(player_location_to_camera_location(),
-                                   window.SIZE                         );
+                                   window.scaled_window_size().FtoI()  );
 
         //描画範囲がステージ内に収まっているとき
         if(map_data.is_field_conntraction(shoot_area)){
@@ -278,26 +297,25 @@ public class Stage {
         if(shoot_area.UpperLeft(). x < 0.0d)
             shoot_area.location.x = 0.0d;
         if(shoot_area.UpperRight().x > map_data.get_field_size().x)
-            shoot_area.location.x = map_data.get_field_size().x - window.SIZE.x.doubleValue();
+            shoot_area.location.x = map_data.get_field_size().x - window.scaled_window_size().x.doubleValue();
         if(window.SIZE.x > map_data.get_field_size().x)
-            shoot_area.location.x = (map_data.get_field_size().x.doubleValue() - window.SIZE.x.doubleValue()) / 2;
+            shoot_area.location.x = (map_data.get_field_size().x.doubleValue() - window.scaled_window_size().x) / 2;
 
         //y軸の修正
         if(shoot_area.UpperLeft().y < 0.0d)
             shoot_area.location.y = 0.0d;
         if(shoot_area.LowerLeft().y > map_data.get_field_size().y.doubleValue())
-            shoot_area.location.y = map_data.get_field_size().y.doubleValue() - window.SIZE.y.doubleValue();
+            shoot_area.location.y = map_data.get_field_size().y.doubleValue() - window.scaled_window_size().y;
         if(window.SIZE.y > map_data.get_field_size().y)
-            shoot_area.location.y = (map_data.get_field_size().y.doubleValue() - window.SIZE.x.doubleValue()) / 2;
+            shoot_area.location.y = (map_data.get_field_size().y.doubleValue() - window.scaled_window_size().y) / 2;
 
         camera_location = shoot_area.location.DtoF();
         return;
     }
 
     private point<Double> player_location_to_camera_location(){
-        return new point<Double>(player_data.LowerRight().x - (window.SIZE.x.doubleValue() - PLAYER_SHOOT.x.doubleValue()),
-                                 player_data.LowerRight().y - (player_data.to_rect().size.y.doubleValue() / 2)
-                                     - (window.SIZE.y.doubleValue() - PLAYER_SHOOT.y.doubleValue()));
+        return new point<Double>(player_data.get_center().x - (window.scaled_window_size().x - PLAYER_SHOOT.x.doubleValue()),
+                                 player_data.LowerRight().y - (window.scaled_window_size().y - PLAYER_SHOOT.y.doubleValue()));
     }
 
 

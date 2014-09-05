@@ -25,8 +25,6 @@ public class dmgObj extends rect {
     public                 int            timer_dead;     //消滅するまでのタイマー変数
     public                 Stage          belong;         //どのステージに存在しているか
 
-
-
     private                texture        texture_m;      //テクスチャ
 
     private   static final int           TIMER_STOP = -1; //タイマー変数の停止状態用
@@ -63,6 +61,19 @@ public class dmgObj extends rect {
              _belong);
     }
 
+    /*
+     * 状態アップデート
+     * 引数  ：なし
+     * 戻り値：なし
+     */
+    public void update(){
+        if(timer_dead == 0)
+            is_dead = true;
+        else if(timer_dead > 0)
+            --timer_dead;
+
+    }
+
 
     /* メソッド */
     /* 描画
@@ -70,29 +81,17 @@ public class dmgObj extends rect {
      * 戻り値：なし
      */
     public void draw(Graphics g){
-        draw(g, 1.0f);
-    }
-    public void draw(Graphics g, float _scale){
-        texture_m.draw(g, location.DtoF(), belong, _scale);
+        texture_m.draw(g, location.DtoF(), belong, ((accel.x < 0.0)? true : false));
         if(Main._DEBUG){
             if(window.comprise(this, belong)){
                 rect r = belong.relative_camera_rect(this);
                 g.setColor(new Color(0xff0000));
-                g.drawRect(r.location.x.floatValue(), r.location.y.floatValue(),
-                           r.size.x.floatValue()    , r.size.y.floatValue());
+                g.drawRect(r.location.x.floatValue() * window.SCALE, r.location.y.floatValue() * window.SCALE,
+                           r.size.x.floatValue()     * window.SCALE, r.size.y.floatValue()     * window.SCALE);
             }
         }
     }
 
-    /*
-     * 状態アップデート
-     * TODO:作ろう!
-     * 引数  ：なし
-     * 戻り値：なし
-     */
-    public void update(){
-
-    }
 
     /* ファイルからArrayList<dmgObj>生成
      * 要素は1行1つで、要素1つごとに以下の内容を持っているものとする
@@ -141,31 +140,47 @@ public class dmgObj extends rect {
      * 戻り値：なし
      */
     public void move(){
+
         //ローカル変数宣言
-        //直線描画用
-        point<Integer> location_i = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
-        point<Integer> dest_i     = new point<Integer>((int)new BigDecimal(location.x + accel.x).setScale(0, BigDecimal.ROUND_UP).doubleValue(), //目的位置(int)
-                                                       (int)new BigDecimal(location.y + accel.y).setScale(0, BigDecimal.ROUND_UP).doubleValue());
-        point<Integer> accel_i    = new point<Integer>(location_i.x - dest_i.x, location_i.y - dest_i.y); //移動サイズ(int)
+        point<Double>  move_actual  = new point<Double>(0.0, 0.0); //実際の移動量
+        //直線用
+        point<Integer> location_i   = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
+        point<Integer> dest_i       = new point<Integer>((int)(new BigDecimal(location.x + accel.x).                                                 //目的位置(int)
+                                                                 setScale(0, BigDecimal.ROUND_DOWN).doubleValue() + ((accel.x < 0)? -1.0d : 1.0d)),
+                                                       (int)(new BigDecimal(location.y + accel.y).
+                                                                 setScale(0, BigDecimal.ROUND_DOWN).doubleValue() + ((accel.y < 0)? -1.0d : 1.0d)));
+        point<Integer> accel_i      = new point<Integer>(dest_i.x - location_i.x, dest_i.y - location_i.y); //移動サイズ(int)
 
-        point<Integer> inc_i      = new point<Integer>((accel_i.x > 0)? 1 : -1 , (accel_i.y > 0)? 1 : -1); //加算する方向
+        point<Integer> inc_i        = new point<Integer>((accel_i.x > 0)? 1 : -1 , (accel_i.y > 0)? 1 : -1); //加算する方向
 
-        double         error      =0.5 * ((Math.abs(accel_i.x) > Math.abs(accel_i.y))? accel_i.x : accel_i.y); //誤差
+        point<Double>  move_this_pr = new point<Double>(0.0d, 0.0d);  //1プロセス中の移動量
+
+        double         error      = 0.5 * Math.abs(((Math.abs(accel_i.x) > Math.abs(accel_i.y))? accel_i.y : accel_i.x)); //誤差
+
         //処理
 
         //x軸の方が大きい場合
         if(Math.abs(accel_i.x) > Math.abs(accel_i.y)){
             for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.x) < Math.abs(accel_i.x); p.x += inc_i.x){
-                location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                move_this_pr.x = (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                move_this_pr.y = 0.0d;
+
+                location.x    += move_this_pr.x;
+                move_actual.x += move_this_pr.x;
 
                 process_contract();
 
-                error      += accel_i.y;
-                if(error >= accel_i.x.doubleValue()){
-                    location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+                error      += Math.abs(accel.y);
+                if(error >= Math.abs(accel.x.doubleValue())){
+                    move_this_pr.x = 0.0d;
+                    move_this_pr.y = (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+
+                    location.y    += move_this_pr.y;
+                    move_actual.y += move_this_pr.y;
 
                     process_contract();
 
+                    error -= Math.abs(accel.x.doubleValue());
                     p.y        += inc_i.y;
                 }
             }
@@ -174,21 +189,31 @@ public class dmgObj extends rect {
         else
         {
             for(point<Integer> p = new point<Integer>(0, 0); Math.abs(p.y) < Math.abs(accel_i.y); p.y += inc_i.y){
-                location.y += (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+                move_this_pr.x = 0.0d;
+                move_this_pr.y = (Math.abs(accel.y - p.y.doubleValue()) < 1.0d)? accel.y - p.y.doubleValue() : inc_i.y.doubleValue();
+
+                location.y    += move_this_pr.y;
+                move_actual.y += move_this_pr.y;
 
                 process_contract();
 
-                error += accel_i.x;
-                if(error >= accel.y.doubleValue()){
-                    location.x += (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                error += Math.abs(accel.x);
+                if(error >= Math.abs(accel.y.doubleValue())){
+                    move_this_pr.x = (Math.abs(accel.x - p.x.doubleValue()) < 1.0d)? accel.x - p.x.doubleValue() : inc_i.x.doubleValue();
+                    move_this_pr.y = 0.0d;
+
+                    location.x    += move_this_pr.x;
+                    move_actual.x += move_this_pr.x;
 
                     process_contract();
 
-                    p.x += inc_i.x;
+                    error -= Math.abs(accel.y.doubleValue());
+                    p.x   += inc_i.x;
                 }
             }
         }
     }
+
 
     /*
      * 衝突処理
@@ -220,7 +245,7 @@ public class dmgObj extends rect {
                       Stage _belong){
         init(_rect.location, _rect.size);
 
-        accel      = new point<Double>(accel);
+        accel      = new point<Double>(_accel);
         atk        = _atk;
 
         force_m    = _force;

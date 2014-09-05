@@ -76,11 +76,11 @@ public class mapObj {
                     loc_f = belong.relative_camera_f(chip_loc.location.DtoF());
 
 
-                    g.drawImage(ssheet.getSubImage(use_chip[i][j], 0), loc_f.x, loc_f.y);
+                    g.drawImage(ssheet.getSubImage(use_chip[i][j], 0).getScaledCopy(window.SCALE), loc_f.x * window.SCALE, loc_f.y * window.SCALE);
 
                     if(Main._DEBUG){
                         g.setColor(new Color((is_collisionable[i][j])? 0x000000 : 0xffffff));
-                        g.drawRect(loc_f.x, loc_f.y, size_block.x.floatValue(), size_block.y.floatValue());
+                        g.drawRect(loc_f.x * window.SCALE, loc_f.y * window.SCALE, size_block.x * window.SCALE, size_block.y * window.SCALE);
                     }
 
                     ssheet.getSubImage(use_chip[i][j], 0);

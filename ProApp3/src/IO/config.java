@@ -94,8 +94,6 @@ public class config {
                       + String.format("%08X", ok    ) + String.format("%08X", cancel );
         bWrite.write(sWrite);
 
-        System.out.println(bgm.getInstance().vol.get_volume());
-
         bWrite.newLine();
         sWrite = String.format("%08X", bgm.getInstance().vol.get_volume())
                + String.format("%08X", soundEffect.getInstance().vol.get_volume());

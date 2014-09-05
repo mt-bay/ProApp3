@@ -44,10 +44,7 @@ public class texture {
     /* 描画
      * 引数：テクスチャの現在位置 (, 描画倍率)
      */
-    public void draw(Graphics g, point<Float> _location, Stage _camera){
-        draw(g, _location, _camera, 1.0f);
-    }
-    public void draw(Graphics g,point<Float> _location, Stage _camera, float _scale){
+    public void draw(Graphics g,point<Float> _location, Stage _camera, boolean _do_flip){
         if(texture_m == null)
             return;
 
@@ -56,7 +53,7 @@ public class texture {
         }
 
         point<Float> l_relate = _camera.relative_camera_f(_location);
-        g.drawImage(texture_m.getSubImage(use_number, 0), l_relate.x, l_relate.y);
+        g.drawImage(texture_m.getSubImage(use_number, 0).getFlippedCopy(_do_flip, false).getScaledCopy(window.SCALE), l_relate.x * window.SCALE, l_relate.y * window.SCALE);
 
         return;
     }

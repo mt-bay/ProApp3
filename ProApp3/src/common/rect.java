@@ -59,6 +59,26 @@ public class rect {
     }
 
     /*
+     * オブジェクトの中心点を取得
+     * 引数  ：なし
+     * 戻り値：中心点
+     */
+    public point<Double> get_center(){
+        return new point<Double>(location.x + ((double)size.x / 2),
+                                 location.y + ((double)size.y / 2));
+    }
+
+    /*
+     * 自オブジェクトの位置関係を水平方向に反転させたrectを返す
+     * 引数  ：なし
+     * 戻り値：水平方向に反転させたrect
+     */
+    public rect get_fliped(){
+        return new rect(new point<Double >(this.location.x + (double)this.size.x, this.location.y),
+                        new point<Integer>(                         -this.size.x, this.size.y)   );
+    }
+
+    /*
      * 引数の長方形と自オブジェクトが交差 or 内包 or 被内包の関係にあるか
      * 引数  ：調査する長方形
      * 戻り値：交差 or 内包 or 被内包の関係にあるか

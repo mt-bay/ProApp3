@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import window.Main;
 import window.window;
-import AI.action_opcode;
+import AI.ai_op;
 import IO.debugLog;
 
 import common.point;
@@ -24,29 +25,27 @@ public class playerObj extends charObj {
     public               point<Integer> size_stg;      //シューティングモード時のサイズ
     private              texture        texture_stg_m; //シューティングモード用テクスチャ
     public               boolean        is_shooting;   //シューティングモードか
-    //使用AI
-    public               action_opcode  ai;            //使用するAI
+    //アクションモード用
+    public               point<Double>  act_move_rate;       //移動力
+    public               double         act_highspeed_rate;  //高速移動時の倍率
+    //シューティングモード用
+    public               point<Double>  stg_move_rate;       //移動力
+    public               double         stg_highspeed_rate;  //高速移動時の倍率
+
     //タイマー変数
     protected            int            timer_deform;  //シューティング←→アクションの変形残りフレーム
-    protected            int            timer_reload;  //攻撃操作の、再攻撃待機タイマー
 
     /* 定数 */
     //モード共通
-    private static final double HIGHSPEED_RATE  =   1.5d; //高速移動時の移動力倍率
 
-    //アクションモード用
-    private static final double ACT_MV_LR       =   8.5d;  //接地時の左右移動力
-    private static final double ACT_MV_JUMP     = -20.0d;  //ジャンプ時の上方向移動力
 //    private static final double ACT_MV_NOT_GND  =   8.5d;  //非接地時の左右移動力
     private static final double ACT_DAMAGE_RATE =   1.0d;  //ダメージ倍率
 
     //シューティングモード用
-    private static final double STG_MV_LR       =   4.0d;  //左右移動力
-    private static final double STG_MV_UD       =   2.0d;  //上下移動力
     private static final double STG_DAMAGE_RATE =   2.0d;  //ダメージ倍率
 
     //その他
-    private static final int    TIMER_STOP = -1;        //タイマー変数の停止状態用
+
 
 
 
@@ -57,30 +56,34 @@ public class playerObj extends charObj {
      * 引数：なし
      */
     public playerObj() {
-        init(new point<Double >(0, 0), new point<Integer>(0, 0),                      "",
-             new point<Integer>(0, 0),                       "", new point<Double>(0, 0),
-                                 50.0,          Direction.RIGHT,                   false,
-                                false,               TIMER_STOP,              TIMER_STOP,
-             null);
+        init(new point<Double >(0, 0), new point<Double>(0, 0),                      "",  "",
+             new point<Integer>(0, 0),                      "", new point<Double>(0, 0), 0.0,
+             new point<Integer>(0, 0),                      "", new point<Double>(0, 0), 0.0,
+                                 50.0,         Direction.RIGHT,                   false,
+                                false,              TIMER_STOP,              TIMER_STOP,
+                                 null);
     }
 
     public playerObj(playerObj obj){
-        init(obj.location   , obj.size_act                     , obj.texture_act_m.get_file_path(),
-             obj.size_stg   , obj.texture_stg_m.get_file_path(), obj.accel                        ,
-             obj.hp         , obj.dir                          , obj.is_gnd                       ,
-             obj.is_shooting, obj.timer_deform                 , obj.timer_not_visible            ,
-             obj.belong     );
+        init(obj.location           , obj.accel                        , obj.bullet_path      , obj.reload_path       ,
+             obj.size_act           , obj.texture_act_m.get_file_path(), obj.act_move_rate    , obj.act_highspeed_rate,
+             obj.size_stg           , obj.texture_stg_m.get_file_path(), obj.stg_move_rate    , obj.stg_highspeed_rate,
+             obj.hp                 , obj.dir                          , obj.is_gnd           ,
+             obj.is_shooting        , obj.timer_deform                 , obj.timer_not_visible,
+             obj.belong             );
     }
 
 
-    public playerObj(point<Double > _location              , point<Integer> _size_action     , String        _texture_path_act,
-                     point<Integer> _size_shooting         , String         _texture_path_stg, point<Double> _accel           ,
-                     double         _hp                    , Direction      _dir             , boolean       _is_gnd          ,
+    public playerObj(point<Double > _location              , String        _bullet_path       , String        _reload_path  ,
+                     point<Integer> _size_action           , String        _texture_path_act  , point<Double> _act_move_rate, double        _act_highspeed_rate,
+                     point<Integer> _size_shooting         , String        _texture_path_stg  , point<Double> _stg_move_rate, double        _stg_highspeed_rate,
+                     double         _hp                    , Direction     _dir               , boolean       _is_gnd       ,
                      boolean _is_gravitied_and_not_shooting, Stage _belong){
-        init(_location, _size_action       , _texture_path_act,
-             _size_shooting                , _texture_path_stg, _accel    ,
-             _hp                           , _dir             , _is_gnd   ,
-             _is_gravitied_and_not_shooting, TIMER_STOP       , TIMER_STOP,
+        init(_location                     , new point<Double>(0.0d, 0.0d), _bullet_path  , _reload_path       ,
+             _size_action                  , _texture_path_act            , _act_move_rate, _act_highspeed_rate,
+             _size_shooting                , _texture_path_stg            , _stg_move_rate, _stg_highspeed_rate,
+             _hp                           , _dir                         , _is_gnd       ,
+             _is_gravitied_and_not_shooting, TIMER_STOP                   , TIMER_STOP    ,
              _belong                       );
     }
 
@@ -93,32 +96,96 @@ public class playerObj extends charObj {
     public void update() {
         //前処理
         // AIの状態更新
-        ai.update(this);
-        // 重力値分の移動力補正
-        if(is_gravitied){
-            accel.x += belong.gravitiy.x;
-            accel.y += belong.gravitiy.y;
-        }
+        update_ai();
 
         //変形中なら処理を抜ける
         if(deform())
             return;
 
-        //通常操作
-        // 左右移動
-        //  左
-        if(ai.move_lr == action_opcode.MOVE_LR_LEFT)
-            accel.x -= (is_shooting)? STG_MV_LR  : ACT_MV_LR;
+        //移動処理
+        // フラグチェック
+        //移動方向チェック
+        //左右
+        if((ai.move & ai_op.MOVE_DIR_LEFT_RIGHT) != ai_op.MOVE_NONE){
+            //左
+            if((ai.move & ai_op.MOVE_DIR_LEFT ) != ai_op.MOVE_NONE){
+                dir = Direction.LEFT;
+                accel.x = -1 * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
+            }
+            //右
+            if((ai.move & ai_op.MOVE_DIR_RIGHT) != ai_op.MOVE_NONE){
+                dir = Direction.RIGHT;
+                accel.x =  1 * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
+            }
+        }
+        else{
+            accel.x = 0.0;
+        }
+        //上下
+        //重力依存チェック(依存しているなら上下移動しない)
+        if(!is_gravitied){
+            if((ai.move & ai_op.MOVE_DIR_UP_DOWN) != ai_op.MOVE_NONE){
+                //上
+                if((ai.move & ai_op.MOVE_DIR_UP  ) != ai_op.MOVE_NONE){
+                    accel.y = -1 * stg_move_rate.y;
+                }
+                //下
+                if((ai.move & ai_op.MOVE_DIR_DOWN) != ai_op.MOVE_NONE){
+                    accel.y =  1 * stg_move_rate.y;
+                }
+            }
+            else{
+                accel.y = 0.0;
+            }
+        }
+        //高速移動
+        if((ai.move & ai_op.MOVE_MOVE_HIGHSPEED) != ai_op.MOVE_NONE){
+            accel.x *= ((is_shooting)? stg_highspeed_rate : act_highspeed_rate);
+            if(!is_gravitied)
+                accel.y *= stg_highspeed_rate;
+        }
 
-        if(ai.move_lr == action_opcode.MOVE_LR_LEFT_HIGHSPEED)
-            accel.x -= ((is_shooting)? STG_MV_LR : ACT_MV_LR) * HIGHSPEED_RATE;
+        //ジャンプ処理
+        // フラグチェック
+        if((ai.move & ai_op.MOVE_JUMP) != ai_op.MOVE_NONE){
 
-        //  右
-        if(ai.move_lr == action_opcode.MOVE_LR_RIGHT)
-            accel.x += (is_shooting)? STG_MV_LR : ACT_MV_LR;
+            //重力依存チェック(依存していないならジャンプしない)
+            if(is_gravitied){
 
-        if(ai.move_lr == action_opcode.MOVE_LR_RIGHT_HIGHSPEED)
-            accel.x += ((is_shooting)? STG_MV_LR : ACT_MV_LR) * HIGHSPEED_RATE;
+                //通常ジャンプ
+                if((ai.move & ai_op.MOVE_JUMP_NOMAL) != ai_op.MOVE_NONE){
+                    //接地かつ1つ前のフレームの入力でジャンプ命令がない場合
+                    if((!((ai_prev.get(0).move & ai_op.MOVE_JUMP_NOMAL) != ai_op.MOVE_NONE)) &&
+                        is_gnd){
+                        accel.y += act_move_rate.y;
+                    }
+                }
+            }
+        }
+
+
+        //攻撃処理
+        if(ai.attack != ai_op.ATTACK_NONE){
+            //通常攻撃
+            if((ai.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
+                attack(((is_shooting)? 1 : 0), this.to_rect());
+            }
+        }
+
+        //後処理
+        // タイマー値の修正
+        //  リロード
+        for(int i = 0; i < timer_reload.size(); i++){
+            if(timer_reload.get(i) > TIMER_STOP){
+                timer_reload.set(i, timer_reload.get(i) - 1);
+            }
+        }
+
+        // 重力値分の移動力補正
+        if(is_gravitied){
+            accel.x += belong.gravitiy.x;
+            accel.y += belong.gravitiy.y;
+        }
     }
 
 
@@ -129,33 +196,29 @@ public class playerObj extends charObj {
      */
     @Override
     public void draw(Graphics g){
-        draw(g, 1.0f);
-    }
-    @Override
-    public void draw(Graphics g, float _scale){
         //シューティングモード時の描画
         if(is_shooting){
-            texture_stg_m.draw(g, location.DtoF(), belong, _scale);
+            texture_stg_m.draw(g, location.DtoF(), belong, ((dir == Direction.RIGHT)? false : true));
 
             if(Main._DEBUG){
                 if(window.comprise(this.to_rect(), belong)){
                     rect r = belong.relative_camera_rect(this.to_rect());
                     g.setColor(new Color(0x00ff00));
-                    g.drawRect(r.location.x.floatValue(), r.location.y.floatValue(),
-                               r.size.x.floatValue()    , r.size.y.floatValue());
+                    g.drawRect(r.location.x.floatValue() * window.SCALE, r.location.y.floatValue() * window.SCALE,
+                               r.size.x.floatValue()     * window.SCALE, r.size.y.floatValue()     * window.SCALE);
                 }
             }
 
         }
         //アクションモード時の描画
         else{
-            texture_act_m.draw(g, location.DtoF(), belong, _scale);
+            texture_act_m.draw(g, location.DtoF(), belong, ((dir == Direction.RIGHT)? false : true));
             if(Main._DEBUG){
                 if(window.comprise(this.to_rect(), belong)){
                     rect r = belong.relative_camera_rect(this.to_rect());
                     g.setColor(new Color(0x00ff00));
-                    g.drawRect(r.location.x.floatValue(), r.location.y.floatValue(),
-                               r.size.x.floatValue()    , r.size.y.floatValue());
+                    g.drawRect(r.location.x.floatValue() * window.SCALE, r.location.y.floatValue() * window.SCALE,
+                               r.size.x.floatValue()     * window.SCALE, r.size.y.floatValue()     * window.SCALE);
                 }
             }
         }
@@ -173,12 +236,18 @@ public class playerObj extends charObj {
 
     /* ファイルからプレイヤーオブジェクトのデータを読み込む
      * データは1行に格納，各データは空白で区切られ、以下のデータを持っている前提で動作する
-     * 座標_x   座標_y   アクションモード時のサイズ_x アクションモード時のサイズ_y アクションモード時のテクスチャへのファイルパス
-     * <double> <double> <int>                        <int>                        <String>
+     * 座標_x   座標_y   攻撃の際に使用するダメージオブジェクトのリストへのパス
+     * <double> <double> <String>
+     * アクションモード時のサイズ_x アクションモード時のサイズ_y アクションモード時のテクスチャへのファイルパス
+     * <int>                        <int>                        <String>
+     * アクションモード時の移動力_x ジャンプ力 アクションモード時の攻撃間隔 アクションモード時の高速移動倍率
+     * <double>                     <double>   <int>                        <double>
      * シューティングモード時のサイズ_x シューティングモード時のサイズ_y シューティングモード時のテクスチャへのファイルパス
      * <int>                            <int>                            <String>
-     * 加速度_x 加速度_y  HP       向き        接地しているか シューティングモードか(重力の影響を受けないか)
-     * <double> <double>  <double> <Direction> <boolean>      <boolean>
+     * シューティングモード時の移動力_x シューティングモード時の移動力_y シューティングモード時の攻撃間隔 シューティングモード時の高速移動倍率
+     * <double>                         <double>                         <int>                            <double>
+     * HP       向き        接地しているか シューティングモードか(重力の影響を受けないか)
+     * <double> <Direction> <boolean>      <boolean>
      *
      * 引数  ：ファイル名
      * 戻り値：プレイヤーオブジェクト
@@ -192,25 +261,35 @@ public class playerObj extends charObj {
             String[] str = bRead.readLine().split(" ");
             bRead.close();
 
-            point<Double >  _loc                    = new point<Double >(Double.parseDouble(str[ 0]),  //座標
-                                                                         Double.parseDouble(str[ 1]));
-            point<Integer> _size_act                = new point<Integer>(Integer.parseInt  (str[ 2]),  //アクションモード時のサイズ
-                                                                         Integer.parseInt  (str[ 3]));
-            String         _texture_act             = window.file_path_corres(script_path + str[ 4]);  //アクションモード時のテクスチャへのパス
-            point<Integer> _size_stg                = new point<Integer>(Integer.parseInt  (str[ 5]),  //シューティングモード時のサイズ
-                                                                         Integer.parseInt  (str[ 6]));
-            String         _texture_stg             = window.file_path_corres(script_path + str[ 7]);  //シューティングモード時のテクスチャへのパス
-            point<Double > _accel                   = new point<Double> (Double.parseDouble(str[ 8]),  //加速度
-                                                                         Double.parseDouble(str[ 9]));
-            double         _hp                      = Double.parseDouble                   (str[10]);  //HP
-            Direction      _dir                     = Direction.parseDirection             (str[11]);  //向き
-            boolean        _is_gnd                  = Boolean.parseBoolean                 (str[12]);  //接地しているか
-            boolean        _is_shooting_and_not_gnd = Boolean.parseBoolean                 (str[13]);  //シューティングモードか(重力の影響を受けるか)
+            int i = 0;
 
-            return new playerObj(_loc                    , _size_act   , _texture_act,
-                                 _size_stg               , _texture_stg, _accel      ,
-                                 _hp                     , _dir        , _is_gnd     ,
-                                 _is_shooting_and_not_gnd, _belong     );
+            point<Double >  _loc                    = new point<Double >(Double.parseDouble(str[  i]),  //座標
+                                                                         Double.parseDouble(str[++i]));
+            String          _bullet_path            = window.file_path_corres(script_path + str[++i]);  //攻撃時に生成するオブジェクトリストへのパス
+            String          _reload_path            = window.file_path_corres(script_path + str[++i]);  //bulletの発射間隔
+
+            point<Integer> _size_act                = new point<Integer>(Integer.parseInt  (str[++i]),  //アクションモード時のサイズ
+                                                                         Integer.parseInt  (str[++i]));
+            String         _texture_act             = window.file_path_corres(script_path + str[++i]);  //アクションモード時のテクスチャへのパス
+            point<Double > _act_move_rate           = new point<Double >(Double.parseDouble(str[++i]),  //アクションモード時の移動力
+                                                                         Double.parseDouble(str[++i]));
+            double         _act_highspeed_rate      = Double.parseDouble                   (str[++i]);  //アクションモード時の高速移動倍率
+            point<Integer> _size_stg                = new point<Integer>(Integer.parseInt  (str[++i]),  //シューティングモード時のサイズ
+                                                                         Integer.parseInt  (str[++i]));
+            String         _texture_stg             = window.file_path_corres(script_path + str[++i]);  //シューティングモード時のテクスチャへのパス
+            point<Double > _stg_move_rate           = new point<Double >(Double.parseDouble(str[++i]),  //シューティングモード時の移動力
+                                                                         Double.parseDouble(str[++i]));
+            double         _stg_highspeed_rate      = Double.parseDouble                   (str[++i]);  //シューティングモード時の高速移動倍率
+            double         _hp                      = Double.parseDouble                   (str[++i]);  //HP
+            Direction      _dir                     = Direction.parseDirection             (str[++i]);  //向き
+            boolean        _is_gnd                  = Boolean.parseBoolean                 (str[++i]);  //接地しているか
+            boolean        _is_shooting_and_not_gnd = Boolean.parseBoolean                 (str[++i]);  //シューティングモードか(重力の影響を受けるか)
+
+            return new playerObj(_loc                    , _bullet_path       , _reload_path  ,
+                                 _size_act               , _texture_act       , _act_move_rate, _act_highspeed_rate,
+                                 _size_stg               , _texture_stg       , _stg_move_rate, _stg_highspeed_rate,
+                                 _hp                     , _dir               , _is_gnd       ,
+                                 _is_shooting_and_not_gnd, _belong            );
         }catch(Exception e){
             e.printStackTrace();
             debugLog.getInstance().write_exception(e);
@@ -239,6 +318,8 @@ public class playerObj extends charObj {
         }
         return false;
     }
+
+
 
     /*
      * 移動
@@ -374,33 +455,66 @@ public class playerObj extends charObj {
     }
 
     /*
+     * 中心点を返す
+     * 引数  ：なし
+     * 戻り値：中心点
+     */
+    @Override
+    public point<Double> get_center(){
+        return new point<Double>(location.x + ((double)((is_shooting)? size_stg.x : size_act.x) / 2),
+                                 location.y + ((double)((is_shooting)? size_stg.y : size_act.y) / 2));
+    }
+
+    /*
      * 初期化
      * 引数  ：それぞれのデータ
      */
-    private void init(point<Double > _location                     , point<Integer> _size_action     , String        _texture_path_act ,
-                      point<Integer> _size_shooting                , String         _texture_path_stg, point<Double> _accel            ,
-                      double         _hp                           , Direction      _dir             , boolean       _is_gnd           ,
-                      boolean        _is_shooting_and_not_gravitied, int           _timer_deform     , int           _timer_not_visible,
+    private void init(point<Double > _location                     , point<Double> _accel             , String         _bullet_path     , String _reload_path       ,
+                      point<Integer> _size_action                  , String        _texture_path_act  , point<Double>  _act_move_rate   , double _act_highspeed_rate,
+                      point<Integer> _size_shooting                , String        _texture_path_stg  , point<Double>  _stg_move_rate   , double _stg_highspeed_rate,
+                      double         _hp                           , Direction     _dir               , boolean        _is_gnd          ,
+                      boolean        _is_shooting_and_not_gravitied, int           _timer_deform      , int           _timer_not_visible,
                       Stage          _belong                       ){
-        //それぞれの変数を適した形で初期化
-        location          = new point<Double >(_location);
-        size_act          = new point<Integer>(_size_action);
-        texture_act_m     = new texture(_texture_path_act, size_act);
-        size_stg          = new point<Integer>(_size_shooting);
-        texture_stg_m     = new texture(_texture_path_stg, size_stg);
-
-        accel             = new point<Double>(_accel);
-        hp                = _hp;
-        dir               = _dir;
-        is_gnd            = _is_gnd;
-        is_shooting       = _is_shooting_and_not_gravitied;
-        is_gravitied      = !_is_shooting_and_not_gravitied;
-        timer_deform      = _timer_deform;
-        timer_not_visible = _timer_not_visible;
-
-        ai                = new action_opcode(action_opcode.AI_USER_INPUT);
         //参照を受け取る
         belong        = _belong;
+
+        //それぞれの変数を適した形で初期化
+        location          = new point<Double >(_location);
+        accel             = new point<Double>(_accel);
+
+        force_m           = Force.FRIEND;
+
+        bullet_path       = _bullet_path;
+        bullet            = dmgObj.file_to_dmgObj_ArrayList(bullet_path, belong);
+        reload_path       = _reload_path;
+        reload            = file_to_intArrayList(reload_path);
+        timer_reload      = new ArrayList<Integer>();
+        for(int i = 0; i < reload.size(); i++)
+            timer_reload.add(TIMER_STOP);
+
+        size_act           = new point<Integer>(_size_action);
+        texture_act_m      = new texture(_texture_path_act, size_act);
+        act_move_rate      = new point<Double>(_act_move_rate);
+        act_highspeed_rate = _act_highspeed_rate;
+
+        size_stg           = new point<Integer>(_size_shooting);
+        texture_stg_m      = new texture(_texture_path_stg, size_stg);
+        stg_move_rate      = new point<Double>(_stg_move_rate);
+        stg_highspeed_rate = _stg_highspeed_rate;
+
+        hp                 = _hp;
+        dir                = _dir;
+        is_gnd             = _is_gnd;
+        is_shooting        = _is_shooting_and_not_gravitied;
+        is_gravitied       = !_is_shooting_and_not_gravitied;
+        timer_deform       = _timer_deform;
+        timer_not_visible  = _timer_not_visible;
+
+        ai                 = new ai_op(ai_op.AI_USER_INPUT);
+        ai_prev            = new ArrayList<ai_op>();
+        for(int i = 0; i < AI_PREV_MAX; i++){
+            ai_prev.add(0, new ai_op(ai));
+        }
 
     }
 
