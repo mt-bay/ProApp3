@@ -45,17 +45,17 @@ public class rect {
      * 戻り値：左上 or 右上 or 左下 or 右下
      */
     public  point<Double> UpperLeft() {
-        return new point<Double >(location.x                , location.y                 );
+        return new point<Double>(location.x.doubleValue()                       , location.y.doubleValue()                       );
     }
     public point<Double> UpperRight() {
-        return new point<Double>(location.x + (double)size.x, location.y                 );
+        return new point<Double>(location.x.doubleValue() + size.x.doubleValue(), location.y.doubleValue()                       );
     }
 
     public point<Double> LowerLeft() {
-        return new point<Double>(location.x                 , location.y + (double)size.y);
+        return new point<Double>(location.x.doubleValue()                       , location.y.doubleValue() + size.y.doubleValue());
     }
     public point<Double> LowerRight() {
-        return new point<Double>(location.x + (double)size.x, location.y + (double)size.y);
+        return new point<Double>(location.x.doubleValue() + size.x.doubleValue(), location.y.doubleValue() + size.y.doubleValue());
     }
 
     /*
@@ -66,6 +66,13 @@ public class rect {
     public point<Double> get_center(){
         return new point<Double>(location.x + ((double)size.x / 2),
                                  location.y + ((double)size.y / 2));
+    }
+
+    /*
+     * toString
+     */
+    public String toString(){
+        return "{" + location.toString() + ", " + size.toString() + "}";
     }
 
     /*

@@ -44,7 +44,6 @@ public class charObj extends rect {
     public                 Stage              belong;            //自オブジェクトの所属ステージ
 
     // 状態変数
-    protected              int                timer_not_visible; //残りの無敵フレーム数
     public                 boolean            is_gravitied;      //重力に依存するかどうか
 
     public                 boolean            is_dead;           //オブジェクトがそのフレームで消えるか
@@ -73,10 +72,11 @@ public class charObj extends rect {
      * 引数  ：元データ
      */
     public charObj(charObj _obj){
-        init(_obj                          , _obj.accel       , _obj.bullet_path   , _obj.reload_path,
-             _obj.hp                       , _obj.move_rate   , _obj.highspeed_rate, _obj.dir        ,
-             _obj.is_gnd                   , _obj.is_gravitied, _obj.force_m       ,
-             _obj.texture_m.get_file_path(), _obj.ai.using_AI , _obj.belong        );
+        init(_obj.location                 , _obj.size          , _obj.accel  ,
+             _obj.bullet_path              , _obj.reload_path   , _obj.hp     ,
+             _obj.move_rate                , _obj.highspeed_rate, _obj.dir    ,
+             _obj.is_gnd                   , _obj.is_gravitied  , _obj.force_m,
+             _obj.texture_m.get_file_path(), _obj.ai.using_AI   , _obj.belong );
 
     }
 
@@ -84,15 +84,17 @@ public class charObj extends rect {
      * データ指定型コンストラクタ
      * 引数：それぞれのデータ
      */
-    public charObj(rect      _rect  , String        _bullet_path , String  _reload_path   ,
-                   double    _hp    , point<Double> _move_rate   , double  _highspeed_rate,
-                   Direction _dir   , boolean       _is_gnd      , boolean _is_gravitied  ,
-                   Force     _force , String        _texture_path, int     _using_ai      ,
-                   Stage     _belong){
-        init(_rect        , new point<Double>(0.0d, 0.0d), _bullet_path   , _reload_path,
-             _hp          , _move_rate                   , _highspeed_rate, _dir        ,
-             _is_gnd      , _is_gravitied                , _force         ,
-             _texture_path, _using_ai                    , _belong        );
+    public charObj(point<Double> _location      , point<Integer> _size  , String        _bullet_path ,
+                   String        _reload_path   , double         _hp    , point<Double> _move_rate   ,
+                   double        _highspeed_rate, Direction      _dir   , boolean       _is_gnd      ,
+                   boolean       _is_gravitied  , Force          _force , String        _texture_path,
+                   int           _using_ai      , Stage          _belong){
+        init(_location, _size, new point<Double>(0.0d, 0.0d),
+             _bullet_path , _reload_path   , _hp    ,
+             _move_rate   , _highspeed_rate, _dir   ,
+             _is_gnd      , _is_gravitied  , _force ,
+             _texture_path, _using_ai      , _belong);
+
     }
 
     /* メソッド */
@@ -171,7 +173,7 @@ public class charObj extends rect {
         if(ai.attack != ai_op.ATTACK_NONE){
             //通常攻撃
             if((ai.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
-                attack(0, this);
+                attack(0, this.to_rect());
             }
         }
 
@@ -210,16 +212,26 @@ public class charObj extends rect {
      * 引数  ：なし or 描画倍率
      * 戻り値：なし
      */
-    public void draw(Graphics g) {
-        texture_m.draw(g, location.DtoF(), belong, ((dir == Direction.RIGHT)? false : true));
+    public void draw(Graphics g){
+        texture_m.draw(g, location.DtoF(), ai.texture_num.x, ai.texture_num.y, belong, ((dir == Direction.RIGHT)? false : true));
         if(Main._DEBUG){
-            if(window.comprise(this, belong)){
-                rect r = belong.relative_camera_rect(this);
+            if(window.comprise(this.to_rect(), belong)){
+                rect r = belong.relative_camera_rect(this.to_rect());
                 g.setColor(new Color(0x00ff00));
                 g.drawRect(r.location.x.floatValue() * window.SCALE, r.location.y.floatValue() * window.SCALE,
                            r.size.x.floatValue()     * window.SCALE, r.size.y.floatValue()     * window.SCALE);
             }
         }
+    }
+
+    /*
+     * rectにキャスト
+     * 引数  ：なし
+     * 戻り値：rectにキャストした自オブジェクト
+     */
+    public rect to_rect(){
+        return new rect(new point<Double >(location),
+                        new point<Integer>(size)    );
     }
 
     /*
@@ -231,9 +243,10 @@ public class charObj extends rect {
         if(timer_reload.get(_use_number) <= 0){
             dmgObj _d = new dmgObj(bullet.get(_use_number));
             _d.accel.x    *= ((this.dir == Direction.RIGHT)? 1.0d : -1.0d);
-            _d.location.x += _r.location.x + ((this.dir == Direction.RIGHT)? _r.size.x.doubleValue() : -1 * (double)_d.size.x) + _d.accel.x;
-            _d.location.y += _r.location.y + _d.accel.y;
 
+            _d.location.x += _r.location.x + ((this.dir == Direction.RIGHT)? _r.size.x.doubleValue() + 1.0 : -(_d.size.x.doubleValue() + 1.0)) + accel.x;
+            _d.location.y += _r.location.y;
+            _d.dir = dir;
 
             belong.create_dmg.add(new dmgObj(_d));
             timer_reload.set(_use_number, reload.get(_use_number));
@@ -288,49 +301,51 @@ public class charObj extends rect {
 
             int i = 0;
 
-            rect          _rect;
-            String        _bullet_path;
-            String        _reload_path;
-            double        _hp;
-            point<Double> _move_rate;
-            double        _highspeed_rate;
-            Direction     _dir;
-            boolean       _is_gnd;
-            boolean       _is_gravitied;
-            Force         _force;
-            String        _texture_path;
-            int           _use_ai;
+            point<Double>  _location;
+            point<Integer> _size;
+            String         _bullet_path;
+            String         _reload_path;
+            double         _hp;
+            point<Double>  _move_rate;
+            double         _highspeed_rate;
+            Direction      _dir;
+            boolean        _is_gnd;
+            boolean        _is_gravitied;
+            Force          _force;
+            String         _texture_path;
+            int            _use_ai;
 
             while((line = bRead.readLine()) != null){
                 str = line.split(" ");
                 i = 0;
 
-                _rect           = new rect(new point<Double >(Double.parseDouble(str[  i]) ,
-                                                              Double.parseDouble(str[++i])),
-                                           new point<Integer>(Integer.parseInt  (str[++i]) ,
-                                                              Integer.parseInt  (str[++i])));
-                _bullet_path    = window.file_path_corres(script_path +          str[++i])  ;
-                _reload_path    = window.file_path_corres(script_path +          str[++i])  ;
-                _hp             =                             Double.parseDouble(str[++i])  ;
-                _move_rate      = new point<Double>(          Double.parseDouble(str[++i]) ,
-                                                              Double.parseDouble(str[++i])) ;
-                _highspeed_rate = Double.parseDouble                            (str[++i])  ;
-                _dir            = Direction.parseDirection                      (str[++i])  ;
-                _is_gnd         = Boolean.parseBoolean                          (str[++i])  ;
-                _is_gravitied   = Boolean.parseBoolean                          (str[++i])  ;
-                _force          = Force.parceForce                              (str[++i])  ;
-                _texture_path   = window.file_path_corres(script_path +          str[++i])  ;
-                _use_ai         = ai_op.name_to_using_ai                        (str[++i])  ;
+                _location       = new point<Double >(Double.parseDouble (str[  i]) ,
+                                                     Double.parseDouble (str[++i]));
+                _size           = new point<Integer>(Integer.parseInt   (str[++i]) ,
+                                                    Integer.parseInt    (str[++i]));
+                _bullet_path    = window.file_path_corres(script_path +  str[++i]) ;
+                _reload_path    = window.file_path_corres(script_path +  str[++i]) ;
+                _hp             = Double.parseDouble                    (str[++i]) ;
+                _move_rate      = new point<Double>(Double.parseDouble  (str[++i]) ,
+                                                    Double.parseDouble  (str[++i]));
+                _highspeed_rate = Double.parseDouble                    (str[++i]) ;
+                _dir            = Direction.parseDirection              (str[++i]) ;
+                _is_gnd         = Boolean.parseBoolean                  (str[++i]) ;
+                _is_gravitied   = Boolean.parseBoolean                  (str[++i]) ;
+                _force          = Force.parceForce                      (str[++i]) ;
+                _texture_path   = window.file_path_corres(script_path +  str[++i]) ;
+                _use_ai         = ai_op.name_to_using_ai                (str[++i]) ;
 
-                char_obj_al.add(new charObj(_rect  , _bullet_path , _reload_path   ,
-                                            _hp    , _move_rate   , _highspeed_rate,
-                                            _dir   , _is_gnd      ,_is_gravitied   ,
-                                            _force , _texture_path, _use_ai        ,
-                                            _belong));
+                char_obj_al.add(new charObj(_location      , _size  , _bullet_path ,
+                                            _reload_path   , _hp    , _move_rate   ,
+                                            _highspeed_rate, _dir   , _is_gnd      ,
+                                            _is_gravitied  , _force , _texture_path,
+                                            _use_ai        , _belong));
             }
             bRead.close();
 
         }catch(Exception e){
+            e.printStackTrace();
         }
         return char_obj_al;
     }
@@ -367,6 +382,7 @@ public class charObj extends rect {
         //ローカル変数宣言
         point<Double>  move_actual  = new point<Double>(0.0, 0.0); //実際の移動量
         //直線用
+
         point<Integer> location_i   = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
         point<Integer> dest_i       = new point<Integer>((int)(new BigDecimal(location.x + accel.x).                                                 //目的位置(int)
                                                                  setScale(0, BigDecimal.ROUND_DOWN).doubleValue() + ((accel.x < 0)? -1.0d : 1.0d)),
@@ -451,7 +467,7 @@ public class charObj extends rect {
         if(move.y != 0)
             is_gnd = false;
 
-        if(belong.map_data.is_collision(this)){
+        if(belong.map_data.is_collision(this.to_rect())){
             location.x    -= move.x.doubleValue(); location.y    -= move.y.doubleValue();
             move_actual.x -= move.x.doubleValue(); move_actual.y -= move.y.doubleValue();
 
@@ -460,7 +476,7 @@ public class charObj extends rect {
         }
 
         for(int i = 0; i < belong.damage.size(); i++){
-            if(belong.damage.get(i).is_collision(this))
+            if(belong.damage.get(i).is_collision(this.to_rect()))
                 receve_damage(belong.damage.get(i));
         }
     }
@@ -473,13 +489,18 @@ public class charObj extends rect {
      * 引数  ：必要なデータ
      * 戻り値：なし
      */
-    protected void init(rect      _rect        , point<Double> _accel       , String _bullet_path   , String  _reload_path ,
-                        double    _hp          , point<Double> _move_rate   ,double  _highspeed_rate, Direction _dir      ,
-                        boolean   _is_gnd      , boolean       _is_gravitied, Force  _force         ,
-                        String    _texture_path, int           _use_ai      , Stage  _belong        ){
+    protected void init(point<Double> _location    , point<Integer> _size          , point<Double> _accel ,
+                        String        _bullet_path , String         _reload_path   , double        _hp    ,
+                        point<Double> _move_rate   ,double          _highspeed_rate, Direction     _dir   ,
+                        boolean       _is_gnd      , boolean        _is_gravitied  , Force         _force ,
+                        String        _texture_path, int            _use_ai        , Stage         _belong){
+
         belong       = _belong;
 
-        init(_rect.location, _rect.size);
+        location       = new point<Double >(_location);
+        size           = new point<Integer>(_size);
+
+        force_m        = _force;
 
         accel          = new point<Double>(_accel);
         hp             = _hp;
@@ -492,13 +513,16 @@ public class charObj extends rect {
 
         reload_path    = _reload_path;
         reload         = file_to_intArrayList(reload_path);
+        timer_reload   = new ArrayList<Integer>();
+        for(int i = 0; i < reload.size(); i++){
+            timer_reload.add(TIMER_STOP);
+        }
 
         dir            = _dir;
 
         is_gnd         = _is_gnd;
         is_gravitied   = _is_gravitied;
-        force_m        = _force;
-        texture_m      = new texture(_texture_path, _rect.size);
+        texture_m      = new texture(_texture_path, size);
 
         ai             = new ai_op(_use_ai);
         ai_prev        = new ArrayList<ai_op>();
@@ -506,5 +530,6 @@ public class charObj extends rect {
         for(int i = 0; i < AI_PREV_MAX; i++){
             ai_prev.add(new ai_op(ai));
         }
+
     }
 }

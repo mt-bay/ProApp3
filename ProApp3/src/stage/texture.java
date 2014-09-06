@@ -1,7 +1,5 @@
 package stage;
 
-import java.io.File;
-
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
@@ -20,7 +18,6 @@ public class texture {
 
     private String         path;
     public  point<Integer> size;
-    public  int            use_number;
     public  Direction      direction_m;
 
     /* コンストラクタ */
@@ -44,7 +41,7 @@ public class texture {
     /* 描画
      * 引数：テクスチャの現在位置 (, 描画倍率)
      */
-    public void draw(Graphics g,point<Float> _location, Stage _camera, boolean _do_flip){
+    public void draw(Graphics g,point<Float> _location, int use_number_x , int use_number_y, Stage _camera, boolean _do_flip){
         if(texture_m == null)
             return;
 
@@ -53,7 +50,7 @@ public class texture {
         }
 
         point<Float> l_relate = _camera.relative_camera_f(_location);
-        g.drawImage(texture_m.getSubImage(use_number, 0).getFlippedCopy(_do_flip, false).getScaledCopy(window.SCALE), l_relate.x * window.SCALE, l_relate.y * window.SCALE);
+        g.drawImage(texture_m.getSubImage(use_number_x, use_number_y).getFlippedCopy(_do_flip, false).getScaledCopy(window.SCALE), l_relate.x * window.SCALE, l_relate.y * window.SCALE);
 
         return;
     }
@@ -74,12 +71,9 @@ public class texture {
     private void init(String _path, point<Integer> _size){
         path       = _path;
         size       = _size;
-        use_number = 0;
         try{
+            texture_m = new SpriteSheet(new Image(_path), size.x, size.y);
 
-            texture_m = (new File(path).exists())?
-                    new SpriteSheet(new Image(_path), size.x, size.y) :
-                    null                                              ;
         }catch(Exception e){
             e.printStackTrace();
             debugLog.getInstance().write_exception(e);

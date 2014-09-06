@@ -15,6 +15,7 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
@@ -26,21 +27,18 @@ import IO.usr_input;
 public class Main extends BasicGame {
     /* メンバ変数 */
     //ゲーム本体
-    public static       AppGameContainer     app;                              //ゲームコンテナ
+    public static       AppGameContainer     app;                                    //ゲームコンテナ
     //ユーザ入力
-    public static       ArrayList<usr_input> user_input;                       //ユーザ入力
-    public static       mainMenu             mm;
-//    public static       Stage                stg_test;
-
-
+    public static       ArrayList<usr_input> user_input;                             //ユーザ入力
+    public static       mainMenu             mm;                                     //メインメニュー
     //デバッグ用
-    public static       TrueTypeFont         debug_ttf;
+    public static       TrueTypeFont         debug_ttf;                              //デバッグ用フォント
 
     /* 定数 */
     //ユーザ入力
-    public static final int                  USER_INPUT_MAX = 5;               //ユーザインプットの最大記録数
+    public static final int                  USER_INPUT_MAX   = 5;                   //ユーザインプットの最大記録数
     //デバッグ用
-    public static final boolean              _DEBUG           = true;                //デバッグモードかどうか
+    public static final boolean              _DEBUG           = true;               //デバッグモードかどうか
     public static final float                DEBUG_FONT_SIZE  = 11.0f;               //デバッグ用の文字サイズ
     public static final Color                DEBUG_FONT_COLOR = new Color(0x777777); //デバッグ用の文字色
 
@@ -50,7 +48,7 @@ public class Main extends BasicGame {
 
     public static void main(String[] args) throws SlickException {
         try {
-            app = new AppGameContainer(new Main("ゲーム名"));
+            app = new AppGameContainer(new Main("5年プログラミング応用III・IV"));
             app.setDisplayMode(window.SIZE.x, window.SIZE.y, false);
             app.setTargetFrameRate(window.FPS);
             app.start();
@@ -78,11 +76,10 @@ public class Main extends BasicGame {
 
         gc.setShowFPS((_DEBUG)?true : false);
 
-
         //各種音量の初期設定
 
         //
-        debug_ttf = new TrueTypeFont(new Font("メイリオ", 0, (int)DEBUG_FONT_SIZE), false);
+        debug_ttf = new TrueTypeFont(new Font("consolas", 0, (int)DEBUG_FONT_SIZE), false);
         get_input(gc);
 
         mm = new mainMenu(this);
@@ -117,6 +114,9 @@ public class Main extends BasicGame {
     public void render(GameContainer gc, Graphics g) throws SlickException {
 //        stg_test.draw(g);
 
+        boolean a = gc.getInput().isKeyDown(Input.KEY_A);
+
+        g.setAntiAlias(a);
         mm.draw(g);
 
         if(_DEBUG){

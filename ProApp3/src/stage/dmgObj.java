@@ -25,6 +25,8 @@ public class dmgObj extends rect {
     public                 int            timer_dead;     //消滅するまでのタイマー変数
     public                 Stage          belong;         //どのステージに存在しているか
 
+    public                 Direction      dir;            //オブジェクトの方向
+
     private                texture        texture_m;      //テクスチャ
 
     private   static final int           TIMER_STOP = -1; //タイマー変数の停止状態用
@@ -81,10 +83,13 @@ public class dmgObj extends rect {
      * 戻り値：なし
      */
     public void draw(Graphics g){
-        texture_m.draw(g, location.DtoF(), belong, ((accel.x < 0.0)? true : false));
+        if(is_dead)
+            return;
+
+        texture_m.draw(g, location.DtoF(), 0, 0, belong, ((dir == Direction.RIGHT)? false : true));
         if(Main._DEBUG){
-            if(window.comprise(this, belong)){
-                rect r = belong.relative_camera_rect(this);
+            if(window.comprise(this.to_rect(), belong)){
+                rect r = belong.relative_camera_rect(this.to_rect());
                 g.setColor(new Color(0xff0000));
                 g.drawRect(r.location.x.floatValue() * window.SCALE, r.location.y.floatValue() * window.SCALE,
                            r.size.x.floatValue()     * window.SCALE, r.size.y.floatValue()     * window.SCALE);
@@ -214,6 +219,16 @@ public class dmgObj extends rect {
         }
     }
 
+    /*
+     * rectにキャスト
+     * 引数  ：なし
+     * 戻り値：rectにキャストした自オブジェクト
+     */
+    public rect to_rect(){
+        return new rect(new point<Double> (location),
+                        new point<Integer>(size)    );
+    }
+
 
     /*
      * 衝突処理
@@ -222,17 +237,17 @@ public class dmgObj extends rect {
      */
     protected void process_contract(){
         // マップオブジェクト
-        if(belong.map_data.is_collision(this))
+        if(belong.map_data.is_collision(this.to_rect()))
             is_dead = true;
 
         // キャラクタオブジェクト
         for(int i = 0; i < belong.person.size(); i++){
-            if(belong.person.get(i).is_collision(this))
+            if(belong.person.get(i).to_rect().is_collision(this.to_rect()))
                 belong.person.get(i).receve_damage(this);
         }
 
         // プレイヤオブジェクト
-        if(belong.player_data.is_collision(this))
+        if(belong.player_data.is_collision(this.to_rect()))
             belong.player_data.receve_damage(this);
     }
 
@@ -247,6 +262,7 @@ public class dmgObj extends rect {
 
         accel      = new point<Double>(_accel);
         atk        = _atk;
+        dir        = Direction.RIGHT;
 
         force_m    = _force;
 

@@ -27,7 +27,7 @@ public class Stage {
     public final point<Float> PLAYER_SHOOT = new point<Float>((window.scaled_window_size().x  / 2), window.scaled_window_size().y / 4);
 
     /* メンバ変数・インスタンス */
-    public point<Double>     gravitiy;
+    public point<Double>        gravitiy;
 
     //親オブジェクト
     public stageSelector        belong;          //親オブジェクト
@@ -47,6 +47,8 @@ public class Stage {
 
     //過去のオブジェクトデータ
     public ArrayList<playerObj> player_prev;     //プレイヤーオブジェクト
+
+    public boolean              constracted = false;
 
     /* 定数 */
     public final int PREV_MAX = 5; //過去のオブジェクトデータの最大保存数
@@ -76,6 +78,8 @@ public class Stage {
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
 
+            constracted = false;
+
             debugLog.getInstance().write("stage load : " + _file_path);
 
             String         str         = "";
@@ -100,6 +104,8 @@ public class Stage {
 
             String[] elm = bRead.readLine().split(" ");
             gravitiy     = new point<Double>(Double.parseDouble(elm[0]), Double.parseDouble(elm[1]));
+
+            constracted = true;
 
             bRead.close();
         }catch(IOException e){
@@ -155,6 +161,9 @@ public class Stage {
      * 戻り値：なし
      */
     public void update(){
+        if(!constracted)
+            return;
+
         //処理を抜ける場合
         if(Main.user_input.get(0).quit){
             reflesh();
@@ -164,6 +173,10 @@ public class Stage {
         // プレイヤーオブジェクト
         add_playerObj_prev();
         player_data.update();
+
+        //プレイヤーが変形中ならば、他のオブジェクトの状態変更はしない
+        if(player_data.do_deform)
+            return;
 
         // キャラクタオブジェクト
         for(int i = 0; i < person.size(); i++)
@@ -178,8 +191,9 @@ public class Stage {
         player_data.move();
 
         // キャラクタオブジェクト
-        for(int i = 0; i < person.size(); i++)
+        for(int i = 0; i < person.size(); i++){
             person.get(i).move();
+        }
 
         //ダメージオブジェクト
         for(int i = 0; i < damage.size(); i++)
@@ -248,6 +262,8 @@ public class Stage {
      * 戻り値：なし
      */
     public void draw(Graphics g){
+        if(!constracted)
+            return;
 
         map_data.draw(g);
 
