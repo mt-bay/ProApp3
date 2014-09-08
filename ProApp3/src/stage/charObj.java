@@ -217,7 +217,7 @@ public class charObj extends rect {
         if(Main._DEBUG){
             if(window.comprise(this.to_rect(), belong)){
                 rect r = belong.relative_camera_rect(this.to_rect());
-                g.setColor(new Color(0x00ff00));
+                g.setColor(new Color(0xffff00));
                 g.drawRect(r.location.x.floatValue() * window.SCALE, r.location.y.floatValue() * window.SCALE,
                            r.size.x.floatValue()     * window.SCALE, r.size.y.floatValue()     * window.SCALE);
             }
