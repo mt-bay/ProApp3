@@ -68,7 +68,7 @@ public class Stage {
      * キャラクタオブジェクト読み込み用スクリプトへの相対パス[改行]
      * <String>
      * 重力値_x 重力値_y
-     * <int>    <int>
+     * <double> <double>
      * を読み込む
      * 引数：ファイル名
      */
@@ -76,7 +76,7 @@ public class Stage {
         belong = _belong;
 
         try{
-            BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
+            BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
 
             constracted = false;
 

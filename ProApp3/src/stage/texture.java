@@ -69,10 +69,10 @@ public class texture {
      * 戻り値：なし
      */
     private void init(String _path, point<Integer> _size){
-        path       = _path;
+        path       = window.file_path_corres(_path);
         size       = _size;
         try{
-            texture_m = new SpriteSheet(new Image(_path), size.x, size.y);
+            texture_m = new SpriteSheet(new Image(window.file_path_corres(_path)), size.x, size.y);
 
         }catch(Exception e){
             e.printStackTrace();

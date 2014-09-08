@@ -165,10 +165,10 @@ public class stageSelector extends selector{
         index_path = new ArrayList<String>();
         index_name = new ArrayList<String>();
         try{
-            String         script_path = (Paths.get(_stage_list_file_path).getParent() == null)?
-                                             "" : Paths.get(_stage_list_file_path).getParent().toString() + "\\";
+            String         script_path = (Paths.get(window.file_path_corres(_stage_list_file_path)).getParent() == null)?
+                                             "" : Paths.get(window.file_path_corres(_stage_list_file_path)).getParent().toString() + "\\";
 
-            BufferedReader bRead = new BufferedReader(new FileReader(_stage_list_file_path));
+            BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_stage_list_file_path)));
             String str;
             while((str = bRead.readLine()) != null){
                 str = window.file_path_corres(script_path + str);

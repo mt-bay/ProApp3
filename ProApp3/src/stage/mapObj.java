@@ -140,16 +140,16 @@ public class mapObj {
 
     /* ファイル to マップオブジェクト
      * ファイルは、1行ごとに区切られている前提で、以下の内容で動作する
-     * ブロックサイズ_x ブロックサイズ_y  csvファイルへのパス 一枚絵を使うか(falseでスプライトシート) 画像 or スプライトシートへのパス
-     * <int>            <int>             <string>            <boolean>                               <string>
+     * ブロックサイズ_x ブロックサイズ_y  csvファイルへのパス 一枚絵を使うか(falseならばブロックを描画) 画像 or スプライトシートへのパス
+     * <int>            <int>             <string>            <boolean>                                 <string>
      */
     public static mapObj file_to_mapObj(String _file_path, Stage _belong){
         mapObj m_obj       = null;
-        String script_path = ((Paths.get(_file_path).getParent() == null)?
-                                  "" : Paths.get(_file_path).getParent().toString() + "\\");
+        String script_path = ((Paths.get(window.file_path_corres(_file_path)).getParent() == null)?
+                                  "" : Paths.get(window.file_path_corres(_file_path)).getParent().toString() + "\\");
 
         try{
-            BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
+            BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
             String[] str = bRead.readLine().split(" ");
             bRead.close();
 

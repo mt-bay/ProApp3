@@ -181,7 +181,7 @@ public class playerObj extends charObj {
                     //接地かつ1つ前のフレームの入力でジャンプ命令がない場合
                     if((!((ai_prev.get(0).move & ai_op.MOVE_JUMP_NOMAL) != ai_op.MOVE_NONE)) &&
                         is_gnd){
-                        accel.y += act_move_rate.y;
+                        accel.y -= act_move_rate.y;
                     }
                 }
             }
@@ -276,17 +276,17 @@ public class playerObj extends charObj {
 
     /* ファイルからプレイヤーオブジェクトのデータを読み込む
      * データは1行に格納，各データは空白で区切られ、以下のデータを持っている前提で動作する
-     * 座標_x   座標_y   攻撃の際に使用するダメージオブジェクトのリストへのパス
-     * <double> <double> <String>
+     * 座標_x   座標_y   攻撃の際に使用するダメージオブジェクトのリストへのパス 発射間隔のスクリプトパス
+     * <double> <double> <String>                                               <String>
      * アクションモード時のサイズ_x アクションモード時のサイズ_y アクションモード時のテクスチャへのファイルパス
      * <int>                        <int>                        <String>
-     * アクションモード時の移動力_x ジャンプ力 アクションモード時の攻撃間隔 アクションモード時の高速移動倍率
-     * <double>                     <double>   <int>                        <double>
+     * アクションモード時の移動力_x ジャンプ力 アクションモード時の高速移動倍率
+     * <double>                     <double>   <double>
      * シューティングモード時のサイズ_x シューティングモード時のサイズ_y シューティングモード時のテクスチャへのファイルパス
      * <int>                            <int>                            <String>
-     * シューティングモード時の移動力_x シューティングモード時の移動力_y シューティングモード時の攻撃間隔 シューティングモード時の高速移動倍率
-     * <double>                         <double>                         <int>                            <double>
-     * 変形中のサイズ_x 変形中のサイズ_y 変形中のテクスチャへのファイルパス 変形に要する時間
+     * シューティングモード時の移動力_x シューティングモード時の移動力_y シューティングモード時の高速移動倍率
+     * <double>                         <double>                         <double>
+     * 変形中のサイズ_x 変形中のサイズ_y 変形中のテクスチャへのファイルパス 変形に要するフレーム数
      * <int>            <int>            <String>                           <int>
      * HP       向き        接地しているか シューティングモードか(重力の影響を受けないか) 使用するAIの名前
      * <double> <Direction> <boolean>      <boolean>                                      <ai_op>
@@ -295,11 +295,11 @@ public class playerObj extends charObj {
      * 戻り値：プレイヤーオブジェクト
      */
     public static playerObj file_to_playerObj(String _file_path, Stage _belong) /*throws FileNotFoundException*/{
-        String    script_path = ((Paths.get(_file_path).getParent() == null)?
-                                     "" : Paths.get(_file_path).getParent().toString() + "\\");
+        String    script_path = ((Paths.get(window.file_path_corres(_file_path)).getParent() == null)?
+                                     "" : Paths.get(window.file_path_corres(_file_path)).getParent().toString() + "\\");
 
         try{
-            BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
+            BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
             String[] str = bRead.readLine().split(" ");
             bRead.close();
 

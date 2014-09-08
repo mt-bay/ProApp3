@@ -162,7 +162,7 @@ public class charObj extends rect {
                     //接地かつ1つ前のフレームの入力でジャンプ命令がない場合
                     if((!((ai_prev.get(0).move & ai_op.MOVE_JUMP_NOMAL) != ai_op.MOVE_NONE)) &&
                         is_gnd){
-                        accel.y += move_rate.y;
+                        accel.y -= move_rate.y;
                     }
                 }
             }
@@ -288,14 +288,14 @@ public class charObj extends rect {
      */
     public static ArrayList<charObj> file_to_charObj_ArrayList(String _file_path, Stage _belong){
         ArrayList<charObj> char_obj_al = new ArrayList<charObj>();
-        String             script_path = ((Paths.get(_file_path).getParent() == null)?
-                                             "" : Paths.get(_file_path).getParent().toString() + "\\");
+        String             script_path = ((Paths.get(window.file_path_corres(_file_path)).getParent() == null)?
+                                             "" : Paths.get(window.file_path_corres(_file_path)).getParent().toString() + "\\");
 
         try{
 
 
 
-            BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
+            BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
             String         line  = "";
             String[]       str   = null;
 

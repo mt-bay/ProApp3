@@ -109,11 +109,11 @@ public class dmgObj extends rect {
      */
     public static ArrayList<dmgObj> file_to_dmgObj_ArrayList(String _file_path, Stage _belong){
         ArrayList<dmgObj> d_obj_al    = new ArrayList<dmgObj>();
-        String            script_path = ((Paths.get(_file_path).getParent() == null)?
-                                             "" : Paths.get(_file_path).getParent().toString() + "\\");
+        String            script_path = ((Paths.get(window.file_path_corres(_file_path)).getParent() == null)?
+                                             "" : Paths.get(window.file_path_corres(_file_path)).getParent().toString() + "\\");
 
         try{
-            BufferedReader bRead = new BufferedReader(new FileReader(_file_path));
+            BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
             String         line  = "";
             String[]       str   = null;
 

@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import org.newdawn.slick.Input;
 
+import window.window;
+
 import common.volume;
 
 /* 設定ファイルクラス
@@ -86,7 +88,7 @@ public class config {
      * 引数：なし
      */
     public void write() throws IOException {
-        BufferedWriter bWrite = new BufferedWriter(new FileWriter(fName));
+        BufferedWriter bWrite = new BufferedWriter(new FileWriter(window.file_path_corres(fName)));
         // ファイルに書き込む内容
         String sWrite = String.format("%08X", attack) + String.format("%08X", jump   ) + String.format("%08X", highsp) + String.format("%08X", change)
                       + String.format("%08X", left  ) + String.format("%08X", down   ) + String.format("%08X", up    ) + String.format("%08X", right )
@@ -109,7 +111,7 @@ public class config {
      */
     public void read() throws IOException {
         // ファイル入力
-        BufferedReader bRead = new BufferedReader(new FileReader(fName));
+        BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(fName)));
         String fst = bRead.readLine();
 
         // データ用に文字列分割

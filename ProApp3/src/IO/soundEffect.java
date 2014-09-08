@@ -86,10 +86,10 @@ public class soundEffect {
         name = new ArrayList<String>();
 
         try{
-            String         script_path = (Paths.get(_file_path).getParent() == null)?
-                                             "" : Paths.get(_file_path).getParent().toString() + "\\";
+            String         script_path = (Paths.get(window.file_path_corres(_file_path)).getParent() == null)?
+                                             "" : Paths.get(window.file_path_corres(_file_path)).getParent().toString() + "\\";
 
-            BufferedReader bRead       = new BufferedReader(new FileReader(_file_path));
+            BufferedReader bRead       = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
             String         str;
 
             Sound          snd_buf;
