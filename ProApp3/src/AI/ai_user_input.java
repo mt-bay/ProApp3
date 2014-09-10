@@ -36,6 +36,7 @@ public class ai_user_input {
                  !Main.user_input.get(0).right  )){
 
         }
+
         //  左
         else if(Main.user_input.get(0).left){
             _code.move += ai_op.MOVE_DIR_LEFT;
