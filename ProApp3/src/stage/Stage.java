@@ -11,7 +11,9 @@ import java.util.Queue;
 import menu.stageSelector;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.TrueTypeFont;
 
 import window.Main;
 import window.window;
@@ -38,7 +40,8 @@ public class Stage {
     public ArrayList<dmgObj>    damage;          //ダメージオブジェクト
     public ArrayList<charObj>   person;          //キャラクタオブジェクト
     //状態管理
-    public boolean              is_end;          //このフレームで抜けるか
+    public int                  timer_end;       //オブジェクトを抜けるまでのタイマー変数
+    public boolean              is_clear;        //クリアしたかどうか
 
     public point<Float>         camera_location; //カメラ位置
     //オブジェクト生成コール用待ち行列
@@ -48,10 +51,12 @@ public class Stage {
     //過去のオブジェクトデータ
     public ArrayList<playerObj> player_prev;     //プレイヤーオブジェクト
 
-    public boolean              constracted = false;
 
     /* 定数 */
-    public final int PREV_MAX = 5; //過去のオブジェクトデータの最大保存数
+    public final int TIMER_STOP = -1; //タイマー変数の停止状態を表す
+    public final int PREV_MAX   =  5; //過去のオブジェクトデータの最大保存数
+    private static final float font_size  = 30.0f;
+    private static final TrueTypeFont ttf = new TrueTypeFont(new java.awt.Font("consolas", 0, (int)font_size), false);
 
     /* コンストラクタ */
 
@@ -78,7 +83,7 @@ public class Stage {
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
 
-            constracted = false;
+
 
             debugLog.getInstance().write("stage load : " + _file_path);
 
@@ -105,7 +110,6 @@ public class Stage {
             String[] elm = bRead.readLine().split(" ");
             gravitiy     = new point<Double>(Double.parseDouble(elm[0]), Double.parseDouble(elm[1]));
 
-            constracted = true;
 
             bRead.close();
         }catch(IOException e){
@@ -122,6 +126,9 @@ public class Stage {
 
         player_prev   = new ArrayList<playerObj>();
         add_playerObj_prev();
+
+        timer_end     = TIMER_STOP;
+        is_clear      = false;
 
         camera_position_correction();
 
@@ -161,18 +168,21 @@ public class Stage {
      * 戻り値：なし
      */
     public void update(){
-        if(!constracted)
-            return;
-
         //処理を抜ける場合
-        if(Main.user_input.get(0).quit){
+        if(Main.user_input.get(0).quit || timer_end == 0){
             reflesh();
+        }
+        if(timer_end != TIMER_STOP){
+            --timer_end;
         }
 
         //状態アップデート
         // プレイヤーオブジェクト
         add_playerObj_prev();
-        player_data.update();
+        if(!player_data.is_dead){
+            player_data.update();
+        }
+
 
         //プレイヤーが変形中ならば、他のオブジェクトの状態変更はしない
         if(player_data.do_deform)
@@ -188,7 +198,9 @@ public class Stage {
 
         //移動処理
         // プレイヤーオブジェクト
-        player_data.move();
+        if(!player_data.is_dead){
+            player_data.move();
+        }
 
         // キャラクタオブジェクト
         for(int i = 0; i < person.size(); i++){
@@ -201,6 +213,19 @@ public class Stage {
 
         //カメラ位置修正
         camera_position_correction();
+
+        //終了条件チェック
+        if(person.size() > 0){
+            if(person.get(0).is_dead && timer_end == TIMER_STOP){
+                is_clear  = true;
+                timer_end = 150;
+            }
+        }
+        if(player_data.is_dead   && timer_end == TIMER_STOP){
+            is_clear  = false;
+            timer_end = 150;
+        }
+
 
         //削除処理
         // キャラクタオブジェクト
@@ -248,6 +273,37 @@ public class Stage {
     }
 
     /*
+     * ゲームオーバー・クリア処理
+     * 引数  ：ゲームクリア処理かどうか
+     * 戻り値：なし
+     */
+    public void stage_end_draw(Graphics g){
+        //ゲームオーバー時の処理
+        if(!is_clear){
+            Font  prev_font  = g.getFont();
+            Color prev_color = g.getColor();
+
+            g.setFont(ttf);
+            g.setColor(new Color(0xffffff));
+            g.drawString("Game Over!", 0.0f, window.SIZE.y.floatValue() - font_size);
+
+            g.setFont(prev_font);
+            g.setColor(prev_color);
+        }
+        else{
+            Font  prev_font  = g.getFont();
+            Color prev_color = g.getColor();
+
+            g.setFont(ttf);
+            g.setColor(new Color(0xffffff));
+            g.drawString("Clear!", 0.0f, window.SIZE.y.floatValue() - font_size);
+
+            g.setFont(prev_font);
+            g.setColor(prev_color);
+        }
+    }
+
+    /*
      * 親オブジェクトに処理を返す
      * 引数  ：なし
      * 戻り値：なし
@@ -262,9 +318,6 @@ public class Stage {
      * 戻り値：なし
      */
     public void draw(Graphics g){
-        if(!constracted)
-            return;
-
         map_data.draw(g);
 
         for(int i = 0; i < person.size(); i++){
@@ -275,7 +328,9 @@ public class Stage {
             damage.get(i).draw(g);
         }
 
-        player_data.draw(g);
+        if(!player_data.is_dead){
+            player_data.draw(g);
+        }
 
         if(Main._DEBUG){
             Color prev_color = g.getColor();
@@ -292,6 +347,9 @@ public class Stage {
 
             g.setColor(prev_color);
         }
+
+        if(timer_end != TIMER_STOP)
+            stage_end_draw(g);
     }
 
     /*

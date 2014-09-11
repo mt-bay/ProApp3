@@ -127,6 +127,7 @@ public class playerObj extends charObj {
         }
 
         //移動処理
+        point<Double> move_dir = new point<Double>(0.0, 0.0);
         // フラグチェック
         //  移動方向チェック
         //   左右
@@ -134,12 +135,12 @@ public class playerObj extends charObj {
             //左
             if((ai.move & ai_op.MOVE_DIR_LEFT ) != ai_op.MOVE_NONE){
                 dir = Direction.LEFT;
-                accel.x = -1 * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
+                move_dir.x = -1.0;
             }
             //右
             if((ai.move & ai_op.MOVE_DIR_RIGHT) != ai_op.MOVE_NONE){
                 dir = Direction.RIGHT;
-                accel.x =  1 * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
+                move_dir.x = +1.0;
             }
         }
         else{
@@ -151,11 +152,11 @@ public class playerObj extends charObj {
             if((ai.move & ai_op.MOVE_DIR_UP_DOWN) != ai_op.MOVE_NONE){
                 //上
                 if((ai.move & ai_op.MOVE_DIR_UP  ) != ai_op.MOVE_NONE){
-                    accel.y = -1 * stg_move_rate.y;
+                    move_dir.y = -1.0;
                 }
                 //下
                 if((ai.move & ai_op.MOVE_DIR_DOWN) != ai_op.MOVE_NONE){
-                    accel.y =  1 * stg_move_rate.y;
+                    move_dir.y = +1.0;
                 }
             }
             else{
@@ -163,10 +164,22 @@ public class playerObj extends charObj {
             }
         }
         //高速移動時の処理
+        //移動速度チェック
+        if((ai.move & ai_op.MOVE_MOVE_NOMAL    ) != ai_op.MOVE_NONE){
+            if(move_dir.x != 0.0){
+                accel.x = move_dir.x * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
+            }
+            if(move_dir.y != 0.0 && !is_gravitied){
+                accel.y = move_dir.y * stg_move_rate.y;
+            }
+        }
         if((ai.move & ai_op.MOVE_MOVE_HIGHSPEED) != ai_op.MOVE_NONE){
-            accel.x *= ((is_shooting)? stg_highspeed_rate : act_highspeed_rate);
-            if(!is_gravitied)
-                accel.y *= stg_highspeed_rate;
+            if(move_dir.x != 0.0){
+                accel.x = highspeed_rate * move_dir.x * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
+            }
+            if(move_dir.y != 0.0 && !is_gravitied){
+                accel.y *= highspeed_rate * move_dir.y * move_rate.y;
+            }
         }
 
         //ジャンプ処理

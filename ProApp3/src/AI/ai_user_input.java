@@ -92,28 +92,39 @@ public class ai_user_input {
         final int LOOP_MOVE_NOMAL_LENGTH = 16;  //移動タイマー最大値
         //テクスチャ指定用の変数の初期化
         _code.texture_num = new point<Integer>(0, 0);
-        // 静止状態
-        if((_code.move & ai_op.MOVE_MOVE_NOMAL) == ai_op.MOVE_NONE){
-            _code.texture_num.x = 0;
-        }
-        // 移動状態
-        if((_code.move & ai_op.MOVE_MOVE      ) != ai_op.MOVE_NONE){
-            //通常移動
-            if((_code.move & ai_op.MOVE_MOVE_NOMAL) != ai_op.MOVE_NONE){
-                _code.texture_num.x =((_code.time_move % LOOP_MOVE_NOMAL_LENGTH) < LOOP_MOVE_NOMAL_LENGTH / 2)? 1 : 2;
+        // 重力依存チェック
+        if((_belong.is_gravitied)){
+            // 静止状態
+            if((_code.move & ai_op.MOVE_MOVE_NOMAL) == ai_op.MOVE_NONE){
+                _code.texture_num.x = 0;
             }
-            //高速移動
-            if((_code.move & ai_op.MOVE_MOVE_HIGHSPEED) != ai_op.MOVE_NONE){
-                _code.texture_num.x = ((_code.time_move % LOOP_MOVE_NOMAL_LENGTH) < LOOP_MOVE_NOMAL_LENGTH / 2)? 1 : 2;
+            // 移動状態
+            if((_code.move & ai_op.MOVE_MOVE          ) != ai_op.MOVE_NONE &&
+               (_code.move & ai_op.MOVE_DIR_LEFT_RIGHT) != ai_op.MOVE_NONE){
+                //通常移動
+                if((_code.move & ai_op.MOVE_MOVE_NOMAL) != ai_op.MOVE_NONE){
+                    _code.texture_num.x =((_code.time_move % LOOP_MOVE_NOMAL_LENGTH) < LOOP_MOVE_NOMAL_LENGTH / 2)? 1 : 2;
+                }
+                //高速移動
+                if((_code.move & ai_op.MOVE_MOVE_HIGHSPEED) != ai_op.MOVE_NONE){
+                    _code.texture_num.x = ((_code.time_move % LOOP_MOVE_NOMAL_LENGTH) < LOOP_MOVE_NOMAL_LENGTH / 2)? 1 : 2;
+                }
+            }
+            // ジャンプ中判定
+            if(!_belong.is_gnd){
+                _code.texture_num.x = 3;
+            }
+            // 攻撃
+            if((_code.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
+                _code.texture_num.y = 1;
             }
         }
-        // ジャンプ中判定
-        if(!_belong.is_gnd){
+        else{
             _code.texture_num.x = 3;
-        }
-        // 攻撃
-        if((_code.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
-            _code.texture_num.y = 1;
+         // 攻撃
+            if((_code.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
+                _code.texture_num.y = 1;
+            }
         }
 
     }
