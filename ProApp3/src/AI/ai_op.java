@@ -24,6 +24,8 @@ public class ai_op {
     /* 定数 */
     //使用するAIの決定用
     public    static final int            AI_NO_USE      = 0x00000000;                          //どのAIも使用しない
+    public    static final int            AI_CHIMBO      = 0x00000001;
+    public    static final int            AI_TOBI        = 0x00000002;
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
@@ -120,6 +122,12 @@ public class ai_op {
             case AI_USER_INPUT :
                 ai_user_input.run(_belong, this);
                 return;
+            case AI_CHIMBO:
+            	ai_chimbo.run(_belong, this);
+            	return;
+            case AI_TOBI:
+            	ai_tobi.run(_belong, this);
+            	return;
             case AI_NO_USE     :
                 return;
         }
@@ -136,6 +144,10 @@ public class ai_op {
             case "user_input"   :
             case "ai_user_input":
                 return AI_USER_INPUT;
+            case "ai_chimbo":
+            	return AI_CHIMBO;
+            case "ai_tobi":
+            	return AI_TOBI;
             default :
                 return AI_NO_USE;
         }

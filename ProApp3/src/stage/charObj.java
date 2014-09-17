@@ -19,7 +19,6 @@ import common.rect;
 public class charObj extends rect {
     /* メンバ変数 */
 
-    public                 point<Double>      location;         //位置情報
     public                 point<Double>      accel;            //移動力
     public                 double             hp;               //体力値
     public                 Direction          dir;              //向き

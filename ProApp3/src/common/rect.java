@@ -64,8 +64,8 @@ public class rect {
      * 戻り値：中心点
      */
     public point<Double> get_center(){
-        return new point<Double>(location.x + ((double)size.x / 2),
-                                 location.y + ((double)size.y / 2));
+        return new point<Double>(location.x + ((double)size.x / 2.0d),
+                                 location.y + ((double)size.y / 2.0d));
     }
 
     /*
