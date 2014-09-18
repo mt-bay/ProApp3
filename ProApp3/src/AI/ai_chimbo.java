@@ -15,12 +15,14 @@ public class ai_chimbo {
 			--_code.time_unique;
 		}
 
+		//初期化
 		_code.attack = ai_op.ATTACK_NONE;
 		_code.move   = ai_op.MOVE_NONE;
 		_code.unique = ai_op.UNIQUE_NONE;
 		//移動方向の決定
-		if(_code.time_move == ai_op.TIME_MIN &&
-		   _belong.ai_prev.get(0).time_move != _code.time_move){
+		if((_code.time_move == ai_op.TIME_MIN &&
+		   _belong.ai_prev.get(0).time_move != _code.time_move) ||
+		   ((_code.move & ai_op.MOVE_DIR) == ai_op.MOVE_NONE)){
 			if(_belong.location.x < _belong.belong.player_data.location.x){
 				_code.move += ai_op.MOVE_DIR_RIGHT;
 			}
@@ -32,7 +34,7 @@ public class ai_chimbo {
 			_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 		}
 		//プレイヤーと接触した時の処理
-		if(Math.abs(_belong.get_center().x - _belong.belong.player_data.get_center().x) < 20.0 &&
+		if(Math.abs(_belong.get_center().x - _belong.belong.player_data.get_center().x) < 30.0 &&
 		   _code.time_move == ai_op.TIME_MIN){
 			_code.time_move = 15;
 		}
