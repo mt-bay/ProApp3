@@ -26,6 +26,7 @@ public class ai_op {
     public    static final int            AI_NO_USE      = 0x00000000;                          //どのAIも使用しない
     public    static final int            AI_CHIMBO      = 0x00000001;
     public    static final int            AI_TOBI        = 0x00000002;
+    public	  static final int			  AI_HANECHIMBO  = 0x00000045;
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
@@ -128,6 +129,9 @@ public class ai_op {
             case AI_TOBI:
             	ai_tobi.run(_belong, this);
             	return;
+            case AI_HANECHIMBO:
+            	ai_hanechimbo.run(_belong, this);
+            	return;
             case AI_NO_USE     :
                 return;
         }
@@ -148,6 +152,8 @@ public class ai_op {
             	return AI_CHIMBO;
             case "ai_tobi":
             	return AI_TOBI;
+            case "ai_hanechimbo":
+            	return AI_HANECHIMBO;
             default :
                 return AI_NO_USE;
         }
