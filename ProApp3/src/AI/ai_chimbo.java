@@ -23,12 +23,12 @@ public class ai_chimbo {
 		if((_code.time_move == ai_op.TIME_MIN &&
 		   _belong.ai_prev.get(0).time_move != _code.time_move) ||
 		   ((_code.move & ai_op.MOVE_DIR) == ai_op.MOVE_NONE)){
-			if(_belong.location.x < _belong.belong.player_data.location.x){
-				_code.move += ai_op.MOVE_DIR_RIGHT;
-			}
-			else{
+			//if(_belong.location.x > _belong.belong.player_data.location.x){
 				_code.move += ai_op.MOVE_DIR_LEFT;
-			}
+			//}
+			/*else{
+				_code.move += ai_op.MOVE_DIR_LEFT;
+			}*/
 		}
 		else{
 			_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
@@ -39,6 +39,9 @@ public class ai_chimbo {
 			_code.time_move = 15;
 		}
 
+		if((_belong.belong.player_data.location.x - _belong.location.x) > 430){
+			_code.move += ai_op.MOVE_DIR_RIGHT;
+		}
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NOMAL;
 
