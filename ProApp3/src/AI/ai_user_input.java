@@ -66,12 +66,12 @@ public class ai_user_input {
         // 移動速度の決定
         //  移動フラグが立っている (= 方向フラグが立ってる)ならば、高速移動か判定して追加
         if((_code.move  & ai_op.MOVE_DIR) != ai_op.MOVE_NONE){
-            _code.move += (Main.user_input.get(0).highsp)? ai_op.MOVE_MOVE_HIGHSPEED : ai_op.MOVE_MOVE_NOMAL;
+            _code.move += (Main.user_input.get(0).highsp)? ai_op.MOVE_MOVE_HIGHSPEED : ai_op.MOVE_MOVE_NORMAL;
         }
 
         // ジャンプの決定
         if(Main.user_input.get(0).jump){
-            _code.move += ai_op.MOVE_JUMP_NOMAL;
+            _code.move += ai_op.MOVE_JUMP_NORMAL;
         }
 
         // アップデート前と同値かチェック
@@ -95,14 +95,14 @@ public class ai_user_input {
         // 重力依存チェック
         if((_belong.is_gravitied)){
             // 静止状態
-            if((_code.move & ai_op.MOVE_MOVE_NOMAL) == ai_op.MOVE_NONE){
+            if((_code.move & ai_op.MOVE_MOVE_NORMAL) == ai_op.MOVE_NONE){
                 _code.texture_num.x = 0;
             }
             // 移動状態
             if((_code.move & ai_op.MOVE_MOVE          ) != ai_op.MOVE_NONE &&
                (_code.move & ai_op.MOVE_DIR_LEFT_RIGHT) != ai_op.MOVE_NONE){
                 //通常移動
-                if((_code.move & ai_op.MOVE_MOVE_NOMAL) != ai_op.MOVE_NONE){
+                if((_code.move & ai_op.MOVE_MOVE_NORMAL) != ai_op.MOVE_NONE){
                     _code.texture_num.x =((_code.time_move % LOOP_MOVE_NOMAL_LENGTH) < LOOP_MOVE_NOMAL_LENGTH / 2)? 1 : 2;
                 }
                 //高速移動

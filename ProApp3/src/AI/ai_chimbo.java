@@ -40,10 +40,10 @@ public class ai_chimbo {
 		}
 
 		if((_belong.belong.player_data.location.x - _belong.location.x) > 430){
-			_code.move += ai_op.MOVE_DIR_RIGHT;
+			_code.move += ai_op.MOVE_DIR_UP;
 		}
 		//移動力の決定
-		_code.move += ai_op.MOVE_MOVE_NOMAL;
+		_code.move += ai_op.MOVE_MOVE_NORMAL;
 
 		//攻撃
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 50.0){

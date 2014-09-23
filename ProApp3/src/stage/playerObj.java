@@ -165,7 +165,7 @@ public class playerObj extends charObj {
         }
         //高速移動時の処理
         //移動速度チェック
-        if((ai.move & ai_op.MOVE_MOVE_NOMAL    ) != ai_op.MOVE_NONE){
+        if((ai.move & ai_op.MOVE_MOVE_NORMAL    ) != ai_op.MOVE_NONE){
             if(move_dir.x != 0.0){
                 accel.x = move_dir.x * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
             }
@@ -190,9 +190,9 @@ public class playerObj extends charObj {
             if(is_gravitied){
 
                 //通常ジャンプ
-                if((ai.move & ai_op.MOVE_JUMP_NOMAL) != ai_op.MOVE_NONE){
+                if((ai.move & ai_op.MOVE_JUMP_NORMAL) != ai_op.MOVE_NONE){
                     //接地かつ1つ前のフレームの入力でジャンプ命令がない場合
-                    if((!((ai_prev.get(0).move & ai_op.MOVE_JUMP_NOMAL) != ai_op.MOVE_NONE)) &&
+                    if((!((ai_prev.get(0).move & ai_op.MOVE_JUMP_NORMAL) != ai_op.MOVE_NONE)) &&
                         is_gnd){
                         accel.y -= act_move_rate.y;
                     }

@@ -45,11 +45,11 @@ public class ai_op {
     public    static final short          MOVE_DIR_UP_DOWN    = MOVE_DIR_UP   | MOVE_DIR_DOWN;  //上下
 
     public    static final short          MOVE_MOVE           = (short)0x00F0;                  //移動種類
-    public    static final short          MOVE_MOVE_NOMAL     = (short)0x0010;                  //通常移動
+    public    static final short          MOVE_MOVE_NORMAL    = (short)0x0010;                  //通常移動
     public    static final short          MOVE_MOVE_HIGHSPEED = (short)0x0020;                  //高速移動
 
     public    static final short          MOVE_JUMP           = (short)0x000F;                  //ジャンプ
-    public    static final short          MOVE_JUMP_NOMAL     = (short)0x0001;                  //通常ジャンプ
+    public    static final short          MOVE_JUMP_NORMAL    = (short)0x0001;                  //通常ジャンプ
 
     //unique用
     public    static final int            UNIQUE_NONE         =  0x00000000;                    //独自処理なし
