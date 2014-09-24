@@ -27,6 +27,7 @@ public class ai_op {
     public    static final int            AI_CHIMBO      = 0x00000001;
     public    static final int            AI_TOBI        = 0x00000002;
     public	  static final int			  AI_HANECHIMBO  = 0x00000045;
+    public	  static final int			  AI_SHOOT  = 0x00010400;
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
@@ -131,6 +132,9 @@ public class ai_op {
             	return;
             case AI_HANECHIMBO:
             	ai_hanechimbo.run(_belong, this);
+            	return;
+            case AI_SHOOT:
+            	ai_shoot.run(_belong, this);
             	return;
             case AI_NO_USE     :
                 return;
