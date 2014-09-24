@@ -19,34 +19,22 @@ public class ai_shoot {
 		_code.attack = ai_op.ATTACK_NONE;
 		_code.move   = ai_op.MOVE_NONE;
 		_code.unique = ai_op.UNIQUE_NONE;
-		//移動方向の決定
-
-		//プレイヤーと接触した時の処理
-		/*if(Math.abs(_belong.get_center().x - _belong.belong.player_data.get_center().x) < 30.0 &&
-		   _code.time_move == ai_op.TIME_MIN){
-			_code.time_move = 15;
-		}*/
-		//移動力の決定
-		_code.move += ai_op.MOVE_MOVE_NORMAL;
 
 		//攻撃
 		/*
-		 * プレイヤーから130以内に入ってきたら弾を撃つ
+		 * 攻撃の激しさが距離によって変化する
+		 * １，7００～2００
+		 * ２，2００～０
 		 */
-		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 130.0){
+		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 700.0 && 200.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
+				_code.time_attack == ai_op.TIME_MIN){
+			_code.time_attack = 30;
 			_code.attack += ai_op.ATTACK_NOMAL;
 		}
-
-		//プレイヤーから離れすぎたときの処理
-		/*
-		 * ちんぼがプレイヤーから300後ろに来てしまった時に
-		 * １．右へ移動して
-		 * ２．15秒ごとに弾を撃つ（これないと絶え間なく撃ち続けてきて強すぎるかなと思った）
-		if((_belong.belong.player_data.location.x - _belong.location.x) > 300){
-			_code.move += ai_op.MOVE_DIR_RIGHT;
-			if(_code.time_attack == ai_op.TIME_MIN){
-				_code.time_attack = 15;
-				_code.attack += ai_op.ATTACK_NOMAL;
-		*/
+		else if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 200.0 && 0.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
+				_code.time_attack == ai_op.TIME_MIN){
+			_code.time_attack = 60;
+			_code.attack += ai_op.ATTACK_NOMAL;
+		}
 	}
 }

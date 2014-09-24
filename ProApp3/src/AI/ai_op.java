@@ -158,9 +158,10 @@ public class ai_op {
             	return AI_TOBI;
             case "ai_hanechimbo":
             	return AI_HANECHIMBO;
+            case "ai_shoot":
+            	return AI_SHOOT;
             default :
                 return AI_NO_USE;
         }
     }
-
 }
