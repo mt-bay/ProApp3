@@ -1,1 +1,2 @@
 test_stage\test.stage
+stage1\stage1.stage

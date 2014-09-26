@@ -1,6 +1,6 @@
-stage load : stage\test_stage\test.stage
-    mapObj load : stage\test_stage\test.mObj
-    dmgObj load : stage\test_stage\test.dObj
-    plyObj load : stage\test_stage\test.pObj
-    chrObj load : stage\test_stage\test.cObj
+stage load : stage\stage1\stage1.stage
+    mapObj load : stage\stage1\stage1.mObj
+    dmgObj load : stage\stage1\stage1.dObj
+    plyObj load : stage\stage1\stage1.pObj
+    chrObj load : stage\stage1\stage1.cObj
 
