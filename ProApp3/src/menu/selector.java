@@ -9,7 +9,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.TrueTypeFont;
 
 import IO.debugLog;
-
 import common.point;
 
 
@@ -133,9 +132,9 @@ public class selector {
      * 戻り値：なし
      */
     public void draw(Graphics g, point<Float> _upper_center){
-        int[] dw_index   = get_drawable_index(); //描画する要素インデックス
-        Color base_color = g.getColor();         //変更前の色
-        Font  base_font  = g.getFont();          //変更前のフォント
+        Integer[] dw_index   = get_drawable_index(); //描画する要素インデックス
+        Color     base_color = g.getColor();         //変更前の色
+        Font      base_font  = g.getFont();          //変更前のフォント
 
         //描画用バッファ変数
         String str;    //描画内容
@@ -223,10 +222,10 @@ public class selector {
      * 引数  ：なし
      * 戻り値：描画可能な要素インデックスが入っている配列
      */
-    protected int[] get_drawable_index(){
+    protected Integer[] get_drawable_index(){
         ArrayList<Integer> dw_index = new ArrayList<Integer>(); //描画する要素
-        int draw_min = index - (drawable / 2) - ((drawable % 2 == 0)? 1 : 0); //描画可能な要素番号の最小値導出
-        int draw_max = draw_min + (drawable - 1);                             //描画可能な要素番号の最大値導出
+        int draw_min = index - ((drawable / 2) + ((drawable % 2 == 0)? 1 : 0)); //描画可能な要素番号の最小値導出
+        int draw_max = draw_min + (drawable);                                   //描画可能な要素番号の最大値導出
 
         //描画要素数が配列長と同じか、それ以上の場合
         if(drawable >= length){
@@ -243,22 +242,17 @@ public class selector {
         //描画可能な要素番号の最大値が、配列の要素番号の最大値を上回っている場合
         else if(draw_max > get_max()){
             for(int i = drawable - 1; i >= 0; i--){
-                dw_index.add(get_max() - drawable);
+                dw_index.add(get_max() - i);
             }
         }
         //どれでもない場合
         else{
             for(int i = 0; i < drawable; i++){
-                dw_index.add(get_relative_index(draw_min + i));
+                dw_index.add(get_relative_index(i - (drawable / 2)));
             }
         }
 
-        //int型配列に変換
-        int[] rt_index = new int[dw_index.size()]; //戻り値用配列
-        for(int i = 0; i < dw_index.size(); i++)    //要素代入
-            rt_index[i] = dw_index.get(i).intValue();
-
-        return rt_index;
+        return (Integer[])dw_index.toArray(new Integer[0]);
     }
 
 

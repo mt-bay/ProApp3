@@ -6,6 +6,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.TrueTypeFont;
 
 import window.Main;
@@ -14,7 +15,6 @@ import IO.bgm;
 import IO.config;
 import IO.debugLog;
 import IO.soundEffect;
-
 import common.point;
 
 /*
@@ -24,6 +24,12 @@ import common.point;
 public class configMenu extends selector{
     /* メンバ変数 */
     private mainMenu belong;
+
+    private boolean elm_is_run;
+
+    /* 定数 */
+    private final int INPUT_NONE = 0;
+
 
     /*
      * デフォルトコンストラクタ
@@ -41,19 +47,41 @@ public class configMenu extends selector{
         ArrayList<String> elm_name = new ArrayList<String>();
         elm_name.add("music        volume");
         elm_name.add("sound effect volume");
+
+        elm_name.addAll(config.getInstance().name_toStringAL());
+
         elm_name.add("confirm");
 
         init(elm_name,       8,    true,
                    16, _belong);
     }
 
+    /*
+     * update
+     * 引数  ：ゲームコンテナ
+     * 戻り値：なし
+     */
     public void update(GameContainer gc){
+        if(elm_is_run){
+            if(index >= 2){
+                if(!(Main.user_input.get(0).ok &&
+                     Main.user_input.get(1).ok)){
+                    renew_key(config.name.index_to_name(index - 2), gc);
+                }
+            }
+            return;
+        }
+
         //決定操作
         if(Main.user_input.get(0).ok){
-            if(Main.user_input.get(1).ok){
+            if(!Main.user_input.get(1).ok){
                 switch(index){
-                    case 2:
+                    case 14:
                         reflesh(true);
+                }
+
+                if(index >= 2 && index <= 13){
+                    elm_is_run = true;
                 }
                 return;
             }
@@ -141,9 +169,9 @@ public class configMenu extends selector{
     public void draw(Graphics g, point<Float> _upper_left, float _data_right){
         g.setBackground(new Color(0xa8bb70));  //背景色設定
 
-        int[] dw_index   = get_drawable_index(); //描画する要素インデックス
-        Color base_color = g.getColor();         //変更前の色
-        Font  base_font  = g.getFont();          //変更前のフォント
+        Integer[] dw_index   = get_drawable_index(); //描画する要素インデックス
+        Color     base_color = g.getColor();         //変更前の色
+        Font      base_font  = g.getFont();          //変更前のフォント
 
         //描画用バッファ変数
         String str;    //描画内容
@@ -155,7 +183,7 @@ public class configMenu extends selector{
 
         for(int i = 0; i < dw_index.length; i++){
             // 各種データの更新
-            str    = ((dw_index[i] == get_index_num())? "" : "") + index_name.get(dw_index[i]);
+            str    = index_name.get(dw_index[i]);
             dw_col = ( dw_index[i] == get_index_num())? Color.red : Color.black;
 
             g.setColor(dw_col);
@@ -167,16 +195,57 @@ public class configMenu extends selector{
 
             // 追加の情報がある場合、描画する
             switch(dw_index[i]){
-                case 0:
+                case  0:
                     str = bgm.getInstance().vol.toString() + "[%]";
                     break;
-                case 1:
+                case  1:
                     str = soundEffect.getInstance().vol.toString()  + "[%]";
+                    break;
+                case  2:
+                    str = Input.getKeyName(config.getInstance().attack );
+                    break;
+                case  3:
+                    str = Input.getKeyName(config.getInstance().jump   );
+                    break;
+                case  4:
+                    str = Input.getKeyName(config.getInstance().highsp );
+                    break;
+                case  5:
+                    str = Input.getKeyName(config.getInstance().change );
+                    break;
+                case  6:
+                    str = Input.getKeyName(config.getInstance().left   );
+                    break;
+                case  7:
+                    str = Input.getKeyName(config.getInstance().down   );
+                    break;
+                case  8:
+                    str = Input.getKeyName(config.getInstance().up     );
+                    break;
+                case  9:
+                    str = Input.getKeyName(config.getInstance().right  );
+                    break;
+                case 10:
+                    str = Input.getKeyName(config.getInstance().quit   );
+                    break;
+                case 11:
+                    str = Input.getKeyName(config.getInstance().restart);
+                    break;
+                case 12:
+                    str = Input.getKeyName(config.getInstance().ok     );
+                    break;
+                case 13:
+                    str = Input.getKeyName(config.getInstance().cancel );
                     break;
                 default:
                     str = "";
                     break;
             }
+            if(dw_index[i] == index &&
+               elm_is_run             ){
+                str = "please press key";
+            }
+
             float str_width = get_string_width(str);
             g.drawString(str, _data_right - (str_width / 2.0f), _upper_left.y + font_size * (float)i);
 
@@ -269,5 +338,35 @@ public class configMenu extends selector{
         }
 
         belong = _belong;
+    }
+
+
+    /*
+     * キー入力更新
+     * 引数  ：ゲームコンテナ
+     * 戻り値：なし
+     */
+    private void renew_key(config.name _target, GameContainer gc){
+        int key_code;
+        if((key_code = check_input(gc)) != INPUT_NONE){
+            config.getInstance().set_targeted(_target, key_code);
+            elm_is_run = false;
+        }
+        return;
+    }
+
+    /*
+     * 入力されているキーコードを調べる
+     * 引数  ：ゲームコンテナ
+     * 戻り値：戻り値：入力されたキーコード or
+     *         INPUT_NONE(入力なし)
+     */
+    private int check_input(GameContainer gc){
+        Input ip = gc.getInput();
+        for(int i = 0; i < 255; ++i){
+            if(ip.isKeyDown(i))
+                return i;
+        }
+        return INPUT_NONE;
     }
 }

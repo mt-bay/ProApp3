@@ -51,6 +51,8 @@ public class Stage {
     //過去のオブジェクトデータ
     public ArrayList<playerObj> player_prev;     //プレイヤーオブジェクト
 
+    //親に処理を返す際のデータ
+    public boolean              do_restart;      //自ステージを再度読み込むか
 
     /* 定数 */
     public final int TIMER_STOP = -1; //タイマー変数の停止状態を表す
@@ -129,6 +131,7 @@ public class Stage {
 
         timer_end     = TIMER_STOP;
         is_clear      = false;
+        do_restart    = false;
 
         camera_position_correction();
 
@@ -169,11 +172,19 @@ public class Stage {
      */
     public void update(){
         //処理を抜ける場合
-        if(Main.user_input.get(0).quit || timer_end == 0){
+        if(Main.user_input.get(0).quit    ||
+           timer_end == 0){
             reflesh();
         }
         if(timer_end != TIMER_STOP){
             --timer_end;
+        }
+        if(Main.user_input.get(0).restart &&
+           !is_clear                      &&
+           timer_end == TIMER_STOP          ){
+
+            do_restart = true;
+            timer_end = 150;
         }
 
         //状態アップデート
@@ -278,8 +289,20 @@ public class Stage {
      * 戻り値：なし
      */
     public void stage_end_draw(Graphics g){
-        //ゲームオーバー時の処理
-        if(!is_clear){
+        //終了時の処理
+        if(do_restart){
+            Font  prev_font  = g.getFont();
+            Color prev_color = g.getColor();
+
+            g.setFont(ttf);
+            g.setColor(new Color(0xffffff));
+            g.drawString("Restart", 0.0f, window.SIZE.y.floatValue() - font_size);
+
+            g.setFont(prev_font);
+            g.setColor(prev_color);
+
+        }
+        else if(!is_clear){
             Font  prev_font  = g.getFont();
             Color prev_color = g.getColor();
 

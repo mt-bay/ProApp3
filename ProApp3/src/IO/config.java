@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.newdawn.slick.Input;
 
@@ -38,6 +39,53 @@ public class config {
 
     public               int    ok;
     public               int    cancel;
+
+    // 変数名関係
+    public static enum name{
+        attack ,
+        jump   ,
+        highsp ,
+        change ,
+        left   ,
+        down   ,
+        up     ,
+        right  ,
+        quit   ,
+        restart,
+        ok     ,
+        cancel ;
+        public static name index_to_name(int _index){
+            switch(_index){
+                case  0:
+                    return attack;
+                case  1:
+                    return jump;
+                case  2:
+                    return highsp;
+                case  3:
+                    return change;
+                case  4:
+                    return left;
+                case  5:
+                    return down;
+                case  6:
+                    return up;
+                case  7:
+                    return right;
+                case  8:
+                    return quit;
+                case  9:
+                    return restart;
+                case 10:
+                    return ok;
+                case 11:
+                    return cancel;
+
+                default:
+                    return attack;
+            }
+        }
+    };
 
     // 難易度関係
 
@@ -137,6 +185,78 @@ public class config {
         return;
     }
 
+
+    /*
+     * 変数名を指定してセット
+     * 引数  ：対象の名前
+     * 戻り値：なし
+     */
+    public void set_targeted(name _target, int _key_code){
+        switch(_target){
+            case attack:
+                attack  = _key_code;
+                break;
+            case change:
+                change  = _key_code;
+                break;
+            case highsp:
+                highsp  = _key_code;
+                break;
+            case jump:
+                jump    = _key_code;
+                break;
+            case left:
+                left    = _key_code;
+                break;
+            case down:
+                down    = _key_code;
+                break;
+            case up:
+                up      = _key_code;
+                break;
+            case right:
+                right   = _key_code;
+                break;
+            case quit:
+                quit    = _key_code;
+                break;
+            case restart:
+                restart = _key_code;
+                break;
+            case ok:
+                ok      = _key_code;
+                break;
+            case cancel:
+                cancel  = _key_code;
+                break;
+        }
+    }
+
+    
+    /*
+     * 変数名toString
+     * 引数  ：なし
+     * 戻り値：変数名群
+     */
+    public ArrayList<String> name_toStringAL(){
+        ArrayList<String> name_list = new ArrayList<String>();
+        name_list.add("attack");
+        name_list.add("jump");
+        name_list.add("move - high speed");
+        name_list.add("change");
+        name_list.add("move - left");
+        name_list.add("move - down");
+        name_list.add("move - up");
+        name_list.add("move - right");
+        name_list.add("stage - quit");
+        name_list.add("stage - restart");
+        name_list.add("ok");
+        name_list.add("cancel");
+
+        return name_list;
+    }
+
+    
     /*
      * 使用ボタンセット
      * 引数：それぞれのデータ
@@ -166,4 +286,5 @@ public class config {
         bgm.getInstance().vol = new volume(_music_vol);
         soundEffect.getInstance().vol = new volume(_se_vol);
     }
+
 }

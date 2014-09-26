@@ -57,8 +57,15 @@ public class stageSelector extends selector{
         //選択されている要素が実行中の場合
         if(index_is_run){
             selected.update();
-            if(!index_is_run)
-                selected = null;
+            if(!index_is_run){
+                if(selected.do_restart){
+                    selected = new Stage(index_path.get(index), this);
+                    index_is_run = true;
+                }
+                else{
+                    selected = null;
+                }
+            }
             return;
         }
 

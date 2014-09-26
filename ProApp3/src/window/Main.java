@@ -15,7 +15,6 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
@@ -112,11 +111,6 @@ public class Main extends BasicGame {
      */
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
-//        stg_test.draw(g);
-
-        boolean a = gc.getInput().isKeyDown(Input.KEY_A);
-
-        g.setAntiAlias(a);
         mm.draw(g);
 
         if(_DEBUG){
