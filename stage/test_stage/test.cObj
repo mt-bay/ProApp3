@@ -1,5 +1,1 @@
-500.0 128.0 32 32 bullet.cObj_0.dObj test.pObj.reload 300 6.15 20.5 5.0 left false true enemy player_act.png ai_chimbo
-500.0 400.0 32 32 bullet.cObj_0.dObj test.pObj.reload 300 6.15 5.5 5.0 left false false enemy player_act.png ai_tobi
-500.0 700.0 32 32 bullet.cObj_0.dObj test.pObj.reload 300 6.15 20.5 5.0 left false true enemy player_act.png ai_hanechimbo
-800.0 700.0 32 32 bullet.cObj_0.dObj test.pObj.reload 300 6.15 20.5 5.0 left false true enemy player_act.png ai_shoot
-500.0 400.0 32 32 bullet.cObj_0.dObj test.pObj.reload 300 6.15 5.5 5.0 left false false enemy player_act.png ai_swing
+300.0 700.0 32 32 bullet.cObj_0.dObj test.pObj.reload 300 6.15 20.5 5.0 left false true enemy player_act.png ai_teteton
