@@ -21,27 +21,42 @@ public class ai_swing {
 			_code.unique = ai_op.UNIQUE_NONE;
 		
 			//移動方向の決定
-			_code.move += ai_op.MOVE_DIR_RIGHT;
-			_code.move += ai_op.MOVE_DIR_DOWN;
-			if((_code.time_move == ai_op.TIME_MIN  && _belong.ai_prev.get(0).time_move != _code.time_move) ||
+			/*
+			 time_moveを30に更新。
+			 if  time_moveが16以上の時に上昇
+			     time_moveが15以下の時は下降
+			*/
+			if((_code.time_move == ai_op.TIME_MIN && _belong.ai_prev.get(0).time_move != _code.time_move) ||
 					((_code.move & ai_op.MOVE_DIR) == ai_op.MOVE_NONE)){
 				if(_code.time_move == ai_op.TIME_MIN){
-					_code.time_move = 20;
-					_code.time_move += ai_op.MOVE_DIR_UP;
+					_code.time_move = 30;
+				}
+				if(_code.time_move >= 16){
+					_code.move += ai_op.MOVE_DIR_UP;
+					_code.move += ai_op.MOVE_DIR_LEFT;
+				}
+				else if(_code.time_move <= 15){ 
+					_code.move += ai_op.MOVE_DIR_DOWN;
+					_code.move += ai_op.MOVE_DIR_LEFT;
 				}
 			}
 			else{
 				_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 			}
 			
+		
+			//x座標が40.0を超えると削除
+			if(_belong.location.x <= 40.0){
+				_belong.is_dead = true;
+			}
 			
 			//移動力の決定
 			_code.move += ai_op.MOVE_MOVE_NORMAL;
 			
 			//攻撃
-			if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 50.0){
-				_code.attack += ai_op.ATTACK_NONE;
+			if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 70.0){
+				_code.attack += ai_op.ATTACK_NOMAL;
 			}
-			}
+	}
 
 }

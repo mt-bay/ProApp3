@@ -139,7 +139,7 @@ public class ai_op {
             	ai_shoot.run(_belong, this);
             	return;
             case AI_SWING:
-            	ai_shoot.run(_belong, this);
+            	ai_swing.run(_belong, this);
             	return;
             case AI_TETETON:
             	ai_teteton.run(_belong, this);
