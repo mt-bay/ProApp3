@@ -31,6 +31,7 @@ public class ai_op {
     public    static final int            AI_SWING  	 = 0x20000001;
     public    static final int            AI_TETETON  	 = 0x10000003;
     public	  static final int			  AI_AIRSHOO	 = 0x10000004;
+    public	  static final int			  AI_BIGISLAND	 = 0x10000005;
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
@@ -148,6 +149,9 @@ public class ai_op {
             case AI_AIRSHOO:
             	ai_airshoo.run(_belong, this);
             	return;
+            case AI_BIGISLAND:
+            	ai_bigisland.run(_belong, this);
+            	return;
             case AI_NO_USE     :
                 return;
         }
@@ -178,6 +182,8 @@ public class ai_op {
             	return AI_TETETON;
             case "ai_airshoo":
             	return AI_AIRSHOO;
+            case "ai_bigisland":
+            	return AI_BIGISLAND;
             default :
                 return AI_NO_USE;
         }
