@@ -37,7 +37,7 @@ public class Main extends BasicGame {
     //ユーザ入力
     public static final int                  USER_INPUT_MAX   = 5;                   //ユーザインプットの最大記録数
     //デバッグ用
-    public static final boolean              _DEBUG           = false;               //デバッグモードかどうか
+    public static final boolean              _DEBUG           = true;               //デバッグモードかどうか
     public static final float                DEBUG_FONT_SIZE  = 11.0f;               //デバッグ用の文字サイズ
     public static final Color                DEBUG_FONT_COLOR = new Color(0x777777); //デバッグ用の文字色
 

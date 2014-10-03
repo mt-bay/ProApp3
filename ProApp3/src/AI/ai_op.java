@@ -30,6 +30,7 @@ public class ai_op {
     public	  static final int			  AI_SHOOT  	 = 0x00010400;
     public    static final int            AI_SWING  	 = 0x00000003;
     public    static final int            AI_TETETON  	 = 0x01905400;
+    public    static final int            AI_PAKKON      = 0x20000004;
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
@@ -144,6 +145,8 @@ public class ai_op {
             case AI_TETETON:
             	ai_teteton.run(_belong, this);
             	return;
+            case AI_PAKKON:
+            	ai_pakkon.run(_belong, this);
             case AI_NO_USE     :
                 return;
         }
@@ -172,6 +175,8 @@ public class ai_op {
             	return AI_SWING;
             case "ai_teteton":
             	return AI_TETETON;
+            case "ai_pakkon":
+            	return AI_PAKKON;
             default :
                 return AI_NO_USE;
         }
