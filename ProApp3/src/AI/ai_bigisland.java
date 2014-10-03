@@ -31,34 +31,51 @@ public class ai_bigisland {
 		else{
 			_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 		}
-		//プレイヤーと接触した時の処理
-		/*if(Math.abs(_belong.get_center().x - _belong.belong.player_data.get_center().x) < 30.0 &&
-		   _code.time_move == ai_op.TIME_MIN){
-			_code.time_move = 15;
-		}*/
-		//移動力の決定
-		_code.move += ai_op.MOVE_MOVE_NORMAL;
-
-		//攻撃
-		/*
-		 * プレイヤーから130以内に入ってきたら弾を撃つ
-		 */
+		
+		/*攻撃パターン*/
+		
+		//突進
+		if((_code.time_move == ai_op.TIME_MIN &&
+				   _belong.ai_prev.get(0).time_move != _code.time_move) ||
+				   ((_code.move & ai_op.MOVE_DIR) == ai_op.MOVE_NONE)){
+					if(_code.time_move == ai_op.TIME_MIN){
+						_code.time_move = 45;
+					}
+					if(_code.time_move >= 30){
+						
+					}
+					else if(_code.time_move >= 16){
+						
+					}
+					else if(_code.time_move <= 15){
+						
+					}
+				}
+				else{
+					_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
+				}
+		
+		//ふみつけ
+		if((_code.time_move == ai_op.TIME_MIN &&
+				   _belong.ai_prev.get(0).time_move != _code.time_move) ||
+				   ((_code.move & ai_op.MOVE_DIR) == ai_op.MOVE_NONE)){
+					if(_code.time_move == ai_op.TIME_MIN){
+						_code.time_move = 11;
+						_code.move += ai_op.MOVE_DIR_LEFT;
+						_code.move += ai_op.MOVE_JUMP_NORMAL;
+					}
+				}
+				else{
+					_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
+				}
+		
+		//ショット
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 130.0){
 			_code.attack += ai_op.ATTACK_NOMAL;
+			_code.move += ai_op.MOVE_JUMP_NORMAL;
 		}
-
-		//プレイヤーから離れすぎたときの処理
-		/*
-		 * ちんぼがプレイヤーから300後ろに来てしまった時に
-		 * １．右へ移動して
-		 * ２．15秒ごとに弾を撃つ（これないと絶え間なく撃ち続けてきて強すぎるかなと思った）
-		 */
-		if((_belong.belong.player_data.location.x - _belong.location.x) > 300){
-			_code.move += ai_op.MOVE_DIR_RIGHT;
-			if(_code.time_attack == ai_op.TIME_MIN){
-				_code.time_attack = 15;
-				_code.attack += ai_op.ATTACK_NOMAL;
-			}
-		}
+		
+		//移動力の決定
+		_code.move += ai_op.MOVE_MOVE_NORMAL;
 	}
 }
