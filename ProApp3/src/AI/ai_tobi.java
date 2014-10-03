@@ -41,8 +41,8 @@ public class ai_tobi {
 		}
 
 		//攻撃
-		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 50.0){
-			_code.attack += ai_op.ATTACK_NONE;
+		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
+			_code.attack += ai_op.ATTACK_NOMAL;
 		}
 	}
 }

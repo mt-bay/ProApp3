@@ -54,7 +54,7 @@ public class ai_swing {
 			_code.move += ai_op.MOVE_MOVE_NORMAL;
 			
 			//攻撃
-			if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 70.0){
+			if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
 				_code.attack += ai_op.ATTACK_NOMAL;
 			}
 	}
