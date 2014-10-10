@@ -1,7 +1,7 @@
 package AI;
 
 import stage.charObj;
-
+//aaaaaaaaa
 public class ai_airshoo {
 	public static void run(charObj _belong, ai_op _code){
 
