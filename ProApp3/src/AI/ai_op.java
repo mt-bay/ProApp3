@@ -156,7 +156,7 @@ public class ai_op {
             	ai_bigisland.run(_belong, this);
             	return;
             case AI_PAKKON:
-            	ai_pakkon.run(_belong, this);
+            	//ai_pakkon.run(_belong, this);
             case AI_NO_USE     :
                 return;
         }

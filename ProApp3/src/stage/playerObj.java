@@ -175,10 +175,10 @@ public class playerObj extends charObj {
         }
         if((ai.move & ai_op.MOVE_MOVE_HIGHSPEED) != ai_op.MOVE_NONE){
             if(move_dir.x != 0.0){
-                accel.x = highspeed_rate * move_dir.x * ((is_shooting)? stg_move_rate.x : act_move_rate.x);
+                accel.x = move_dir.x * ((is_shooting)? stg_highspeed_rate * stg_move_rate.x : act_highspeed_rate * act_move_rate.x);
             }
             if(move_dir.y != 0.0 && !is_gravitied){
-                accel.y *= highspeed_rate * move_dir.y * move_rate.y;
+                accel.y *= stg_highspeed_rate * move_dir.y * stg_move_rate.y;
             }
         }
 
