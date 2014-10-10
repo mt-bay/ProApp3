@@ -36,6 +36,7 @@ public class ai_op {
     //attack用
     public    static final short          ATTACK_NONE  =  0x0000;                               //攻撃なし
     public    static final short          ATTACK_NOMAL =  0x0001;                               //通常攻撃
+    public    static final short          ATTACK_TEST  =  0x0002;                               //test
 
     //move用
     public    static final short          MOVE_NONE           = (short)0x0000;                  //移動なし
