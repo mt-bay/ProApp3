@@ -24,6 +24,7 @@ public class ai_op {
     /* 定数 */
     //使用するAIの決定用
     public    static final int            AI_NO_USE      = 0x00000000;                          //どのAIも使用しない
+
     public    static final int            AI_CHIMBO      = 0x10000000;
     public    static final int            AI_TOBI        = 0x20000000;
     public	  static final int			  AI_HANECHIMBO  = 0x10000001;
@@ -32,6 +33,8 @@ public class ai_op {
     public    static final int            AI_TETETON  	 = 0x10000003;
     public	  static final int			  AI_AIRSHOO	 = 0x10000004;
     public	  static final int			  AI_BIGISLAND	 = 0x10000005;
+    public	  static final int			  AI_PAKKON	 	 = 0x20000003;
+
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
@@ -152,6 +155,8 @@ public class ai_op {
             case AI_BIGISLAND:
             	ai_bigisland.run(_belong, this);
             	return;
+            case AI_PAKKON:
+            	ai_pakkon.run(_belong, this);
             case AI_NO_USE     :
                 return;
         }
@@ -184,6 +189,8 @@ public class ai_op {
             	return AI_AIRSHOO;
             case "ai_bigisland":
             	return AI_BIGISLAND;
+            case "ai_pakkon":
+            	return AI_PAKKON;
             default :
                 return AI_NO_USE;
         }

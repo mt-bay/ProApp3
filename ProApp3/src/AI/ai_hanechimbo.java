@@ -54,7 +54,17 @@ public class ai_hanechimbo {
 		}
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
+		
+		//x座標が40.0を超えると削除
+		/*if(_belong.location.x <= 40.0){
+			_belong.is_dead = true;
+		}*/
 
+		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
+		if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
+			_belong.is_dead = true;
+		}
+		
 		//攻撃
 		/*
 		 * プレイヤーから130以内に入ってきたら弾を撃つ

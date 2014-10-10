@@ -70,5 +70,10 @@ public class ai_airshoo {
 			_code.time_attack = 60;
 			_code.attack += ai_op.ATTACK_NOMAL;
 		}
+		
+		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
+		if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
+			_belong.is_dead = true;
+		}
 	}
 }

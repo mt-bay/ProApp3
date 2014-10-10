@@ -34,10 +34,19 @@ public class ai_tobi {
 
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
+		
+		//x座標が40.0を超えると削除
+		if(_belong.location.x <= 40.0){
+			_belong.is_dead = true;
+		}
 
 		//攻撃
-		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 50.0){
-			_code.attack += ai_op.ATTACK_NONE;
+		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
+			_code.attack += ai_op.ATTACK_NOMAL;
+		}
+		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
+		if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
+			_belong.is_dead = true;
 		}
 	}
 }
