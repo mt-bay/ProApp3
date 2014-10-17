@@ -51,7 +51,7 @@ public class ai_teteton {
 			_code.move += ai_op.MOVE_DIR_RIGHT;
 			if(_code.time_attack == ai_op.TIME_MIN){
 				_code.time_attack = 15;
-				_code.attack += ai_op.ATTACK_NOMAL;
+				_code.attack += ai_op.ATTACK_0;
 			}
 		}*/
 		//移動力の決定
@@ -67,7 +67,7 @@ public class ai_teteton {
 		 * プレイヤーから130以内に入ってきたら弾を撃つ
 		 */
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 130.0){
-			_code.attack += ai_op.ATTACK_NOMAL;
+			_code.attack += ai_op.ATTACK_0;
 		}
 		
 		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除

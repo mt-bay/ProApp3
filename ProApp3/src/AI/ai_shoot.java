@@ -29,12 +29,12 @@ public class ai_shoot {
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 700.0 && 200.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
 				_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 30;
-			_code.attack += ai_op.ATTACK_NOMAL;
+			_code.attack += ai_op.ATTACK_0;
 		}
 		else if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 200.0 && 0.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
 				_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 60;
-			_code.attack += ai_op.ATTACK_NOMAL;
+			_code.attack += ai_op.ATTACK_0;
 		}
 		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
 		if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){

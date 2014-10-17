@@ -42,7 +42,7 @@ public class ai_tobi {
 
 		//攻撃
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
-			_code.attack += ai_op.ATTACK_NOMAL;
+			_code.attack += ai_op.ATTACK_0;
 		}
 		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
 		if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){

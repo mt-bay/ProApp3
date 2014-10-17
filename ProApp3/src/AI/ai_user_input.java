@@ -20,7 +20,7 @@ public class ai_user_input {
         //攻撃
         _code.attack = ai_op.ATTACK_NONE;
         if(Main.user_input.get(0).attack){
-            _code.attack = ai_op.ATTACK_NOMAL;
+            _code.attack = ai_op.ATTACK_0;
         }
 
         // アップデート前と同値かチェック
@@ -115,14 +115,14 @@ public class ai_user_input {
                 _code.texture_num.x = 3;
             }
             // 攻撃
-            if((_code.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
+            if(_code.attack != ai_op.ATTACK_NONE){
                 _code.texture_num.y = 1;
             }
         }
         else{
             _code.texture_num.x = 3;
          // 攻撃
-            if((_code.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
+            if(_code.attack != ai_op.ATTACK_NONE){
                 _code.texture_num.y = 1;
             }
         }

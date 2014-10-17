@@ -119,12 +119,12 @@ public class dmgObj extends rect {
 
             while((line = bRead.readLine()) != null){
                 str = line.split(" ");
-                d_obj_al.add(new dmgObj(new rect(new point<Double >(Double.parseDouble(str[0]), Double.parseDouble(str[1])) ,
-                                                 new point<Integer>(Integer.parseInt  (str[2]), Integer.parseInt  (str[3]))),
+                d_obj_al.add(new dmgObj(new rect(new point<Double >(Double.parseDouble(str[0]), Double.parseDouble(str[1])),
+                                                  new point<Integer>(Integer.parseInt  (str[2]), Integer.parseInt  (str[3]))),
                                         new point<Double>(Double.parseDouble(str[4]), Double.parseDouble(str[5]))           ,
-                                        Double.parseDouble(str[6])                                                          ,
-                                        Force.parceForce(str[7])                                                            ,
-                                        Integer.parseInt(str[8])                                                            ,
+                                        Double.parseDouble(str[6])                                                             ,
+                                        Force.parceForce(str[7])                                                               ,
+                                        Integer.parseInt(str[8])                                                               ,
                                         window.file_path_corres(script_path + str[9])                                       ,
                                         _belong                                                                             ));
             }

@@ -183,8 +183,8 @@ public class charObj extends rect {
         //攻撃処理
         if(ai.attack != ai_op.ATTACK_NONE){
             //通常攻撃
-            if((ai.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
-                attack(0, this.to_rect());
+            if(ai.attack != ai_op.ATTACK_NONE){
+                attack(ai.attack, this.to_rect());
             }
         }
 

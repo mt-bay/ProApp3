@@ -204,7 +204,7 @@ public class playerObj extends charObj {
         //攻撃処理
         if(ai.attack != ai_op.ATTACK_NONE){
             //通常攻撃
-            if((ai.attack & ai_op.ATTACK_NOMAL) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_0) != ai_op.ATTACK_NONE){
                 attack(((is_shooting)? 1 : 0), this.to_rect());
             }
         }

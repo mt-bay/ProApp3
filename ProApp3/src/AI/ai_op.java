@@ -38,8 +38,12 @@ public class ai_op {
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
-    public    static final short          ATTACK_NONE  =  0x0000;                               //攻撃なし
-    public    static final short          ATTACK_NOMAL =  0x0001;                               //通常攻撃
+    // ATTACK_攻撃インデックス = 攻撃インデックスの形で記述してください
+    public    static final short          ATTACK_NONE = (short)0xFFFF;                       //攻撃なし
+    
+    public    static final short          ATTACK_0    = (short)0x0000;                               //攻撃0
+    public    static final short          ATTACK_1    = (short)0x0001;                               //攻撃1
+    public    static final short          ATTACK_2     = (short)0x0002;
 
     //move用
     public    static final short          MOVE_NONE           = (short)0x0000;                  //移動なし
@@ -160,6 +164,18 @@ public class ai_op {
             case AI_NO_USE     :
                 return;
         }
+    }
+    
+    public static short attack_index_to_attack_opcode(int _index){
+    	switch(_index){
+    	case 0:
+    		return ATTACK_0;
+    	case 1:
+    		return ATTACK_1;
+    	default :
+    		return ATTACK_NONE;
+    		
+    	}
     }
 
 

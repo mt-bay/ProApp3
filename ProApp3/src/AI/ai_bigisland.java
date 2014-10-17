@@ -35,12 +35,12 @@ public class ai_bigisland {
 					else if(_code.time_move >= 16){
 						_code.move += ai_op.MOVE_DIR_LEFT;
 						_code.move += ai_op.MOVE_JUMP_NORMAL;
-						_code.attack += ai_op.ATTACK_NOMAL;
+						_code.attack += ai_op.ATTACK_0;
 					}
 					else if(_code.time_move <= 15){
 						_code.move += ai_op.MOVE_JUMP_NORMAL;
 						_code.move += ai_op.MOVE_DIR_LEFT;
-						_code.attack += ai_op.ATTACK_NOMAL;
+						_code.attack += ai_op.ATTACK_0;
 					}
 				}
 				else{
