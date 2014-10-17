@@ -34,9 +34,16 @@ public class ai_op {
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
     //attack用
-    public    static final short          ATTACK_NONE  =  0x0000;                               //攻撃なし
-    public    static final short          ATTACK_NOMAL =  0x0001;                               //通常攻撃
-    public    static final short          ATTACK_TEST  =  0x0002;                               //test
+    public    static final short          ATTACK_NONE        =  0x0000;                               //攻撃なし
+    public    static final short          ATTACK_NOMAL       =  0x0001;                               //通常攻撃
+    public    static final short          ATTACK_LEFTDOWN    =  0x0002;                               //左下
+    public    static final short          ATTACK_DOWN        =  0x0003;                               //下
+    public    static final short          ATTACK_RIGHTDOWN  =  0x0004;                               //右下
+    public    static final short          ATTACK_RIGHT       =  0x0005;                               //右
+    public    static final short          ATTACK_RIGHTUP     =  0x0006;                               //右上
+    public    static final short          ATTACK_UP           =  0x0007;                               //上
+    public    static final short          ATTACK_LEFTUP      =  0x0008;                               //左上
+    
 
     //move用
     public    static final short          MOVE_NONE           = (short)0x0000;                  //移動なし

@@ -1,9 +1,16 @@
 package AI;
 
+import java.util.Random;
+
 import stage.charObj;
 
 public class ai_pakkon {
 	public static void run(charObj _belong, ai_op _code){
+		//ランダムクラスの生成
+		Random r = new Random();
+		
+		//乱数の取得
+		int i = r.nextInt(8);
 		
 		if(_code.time_attack != ai_op.TIME_MIN){
 			--_code.time_attack;
@@ -48,11 +55,34 @@ public class ai_pakkon {
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
 		
 		//攻撃
+		/*
+		 iが0～７によって攻撃方向を決める
+		 */
+		switch(i){
+			case 0:
+				_code.attack += ai_op.ATTACK_NOMAL;
+			case 1:
+				_code.attack += ai_op.ATTACK_LEFTDOWN;
+			case 2:
+				_code.attack += ai_op.ATTACK_DOWN;
+			case 3:
+				_code.attack += ai_op.ATTACK_RIGHTDOWN;
+			case 4:
+				_code.attack += ai_op.ATTACK_RIGHT;
+			case 5:
+				_code.attack += ai_op.ATTACK_RIGHTUP;
+			case 6:
+				_code.attack += ai_op.ATTACK_UP;
+			case 7:
+				_code.attack += ai_op.ATTACK_LEFTUP;
+				
+		}
+		/*
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
-			//_code.attack += ai_op.ATTACK_NOMAL;
-			_code.attack += ai_op.ATTACK_TEST;
+			_code.attack += ai_op.ATTACK_NOMAL;
 			
 		}
+		*/
 		
 	}
 

@@ -187,31 +187,31 @@ public class charObj extends rect {
                 attack(0, this.to_rect());
             }
             //左下
-            if((ai.attack & ai_op.ATTACK_TEST) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_LEFTDOWN) != ai_op.ATTACK_NONE){
                 attack(1, this.to_rect());
             }
             //下
-            if((ai.attack & ai_op.ATTACK_TEST) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_DOWN) != ai_op.ATTACK_NONE){
                 attack(2, this.to_rect());
             }
             //右下
-            if((ai.attack & ai_op.ATTACK_TEST) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_RIGHTDOWN) != ai_op.ATTACK_NONE){
                 attack(3, this.to_rect());
             }
             //右
-            if((ai.attack & ai_op.ATTACK_TEST) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_RIGHT) != ai_op.ATTACK_NONE){
                 attack(4, this.to_rect());
             }
             //右上
-            if((ai.attack & ai_op.ATTACK_TEST) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_RIGHTUP) != ai_op.ATTACK_NONE){
                 attack(5, this.to_rect());
             }
             //上
-            if((ai.attack & ai_op.ATTACK_TEST) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_UP) != ai_op.ATTACK_NONE){
                 attack(6, this.to_rect());
             }
             //左上
-            if((ai.attack & ai_op.ATTACK_TEST) != ai_op.ATTACK_NONE){
+            if((ai.attack & ai_op.ATTACK_LEFTUP) != ai_op.ATTACK_NONE){
                 attack(7, this.to_rect());
             }
         }
