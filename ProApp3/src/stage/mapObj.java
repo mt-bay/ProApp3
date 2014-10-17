@@ -24,7 +24,7 @@ import common.rect;
 public class mapObj {
     /* メンバ変数 */
     public               point<Integer> size_block;       //ブロックサイズ
-    public               boolean[][]    is_collisionable; //接触判定を持つか(ブロックごとに管理)
+    public               boolean[][]   is_collisionable; //接触判定を持つか(ブロックごとに管理)
     public               String         map_file_path;    //衝突データ導出に使ったファイルへのパス
     public               Stage          belong;           //どのステージに所属しているか
 
@@ -97,17 +97,22 @@ public class mapObj {
      * 戻り値：交差 or 内包 or 被内包の関係にあるか
      */
     public boolean is_collision(rect _obj){
+    	point<Integer> chip_number = new point<Integer>();
         rect r;
-
-        for(int i = 0; i < is_collisionable.length; i++){
-            for(int j = 0; j < is_collisionable[i].length; j++){
-                r = get_map_chip(j, i);
-                if(is_collisionable[i][j]){
-                    if(r.is_collision(_obj))
-                        return true;
-                }
-            }
+        
+        for(double d = _obj.UpperLeft().x; d <= _obj.UpperRight().x; d += size_block.x){
+        	chip_number.x = (int)(d) / size_block.x;
+        	for(double e = _obj.UpperLeft().y; e <= _obj.LowerLeft().y; e += size_block.y){
+        		chip_number.y = (int)(e) / size_block.y;
+        		r = get_map_chip(chip_number.x, chip_number.y);
+        		if(is_collisionable[chip_number.y][chip_number.x] &&
+        		   r.is_collision(_obj)                            ){
+        			return true;
+        		}
+        	}
         }
+
+
 
         return false;
     }
