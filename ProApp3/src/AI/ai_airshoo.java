@@ -1,7 +1,6 @@
 package AI;
 
 import stage.charObj;
-//aaaaaaaaa
 public class ai_airshoo {
 	public static void run(charObj _belong, ai_op _code){
 
@@ -20,29 +19,29 @@ public class ai_airshoo {
 		_code.move   = ai_op.MOVE_NONE;
 		_code.unique = ai_op.UNIQUE_NONE;
 
-		
+
 		//向く方向を変える
 		if((_code.time_move == ai_op.TIME_MIN && _belong.ai_prev.get(0).time_move != _code.time_move) ||
 				((_code.move & ai_op.MOVE_DIR) == ai_op.MOVE_NONE)){
 			if(_code.time_move == ai_op.TIME_MIN){
-				_code.time_move = 8;
+				_code.time_move = 16;
 			}
-			if(_code.time_move >= 7){
+			if(_code.time_move >= 13){
 				_code.move += ai_op.MOVE_DIR_UP;
 				_code.move += ai_op.MOVE_DIR_RIGHT;
 				//_code.attack += ai_op.ATTACK_1;
 			}
-			else if(_code.time_move >= 5){ 
+			else if(_code.time_move >= 9){
 				_code.move += ai_op.MOVE_DIR_DOWN;
 				_code.move += ai_op.MOVE_DIR_RIGHT;
 				//_code.attack += ai_op.ATTACK_1;
 			}
-			else if(_code.time_move >= 3){ 
+			else if(_code.time_move >= 5){
 				_code.move += ai_op.MOVE_DIR_DOWN;
 				_code.move += ai_op.MOVE_DIR_LEFT;
 				//_code.attack += ai_op.ATTACK_1;
 			}
-			else if(_code.time_move <= 2){ 
+			else if(_code.time_move <= 4){
 				_code.move += ai_op.MOVE_DIR_UP;
 				_code.move += ai_op.MOVE_DIR_LEFT;
 				//_code.attack += ai_op.ATTACK_1;
@@ -53,7 +52,7 @@ public class ai_airshoo {
 		}
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
-		
+
 		//攻撃
 		/*
 		 * 攻撃の激しさが距離によって変化する
@@ -61,16 +60,16 @@ public class ai_airshoo {
 		 * ２，2００～０
 		 */
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 700.0 && 200.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
-				_code.time_attack == ai_op.TIME_MIN){
+			_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 30;
-			//_code.attack += ai_op.ATTACK_1;
+			_code.attack += ai_op.ATTACK_1;
 		}
 		else if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 200.0 && 0.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
-				_code.time_attack == ai_op.TIME_MIN){
+			_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 60;
-			//_code.attack += ai_op.ATTACK_1;
+			_code.attack += ai_op.ATTACK_1;
 		}
-		
+
 		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
 		/*if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
 			_belong.is_dead = true;

@@ -37,7 +37,7 @@ public class ai_sylph {
 		}*/
 		if((Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0)){
 			if(_code.time_move == ai_op.TIME_MIN){
-				_code.time_move = 10;
+				_code.time_move = 15;
 				_code.move += ai_op.MOVE_DIR_LEFT;
 				_code.move += ai_op.MOVE_JUMP_NORMAL;
 				_code.attack += ai_op.ATTACK_1;
@@ -53,25 +53,12 @@ public class ai_sylph {
 		 * １．右へ移動して
 		 * ２．15秒ごとに弾を撃つ（これないと絶え間なく撃ち続けてきて強すぎるかなと思った）
 		 */
-		if(_belong.location.x - _belong.belong.player_data.location.x < 0){
-			/*if(_code.time_attack == ai_op.TIME_MIN){
-				_code.time_attack = 240;
-				if(_code.time_attack > 120){
-					_code.move += ai_op.MOVE_DIR_RIGHT;
-					_code.move += ai_op.MOVE_JUMP_NORMAL;
-					_code.attack += ai_op.ATTACK_1;
-				}
-				else{
-					_code.move += ai_op.MOVE_DIR_LEFT;
-					_code.move += ai_op.MOVE_JUMP_NORMAL;
-					_code.attack += ai_op.ATTACK_1;
-				}
-			}*/
+		if(_belong.belong.player_data.location.x - _belong.location.x > 180){
 			_code.move += ai_op.MOVE_DIR_RIGHT;
 		}
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
-		
+
 		//x座標が40.0を超えると削除
 		if(_belong.location.x <= 40.0){
 			_belong.is_dead = true;
