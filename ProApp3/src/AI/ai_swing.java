@@ -51,9 +51,10 @@ public class ai_swing {
 			}*/
 			
 			//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
-			if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
+			/*if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
 				_belong.is_dead = true;
-			}
+			}*/
+			
 			//移動力の決定
 			_code.move += ai_op.MOVE_MOVE_NORMAL;
 			

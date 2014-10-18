@@ -30,22 +30,22 @@ public class ai_airshoo {
 			if(_code.time_move >= 7){
 				_code.move += ai_op.MOVE_DIR_UP;
 				_code.move += ai_op.MOVE_DIR_RIGHT;
-				_code.attack += ai_op.ATTACK_0;
+				//_code.attack += ai_op.ATTACK_1;
 			}
 			else if(_code.time_move >= 5){ 
 				_code.move += ai_op.MOVE_DIR_DOWN;
 				_code.move += ai_op.MOVE_DIR_RIGHT;
-				_code.attack += ai_op.ATTACK_0;
+				//_code.attack += ai_op.ATTACK_1;
 			}
 			else if(_code.time_move >= 3){ 
 				_code.move += ai_op.MOVE_DIR_DOWN;
 				_code.move += ai_op.MOVE_DIR_LEFT;
-				_code.attack += ai_op.ATTACK_0;
+				//_code.attack += ai_op.ATTACK_1;
 			}
 			else if(_code.time_move <= 2){ 
 				_code.move += ai_op.MOVE_DIR_UP;
 				_code.move += ai_op.MOVE_DIR_LEFT;
-				_code.attack += ai_op.ATTACK_0;
+				//_code.attack += ai_op.ATTACK_1;
 			}
 		}
 		else{
@@ -63,17 +63,17 @@ public class ai_airshoo {
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 700.0 && 200.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
 				_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 30;
-			_code.attack += ai_op.ATTACK_0;
+			//_code.attack += ai_op.ATTACK_1;
 		}
 		else if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 200.0 && 0.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
 				_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 60;
-			_code.attack += ai_op.ATTACK_0;
+			//_code.attack += ai_op.ATTACK_1;
 		}
 		
 		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
-		if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
+		/*if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
 			_belong.is_dead = true;
-		}
+		}*/
 	}
 }
