@@ -136,13 +136,13 @@ public class ai_op {
                 ai_user_input.run(_belong, this);
                 return;
             case AI_CHIMBO:
-            	ai_chimbo.run(_belong, this);
+            	ai_norm.run(_belong, this);
             	return;
             case AI_TOBI:
             	ai_tobi.run(_belong, this);
             	return;
             case AI_HANECHIMBO:
-            	ai_hanechimbo.run(_belong, this);
+            	ai_sylph.run(_belong, this);
             	return;
             case AI_SHOOT:
             	ai_shoot.run(_belong, this);
