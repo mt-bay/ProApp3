@@ -111,6 +111,30 @@ public class mapObj {
         		}
         	}
         }
+        
+        chip_number.x = _obj.UpperRight().x.intValue() / size_block.x;
+        chip_number.y = _obj.UpperRight().y.intValue() / size_block.y;
+        r = get_map_chip(chip_number.x, chip_number.y);
+        if(is_collisionable[chip_number.y][chip_number.x] &&
+        	r.is_collision(_obj)                          ){
+        	return true;
+        }
+        
+        chip_number.x = _obj.LowerLeft().x.intValue() / size_block.x;
+        chip_number.y = _obj.LowerLeft().y.intValue() / size_block.y;
+        r = get_map_chip(chip_number.x, chip_number.y);
+        if(is_collisionable[chip_number.y][chip_number.x] &&
+        	r.is_collision(_obj)                          ){
+        	return true;
+        }
+        
+        chip_number.x = _obj.LowerRight().x.intValue() / size_block.x;
+        chip_number.y = _obj.LowerRight().y.intValue() / size_block.y;
+        r = get_map_chip(chip_number.x, chip_number.y);
+        if(is_collisionable[chip_number.y][chip_number.x] &&
+        	r.is_collision(_obj)                          ){
+        	return true;
+        }
 
         return false;
     }
