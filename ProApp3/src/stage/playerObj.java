@@ -313,7 +313,8 @@ public class playerObj extends charObj {
 
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
-            String[] str = bRead.readLine().split(" ");
+            String line = Main.regex_replace(bRead.readLine(), "  +", " ");
+            String[] str = line.split(" ");
             bRead.close();
 
             int i = 0;

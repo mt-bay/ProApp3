@@ -7,6 +7,8 @@ package window;
 
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import menu.mainMenu;
 
@@ -151,6 +153,19 @@ public class Main extends BasicGame {
 
         return;
     }
+
+    /*
+     * 第2引数の正規表現に一致する文字列全てを第3引数の文字に置換
+     * 引数  ：置換前の文字列, 置換対象にする正規表現, 置換時の文字列
+     * 戻り値：置換後の文字列
+     * 例外  ：なし
+     */
+    public static String regex_replace(String _source, String _regex, String _replace_str){
+        Matcher regex = Pattern.compile(_regex).matcher(_source);
+        return regex.replaceAll(_replace_str);
+    }
+
+
 
     /*
      * 後処理

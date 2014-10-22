@@ -119,6 +119,8 @@ public class stageSelector extends selector{
             return;
         }
 
+
+
         //要素が実行中でない場合
         g.setBackground(new Color(0xa8bb70)); //背景色設定
 

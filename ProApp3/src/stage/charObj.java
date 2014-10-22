@@ -327,7 +327,8 @@ public class charObj extends rect {
             int            _use_ai;
 
             while((line = bRead.readLine()) != null){
-                str = line.split(" ");
+                line = Main.regex_replace(line, "  +", " ");
+                str  = line.split(" ");
                 i = 0;
 
                 _location       = new point<Double >(Double.parseDouble (str[  i]) ,

@@ -99,7 +99,7 @@ public class mapObj {
     public boolean is_collision(rect _obj){
     	point<Integer> chip_number = new point<Integer>();
         rect r;
-        
+
         for(double d = _obj.UpperLeft().x; d <= _obj.UpperRight().x; d += size_block.x){
         	chip_number.x = (int)(d) / size_block.x;
         	for(double e = _obj.UpperLeft().y; e <= _obj.LowerLeft().y; e += size_block.y){
@@ -111,7 +111,7 @@ public class mapObj {
         		}
         	}
         }
-        
+
         chip_number.x = _obj.UpperRight().x.intValue() / size_block.x;
         chip_number.y = _obj.UpperRight().y.intValue() / size_block.y;
         r = get_map_chip(chip_number.x, chip_number.y);
@@ -119,7 +119,7 @@ public class mapObj {
         	r.is_collision(_obj)                          ){
         	return true;
         }
-        
+
         chip_number.x = _obj.LowerLeft().x.intValue() / size_block.x;
         chip_number.y = _obj.LowerLeft().y.intValue() / size_block.y;
         r = get_map_chip(chip_number.x, chip_number.y);
@@ -127,7 +127,7 @@ public class mapObj {
         	r.is_collision(_obj)                          ){
         	return true;
         }
-        
+
         chip_number.x = _obj.LowerRight().x.intValue() / size_block.x;
         chip_number.y = _obj.LowerRight().y.intValue() / size_block.y;
         r = get_map_chip(chip_number.x, chip_number.y);
@@ -177,7 +177,8 @@ public class mapObj {
 
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
-            String[] str = bRead.readLine().split(" ");
+            String line = Main.regex_replace(bRead.readLine(), "  +", " ");
+            String[] str = line.split(" ");
             bRead.close();
 
             m_obj = new mapObj(new point<Integer>(Integer.parseInt(str[0]), Integer.parseInt(str[1])),

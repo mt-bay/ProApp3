@@ -85,8 +85,6 @@ public class Stage {
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
 
-
-
             debugLog.getInstance().write("stage load : " + _file_path);
 
             String         str         = "";
@@ -109,7 +107,9 @@ public class Stage {
             debugLog.getInstance().write("    chrObj load : " + str);
             person       = charObj.file_to_charObj_ArrayList(str, this);
 
-            String[] elm = bRead.readLine().split(" ");
+            String line = Main.regex_replace(bRead.readLine(), "  +", " ");
+
+            String[] elm = line.split(" ");
             gravitiy     = new point<Double>(Double.parseDouble(elm[0]), Double.parseDouble(elm[1]));
 
 
