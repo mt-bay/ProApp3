@@ -55,7 +55,7 @@ public class ai_bird_swing {
 			
 			//攻撃
 			if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
-				_code.attack += ai_op.ATTACK_1;
+				_code.attack = ai_op.ATTACK_1;
 			}
 	}
 

@@ -33,6 +33,7 @@ public class ai_op {
     public    static final int            AI_WAY  	     = 0x10000003;
     public	  static final int			  AI_AIRSHOO	 = 0x10000004;
     public	  static final int			  AI_BIGISLAND	 = 0x10000005;
+    public   static final int              AI_BIRD_NEUTRAL    = 0x20000002;
     public	  static final int			  AI_URCHIN	 	 = 0x20000003;
 
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
@@ -166,8 +167,12 @@ public class ai_op {
             case AI_BIGISLAND:
             	ai_bigisland.run(_belong, this);
             	return;
+            case AI_BIRD_NEUTRAL:
+            	ai_bird_neutral.run(_belong, this);
+            	return;
             case AI_URCHIN:
             	ai_urchin.run(_belong, this);
+            	return;
             case AI_NO_USE     :
                 return;
         }
@@ -228,6 +233,8 @@ public class ai_op {
             	return AI_AIRSHOO;
             case "ai_bigisland":
             	return AI_BIGISLAND;
+            case "ai_bird_neutral":
+            	return AI_BIRD_NEUTRAL;
             case "ai_urchin":
             	return AI_URCHIN;
             default :

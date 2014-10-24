@@ -62,12 +62,12 @@ public class ai_airshoo {
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 700.0 && 200.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
 			_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 30;
-			_code.attack += ai_op.ATTACK_1;
+			_code.attack = ai_op.ATTACK_1;
 		}
 		else if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 200.0 && 0.0 < Math.abs(_belong.location.x - _belong.belong.player_data.location.x) &&
 			_code.time_attack == ai_op.TIME_MIN){
 			_code.time_attack = 60;
-			_code.attack += ai_op.ATTACK_1;
+			_code.attack = ai_op.ATTACK_1;
 		}
 
 		//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
