@@ -25,15 +25,15 @@ public class ai_op {
     //使用するAIの決定用
     public    static final int            AI_NO_USE      = 0x00000000;                          //どのAIも使用しない
 
-    public    static final int            AI_CHIMBO      = 0x10000000;
-    public    static final int            AI_TOBI        = 0x20000000;
-    public	  static final int			  AI_HANECHIMBO  = 0x10000001;
+    public    static final int            AI_NORM        = 0x10000000;
+    public    static final int            AI_BIRD        = 0x20000000;
+    public	  static final int			  AI_SYLPH      = 0x10000001;
     public	  static final int			  AI_SHOOT  	 = 0x10000002;
-    public    static final int            AI_SWING  	 = 0x20000001;
-    public    static final int            AI_TETETON  	 = 0x10000003;
+    public    static final int            AI_BIRD_SWING  	 = 0x20000001;
+    public    static final int            AI_WAY  	     = 0x10000003;
     public	  static final int			  AI_AIRSHOO	 = 0x10000004;
     public	  static final int			  AI_BIGISLAND	 = 0x10000005;
-    public	  static final int			  AI_PAKKON	 	 = 0x20000003;
+    public	  static final int			  AI_URCHIN	 	 = 0x20000003;
 
     public    static final int            AI_USER_INPUT  = 0xFFFFFFFF;                          //ユーザ入力
 
@@ -44,6 +44,13 @@ public class ai_op {
     public    static final short          ATTACK_0    = (short)0x0000;                               //攻撃0
     public    static final short          ATTACK_1    = (short)0x0001;                               //攻撃1
     public    static final short          ATTACK_2     = (short)0x0002;
+    public    static final short          ATTACK_3    = (short)0x0003;                               //左下
+    public    static final short          ATTACK_4    = (short)0x0004;                               //下
+    public    static final short          ATTACK_5    = (short)0x0005;                               //右下
+    public    static final short          ATTACK_6    = (short)0x0006;                               //右
+    public    static final short          ATTACK_7    = (short)0x0007;                               //右上
+    public    static final short          ATTACK_8    = (short)0x0008;                               //上
+    public    static final short          ATTACK_9    = (short)0x0009;                               //左上
 
     //move用
     public    static final short          MOVE_NONE           = (short)0x0000;                  //移動なし
@@ -135,23 +142,23 @@ public class ai_op {
             case AI_USER_INPUT :
                 ai_user_input.run(_belong, this);
                 return;
-            case AI_CHIMBO:
+            case AI_NORM:
             	ai_norm.run(_belong, this);
             	return;
-            case AI_TOBI:
-            	ai_tobi.run(_belong, this);
+            case AI_BIRD:
+            	ai_bird.run(_belong, this);
             	return;
-            case AI_HANECHIMBO:
+            case AI_SYLPH:
             	ai_sylph.run(_belong, this);
             	return;
             case AI_SHOOT:
             	ai_shoot.run(_belong, this);
             	return;
-            case AI_SWING:
-            	ai_swing.run(_belong, this);
+            case AI_BIRD_SWING:
+            	ai_bird_swing.run(_belong, this);
             	return;
-            case AI_TETETON:
-            	ai_teteton.run(_belong, this);
+            case AI_WAY:
+            	ai_way.run(_belong, this);
             	return;
             case AI_AIRSHOO:
             	ai_airshoo.run(_belong, this);
@@ -159,8 +166,8 @@ public class ai_op {
             case AI_BIGISLAND:
             	ai_bigisland.run(_belong, this);
             	return;
-            case AI_PAKKON:
-            	//ai_pakkon.run(_belong, this);
+            case AI_URCHIN:
+            	ai_urchin.run(_belong, this);
             case AI_NO_USE     :
                 return;
         }
@@ -172,7 +179,23 @@ public class ai_op {
     		return ATTACK_0;
     	case 1:
     		return ATTACK_1;
-    	default :
+    	case 2:
+    		return ATTACK_2;
+    	case 3:
+    		return ATTACK_3;
+    	case 4:
+    		return ATTACK_4;
+    	case 5:
+    		return ATTACK_5;
+    	case 6:
+    		return ATTACK_6;
+    	case 7:
+    		return ATTACK_7;
+    	case 8:
+    		return ATTACK_8;
+    	case 9:
+    		return ATTACK_9;
+    	default:
     		return ATTACK_NONE;
     		
     	}
@@ -189,24 +212,24 @@ public class ai_op {
             case "user_input"   :
             case "ai_user_input":
                 return AI_USER_INPUT;
-            case "ai_chimbo":
-            	return AI_CHIMBO;
-            case "ai_tobi":
-            	return AI_TOBI;
-            case "ai_hanechimbo":
-            	return AI_HANECHIMBO;
+            case "ai_norm":
+            	return AI_NORM;
+            case "ai_bird":
+            	return AI_BIRD;
+            case "ai_sylph":
+            	return AI_SYLPH;
             case "ai_shoot":
             	return AI_SHOOT;
-            case "ai_swing":
-            	return AI_SWING;
-            case "ai_teteton":
-            	return AI_TETETON;
+            case "ai_bird_swing":
+            	return AI_BIRD_SWING;
+            case "ai_way":
+            	return AI_WAY;
             case "ai_airshoo":
             	return AI_AIRSHOO;
             case "ai_bigisland":
             	return AI_BIGISLAND;
-            case "ai_pakkon":
-            	return AI_PAKKON;
+            case "ai_urchin":
+            	return AI_URCHIN;
             default :
                 return AI_NO_USE;
         }

@@ -2,7 +2,7 @@ package AI;
 
 import stage.charObj;
 
-public class ai_sylph {
+public class ai_way {
 	public static void run(charObj _belong, ai_op _code){
 
 		if(_code.time_attack != ai_op.TIME_MIN){
@@ -21,50 +21,34 @@ public class ai_sylph {
 		_code.unique = ai_op.UNIQUE_NONE;
 		//移動方向の決定
 		/*
-		 *11fps（？）毎に
-		 *１．左への移動
-		 *２．ジャンプ
-		 *を行う．
+		 *
 		 */
-		/*if((_code.time_move == ai_op.TIME_MIN &&
-		   _belong.ai_prev.get(0).time_move != _code.time_move) ||
-		   ((_code.move & ai_op.MOVE_DIR) == ai_op.MOVE_NONE)){
-			if(_code.time_move == ai_op.TIME_MIN){
-				_code.time_move = 11;
-				_code.move += ai_op.MOVE_DIR_LEFT;
-				_code.move += ai_op.MOVE_JUMP_NORMAL;
-			}
-		}*/
 		if((_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
 			if(_code.time_move == ai_op.TIME_MIN){
-				_code.time_move = 10;
-			}else if(_code.time_move >= 5){
+				_code.time_move = 30;
+			}
+			else if(_code.time_move >= 16){
 				_code.move += ai_op.MOVE_DIR_LEFT;
-			}else{
+			}
+			else{
 				_code.move += ai_op.MOVE_JUMP_NORMAL;
+				_code.move += ai_op.MOVE_DIR_LEFT;
 			}
 		}
-		/*else if(_belong.location.x <= 40.0){
-			if(_code.time_move == ai_op.TIME_MIN){
-				_code.time_move = 15;
-				_code.move += ai_op.MOVE_DIR_RIGHT;
-				_code.move += ai_op.MOVE_JUMP_NORMAL;
-			}
-		}*/
 		else{
 			_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 		}
-
+		
 		//移動力の決定
-		_code.move += ai_op.MOVE_MOVE_NORMAL;
+		_code.move += ai_op.MOVE_MOVE_HIGHSPEED;
 
 		//攻撃
 		/*
-		 * プレイヤーから300以内に入ってきたら弾を撃つ
+		 * プレイヤーから130以内に入ってきたら弾を撃つ
 		 */
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 300.0){
 			if(_code.time_attack == ai_op.TIME_MIN){
-				_code.time_attack = 20;
+				_code.time_attack  = 10;
 				_code.attack += ai_op.ATTACK_1;
 			}
 		}

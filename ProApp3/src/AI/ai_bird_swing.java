@@ -2,7 +2,7 @@ package AI;
 
 import stage.charObj;
 
-public class ai_swing {
+public class ai_bird_swing {
 	public static void run(charObj _belong, ai_op _code){
 		
 			if(_code.time_attack != ai_op.TIME_MIN){
@@ -14,7 +14,7 @@ public class ai_swing {
 			if(_code.time_unique != ai_op.TIME_MIN){
 				--_code.time_unique;
 			}
-			
+		
 			//初期化処理
 			_code.attack = ai_op.ATTACK_NONE;
 			_code.move   = ai_op.MOVE_NONE;
@@ -46,22 +46,16 @@ public class ai_swing {
 			
 		
 			//x座標が40.0を超えると削除
-			/*if(_belong.location.x <= 40.0){
+			if(_belong.location.x <= 40.0){
 				_belong.is_dead = true;
-			}*/
-			
-			//プレイヤーがこのオブジェクトからx座標上で400以上離れたら削除
-			/*if(_belong.belong.player_data.location.x - _belong.location.x > 400.0){
-				_belong.is_dead = true;
-			}*/
+			}
 			
 			//移動力の決定
 			_code.move += ai_op.MOVE_MOVE_NORMAL;
 			
 			//攻撃
 			if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
-
-				_code.attack += ai_op.ATTACK_0;
+				_code.attack += ai_op.ATTACK_1;
 			}
 	}
 
