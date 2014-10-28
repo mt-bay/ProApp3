@@ -25,31 +25,31 @@ public class ai_bigisland {
 		//突進 →ジャンプ移動→ジャンプショット
 		if((Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 700.0)){
 					if(_code.time_move == ai_op.TIME_MIN){
-						_code.time_move = 90;
+						_code.time_move = 180;
 						_code.move   = ai_op.MOVE_NONE;
 					}
-					if(_code.time_move >= 75){
+					if(_code.time_move >= 150){
 						_code.move += ai_op.MOVE_DIR_LEFT;
 						_code.move += ai_op.MOVE_JUMP_NORMAL;
 						//_code.attack += ai_op.ATTACK_1;
 					}
-					else if(_code.time_move >= 60){
+					else if(_code.time_move >= 120){
 						_code.move += ai_op.MOVE_DIR_LEFT;
 					}
-					else if(_code.time_move >= 45){
+					else if(_code.time_move >= 90){
 						_code.move += ai_op.MOVE_JUMP_NORMAL;
 						_code.move += ai_op.MOVE_DIR_LEFT;
+						//_code.attack += ai_op.ATTACK_1;
+					}
+					else if(_code.time_move >= 60){
+						_code.move += ai_op.MOVE_DIR_RIGHT;
+						_code.move += ai_op.MOVE_JUMP_NORMAL;
 						//_code.attack += ai_op.ATTACK_1;
 					}
 					else if(_code.time_move >= 30){
 						_code.move += ai_op.MOVE_DIR_RIGHT;
-						_code.move += ai_op.MOVE_JUMP_NORMAL;
-						//_code.attack += ai_op.ATTACK_1;
 					}
-					else if(_code.time_move >= 15){
-						_code.move += ai_op.MOVE_DIR_RIGHT;
-					}
-					else if(_code.time_move <= 14){
+					else if(_code.time_move <= 29){
 						_code.move += ai_op.MOVE_JUMP_NORMAL;
 						_code.move += ai_op.MOVE_DIR_RIGHT;
 						//_code.attack += ai_op.ATTACK_1;

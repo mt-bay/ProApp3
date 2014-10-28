@@ -64,11 +64,11 @@ public class ai_sylph {
 		 */
 		if(Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 300.0){
 			if(_code.time_attack == ai_op.TIME_MIN){
-				_code.time_attack = 20;
+				_code.time_attack = 40;
 				_code.attack = ai_op.ATTACK_1;
 			}
 		}
-		
+
 		//x座標が40.0を超えると削除
 		if(_belong.location.x <= 40.0){
 			_belong.is_dead = true;
