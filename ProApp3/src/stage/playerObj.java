@@ -374,6 +374,8 @@ public class playerObj extends charObj {
                 dfm_use_texture_num.x = DFM_TEXTURE_MAX - 1;
             if(dfm_use_texture_num.x < 0)
                 dfm_use_texture_num.x = 0;
+            
+            dfm_use_texture_num.y = 0;
 
             if(timer_deform == 0){
                 //タイマー値の変更
