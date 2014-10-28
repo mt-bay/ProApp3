@@ -119,8 +119,10 @@ public class ai_user_input {
                 _code.texture_num.y = 1;
             }
         }
+        //シューティングモード
         else{
-            _code.texture_num.x = 3;
+            _code.texture_num.x =((_code.time_move % LOOP_MOVE_NOMAL_LENGTH) < LOOP_MOVE_NOMAL_LENGTH / 2)? 0 : 1;
+            
          // 攻撃
             if(_code.attack != ai_op.ATTACK_NONE){
                 _code.texture_num.y = 1;
