@@ -21,12 +21,12 @@ public class ai_bird {
 		_code.unique = ai_op.UNIQUE_NONE;
 
 		//移動方向の決定
-		if((Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0)){
+/*		if((Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0)){
 			_code.move += ai_op.MOVE_DIR_LEFT;
 		}else{
 			_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 		}
-
+*/
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
 
