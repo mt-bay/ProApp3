@@ -62,28 +62,28 @@ public class ai_urchin {
 		if(_code.time_move >=25){
 		switch(i){
 			case 0:
-				_code.attack += ai_op.ATTACK_1;
+				_code.attack = ai_op.ATTACK_0;
 				break;
 			case 1:
-				_code.attack += ai_op.ATTACK_3;
+				_code.attack = ai_op.ATTACK_2;
 				break;
 			case 2:
-				_code.attack += ai_op.ATTACK_4;
+				_code.attack = ai_op.ATTACK_3;
 				break;
 			case 3:
-				_code.attack += ai_op.ATTACK_5;
+				_code.attack = ai_op.ATTACK_4;
 				break;
 			case 4:
-				_code.attack += ai_op.ATTACK_6;
+				_code.attack = ai_op.ATTACK_5;
 				break;
 			case 5:
-				_code.attack += ai_op.ATTACK_7;
+				_code.attack = ai_op.ATTACK_6;
 				break;
 			case 6:
-				_code.attack += ai_op.ATTACK_8;
+				_code.attack = ai_op.ATTACK_7;
 				break;
 			case 7:
-				_code.attack += ai_op.ATTACK_9;
+				_code.attack = ai_op.ATTACK_8;
 				break;
 			default:
 				break;

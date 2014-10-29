@@ -314,6 +314,8 @@ public class playerObj extends charObj {
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
             String line = Main.regex_replace(bRead.readLine(), "  +", " ");
+            line = Main.regex_replace(line, "^ +", "");
+
             String[] str = line.split(" ");
             bRead.close();
 
@@ -374,7 +376,7 @@ public class playerObj extends charObj {
                 dfm_use_texture_num.x = DFM_TEXTURE_MAX - 1;
             if(dfm_use_texture_num.x < 0)
                 dfm_use_texture_num.x = 0;
-            
+
             dfm_use_texture_num.y = 0;
 
             if(timer_deform == 0){
@@ -400,6 +402,10 @@ public class playerObj extends charObj {
      * 戻り値：なし
      */
     private void deform_begin(){
+
+        if(is_gravitied && !is_gnd){
+            return;
+        }
 
         is_act_to_stg = !is_shooting;
         timer_deform  = dfm_time;

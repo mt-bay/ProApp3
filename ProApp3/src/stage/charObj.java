@@ -12,6 +12,7 @@ import org.newdawn.slick.Graphics;
 import window.Main;
 import window.window;
 import AI.ai_op;
+import IO.debugLog;
 
 import common.point;
 import common.rect;
@@ -257,7 +258,7 @@ public class charObj extends rect {
 
             _d.location.x += _r.location.x + ((this.dir == Direction.RIGHT)? _r.size.x.doubleValue() + 1.0 : -(_d.size.x.doubleValue() + 1.0)) + accel.x;
             _d.location.y += _r.location.y;
-            _d.dir = dir;
+            _d.dir = this.dir;
 
             belong.create_dmg.add(new dmgObj(_d));
             timer_reload.set(_use_number, reload.get(_use_number));
@@ -328,6 +329,7 @@ public class charObj extends rect {
 
             while((line = bRead.readLine()) != null){
                 line = Main.regex_replace(line, "  +", " ");
+                line = Main.regex_replace(line, "^ +", "");
                 str  = line.split(" ");
                 i = 0;
 
@@ -357,7 +359,7 @@ public class charObj extends rect {
             bRead.close();
 
         }catch(Exception e){
-            e.printStackTrace();
+            debugLog.getInstance().write_exception(e);
         }
         return char_obj_al;
     }

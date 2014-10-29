@@ -178,6 +178,8 @@ public class mapObj {
         try{
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_file_path)));
             String line = Main.regex_replace(bRead.readLine(), "  +", " ");
+            line = Main.regex_replace(line, "^ +", "");
+
             String[] str = line.split(" ");
             bRead.close();
 

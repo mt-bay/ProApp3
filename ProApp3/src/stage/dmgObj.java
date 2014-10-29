@@ -36,7 +36,7 @@ public class dmgObj extends rect {
      * デフォルトコンストラクタ 引数：なし
      */
     public dmgObj() {
-        init(new rect()   , new point<Double>(), 0.0,
+        init(new rect()   , new point<Double>(), 0.0, Direction.RIGHT,
              Force.NEUTRAL, TIMER_STOP         , "" ,
              null);
     }
@@ -46,7 +46,7 @@ public class dmgObj extends rect {
      * 引数：コピー元
      */
     public dmgObj(dmgObj obj) {
-        init(obj        , obj.accel     , obj.atk                      ,
+        init(obj        , obj.accel     , obj.atk                      , obj.dir,
              obj.force_m, obj.timer_dead, obj.texture_m.get_file_path(),
              obj.belong);
     }
@@ -58,7 +58,7 @@ public class dmgObj extends rect {
     public dmgObj(rect  _rect  , point<Double> _accel     , double _atk         ,
                   Force _force , int           _timer_dead, String _texture_path,
                   Stage _belong) {
-        init(_rect , _accel     , _atk         ,
+        init(_rect , _accel     , _atk         , Direction.RIGHT,
              _force, _timer_dead, _texture_path,
              _belong);
     }
@@ -119,13 +119,15 @@ public class dmgObj extends rect {
 
             while((line = bRead.readLine()) != null){
                 line = Main.regex_replace(line, "  +", " ");
+                line = Main.regex_replace(line, "^ +", "");
+
                 str = line.split(" ");
-                d_obj_al.add(new dmgObj(new rect(new point<Double >(Double.parseDouble(str[0]), Double.parseDouble(str[1])),
-                                                  new point<Integer>(Integer.parseInt  (str[2]), Integer.parseInt  (str[3]))),
+                d_obj_al.add(new dmgObj(new rect(new point<Double >(Double.parseDouble(str[0]), Double.parseDouble(str[1])) ,
+                                                 new point<Integer>(Integer.parseInt  (str[2]), Integer.parseInt  (str[3]))),
                                         new point<Double>(Double.parseDouble(str[4]), Double.parseDouble(str[5]))           ,
-                                        Double.parseDouble(str[6])                                                             ,
-                                        Force.parceForce(str[7])                                                               ,
-                                        Integer.parseInt(str[8])                                                               ,
+                                        Double.parseDouble(str[6])                                                          ,
+                                        Force.parceForce(str[7])                                                            ,
+                                        Integer.parseInt(str[8])                                                            ,
                                         window.file_path_corres(script_path + str[9])                                       ,
                                         _belong                                                                             ));
             }
@@ -256,14 +258,14 @@ public class dmgObj extends rect {
      * 初期化
      * 引数：それぞれのデータ
      */
-    private void init(rect  _rect  , point<Double> _accel       , double _atk         ,
+    private void init(rect  _rect  , point<Double> _accel       , double _atk         , Direction _dir,
                       Force _force , int           _timer_dead  , String _texture_path,
                       Stage _belong){
         init(_rect.location, _rect.size);
 
         accel      = new point<Double>(_accel);
         atk        = _atk;
-        dir        = Direction.RIGHT;
+        dir        = _dir;
 
         force_m    = _force;
 

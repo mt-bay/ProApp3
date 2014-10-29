@@ -84,6 +84,8 @@ public class debugLog {
      * 戻り値：なし
      */
     public void write_exception(Exception e){
+        e.printStackTrace();
+        
         StringWriter sw = new StringWriter();
         PrintWriter  pw = new PrintWriter(sw);
 
