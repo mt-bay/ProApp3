@@ -23,12 +23,12 @@ public class ai_norm {
 		/*プレイヤーが距離500以内に入ってきたら左へ移動開始
 		 * （ステージの先に配置したオブジェクトが関係ないところで動き出すのを予防）
 		 */
-/*		if((Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0)){
+		if((Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 500.0)){
 			_code.move += ai_op.MOVE_DIR_LEFT;
 		}else{
 			_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 		}
-*/
+
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
 

@@ -26,7 +26,7 @@ public class ai_bird_swing {
 			 if  time_moveが16以上の時に上昇
 			     time_moveが15以下の時は下降
 			*/
-/*			if((_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
+			if((_belong.location.x - _belong.belong.player_data.location.x) < 500.0){
 				if(_code.time_move == ai_op.TIME_MIN){
 					_code.time_move = 30;
 				}
@@ -42,7 +42,7 @@ public class ai_bird_swing {
 			else{
 				_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 			}
-*/
+
 
 			//x座標が40.0を超えると削除
 			if(_belong.location.x <= 40.0){

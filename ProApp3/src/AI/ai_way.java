@@ -28,17 +28,17 @@ public class ai_way {
 				_code.time_move = 30;
 			}
 			else if(_code.time_move >= 16){
-//				_code.move += ai_op.MOVE_DIR_LEFT;
+				_code.move += ai_op.MOVE_DIR_LEFT;
 			}
 			else{
-//				_code.move += ai_op.MOVE_JUMP_NORMAL;
-//				_code.move += ai_op.MOVE_DIR_LEFT;
+				_code.move += ai_op.MOVE_JUMP_NORMAL;
+				_code.move += ai_op.MOVE_DIR_LEFT;
 			}
 		}
 		else{
 			_code.move += _belong.ai_prev.get(0).move & ai_op.MOVE_DIR;
 		}
-		
+
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_HIGHSPEED;
 
@@ -52,7 +52,7 @@ public class ai_way {
 				_code.attack = ai_op.ATTACK_1;
 			}
 		}
-		
+
 		//x座標が40.0を超えると削除
 		if(_belong.location.x <= 40.0){
 			_belong.is_dead = true;
