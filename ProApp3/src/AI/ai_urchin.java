@@ -38,12 +38,12 @@ public class ai_urchin {
 
 		if((Math.abs(_belong.location.x - _belong.belong.player_data.location.x) < 300.0)){
 			if(_code.time_move == ai_op.TIME_MIN){
-				_code.time_move = 30;
+				_code.time_move = 50;
 			}
-			if(_code.time_move >= 16){
+			if(_code.time_move >= 26){
 				_code.move += ai_op.MOVE_DIR_UP;
 			}
-			else if(_code.time_move <= 15){
+			else if(_code.time_move <= 25){
 				_code.move += ai_op.MOVE_DIR_DOWN;
 			}
 		}
