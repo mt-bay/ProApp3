@@ -2,6 +2,8 @@ package AI;
 
 import stage.charObj;
 
+import common.point;
+
 public class ai_sylph {
 	public static void run(charObj _belong, ai_op _code){
 
@@ -72,6 +74,16 @@ public class ai_sylph {
 		//x座標が40.0を超えると削除
 		if(_belong.location.x <= 40.0){
 			_belong.is_dead = true;
+		}
+
+		//使用するテクスチャの決定
+		_code.texture_num = new point<Integer>(0, 0);
+		if((_code.move & ai_op.MOVE_JUMP_NORMAL) != ai_op.MOVE_NONE){
+			_code.texture_num.x = 1;
+		}
+		else
+		{
+			_code.texture_num.x = 0;
 		}
 	}
 }

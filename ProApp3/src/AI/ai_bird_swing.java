@@ -2,6 +2,8 @@ package AI;
 
 import stage.charObj;
 
+import common.point;
+
 public class ai_bird_swing {
 	public static void run(charObj _belong, ai_op _code){
 
@@ -58,6 +60,19 @@ public class ai_bird_swing {
 					_code.time_attack = 40;
 					_code.attack = ai_op.ATTACK_0;
 				}
+			}
+
+			//使用するテクスチャの決定
+			_code.texture_num = new point<Integer>(0, 0);
+			if((_code.move & ai_op.MOVE_DIR_UP) != ai_op.MOVE_NONE){
+				_code.texture_num.x = 1;
+			}
+			else if((_code.move & ai_op.MOVE_DIR_DOWN) != ai_op.MOVE_NONE){
+				_code.texture_num.x = 0;
+			}
+			else
+			{
+				_code.texture_num.x = 0;
 			}
 	}
 

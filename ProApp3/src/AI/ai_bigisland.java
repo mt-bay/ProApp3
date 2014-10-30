@@ -69,5 +69,6 @@ public class ai_bigisland {
 
 		//移動力の決定
 		_code.move += ai_op.MOVE_MOVE_NORMAL;
+
 	}
 }
