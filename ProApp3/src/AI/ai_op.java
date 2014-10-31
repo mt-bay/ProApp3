@@ -21,6 +21,7 @@ public class ai_op {
     protected              int            time_attack;                                          //attack
     protected              int            time_move;                                            //move
     protected              int            time_unique;                                          //unique
+    protected              int            time_island;                                          //island
     /* 定数 */
     //使用するAIの決定用
     public    static final int            AI_NO_USE      = 0x00000000;                          //どのAIも使用しない
@@ -41,7 +42,7 @@ public class ai_op {
     //attack用
     // ATTACK_攻撃インデックス = 攻撃インデックスの形で記述してください
     public    static final short          ATTACK_NONE = (short)0xFFFF;                       //攻撃なし
-    
+
     public    static final short          ATTACK_0    = (short)0x0000;                               //攻撃0
     public    static final short          ATTACK_1    = (short)0x0001;                               //攻撃1
     public    static final short          ATTACK_2     = (short)0x0002;
@@ -177,7 +178,7 @@ public class ai_op {
                 return;
         }
     }
-    
+
     public static short attack_index_to_attack_opcode(int _index){
     	switch(_index){
     	case 0:
@@ -202,7 +203,7 @@ public class ai_op {
     		return ATTACK_9;
     	default:
     		return ATTACK_NONE;
-    		
+
     	}
     }
 
