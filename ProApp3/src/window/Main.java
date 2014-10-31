@@ -43,6 +43,7 @@ public class Main extends BasicGame {
     public static final float                DEBUG_FONT_SIZE  = 11.0f;               //デバッグ用の文字サイズ
     public static final Color                DEBUG_FONT_COLOR = new Color(0x777777); //デバッグ用の文字色
 
+
     public Main(String title) {
         super(title);
     }
