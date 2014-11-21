@@ -23,9 +23,9 @@ import common.point;
 
 public class configMenu extends selector{
     /* メンバ変数 */
-    private mainMenu belong;
+    private mainMenu  belong;
 
-    private boolean elm_is_run;
+    private boolean   elm_is_run;
 
     /* 定数 */
     private final int INPUT_NONE = 0;

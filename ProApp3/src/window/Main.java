@@ -50,7 +50,7 @@ public class Main extends BasicGame {
 
     public static void main(String[] args) throws SlickException {
         try {
-            app = new AppGameContainer(new Main("5年プログラミング応用III・IV"));
+            app = new AppGameContainer(new Main("アイランドバスター"));
             app.setDisplayMode(window.SIZE.x, window.SIZE.y, false);
             app.setTargetFrameRate(window.FPS);
             app.start();

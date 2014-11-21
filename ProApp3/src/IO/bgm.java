@@ -14,7 +14,7 @@ import common.volume;
 public class bgm {
     /* メンバ変数 */
     //自インスタンス
-    private static bgm instance;
+    private static bgm        instance;
     //
     private ArrayList<Music>  bgm_m;
     private ArrayList<String> name;

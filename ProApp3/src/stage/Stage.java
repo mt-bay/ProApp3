@@ -55,9 +55,9 @@ public class Stage {
     public boolean              do_restart;      //自ステージを再度読み込むか
 
     /* 定数 */
-    public final int TIMER_STOP = -1; //タイマー変数の停止状態を表す
-    public final int PREV_MAX   =  5; //過去のオブジェクトデータの最大保存数
-    private static final float font_size  = 30.0f;
+    public final int           TIMER_STOP = -1; //タイマー変数の停止状態を表す
+    public final int           PREV_MAX   =  5; //過去のオブジェクトデータの最大保存数
+    private static final float font_size  =  30.0f;
     private static final TrueTypeFont ttf = new TrueTypeFont(new java.awt.Font("consolas", 0, (int)font_size), false);
 
     /* コンストラクタ */

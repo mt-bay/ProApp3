@@ -24,7 +24,7 @@ import common.rect;
 public class mapObj {
     /* メンバ変数 */
     public               point<Integer> size_block;       //ブロックサイズ
-    public               boolean[][]   is_collisionable; //接触判定を持つか(ブロックごとに管理)
+    public               boolean[][]    is_collisionable; //接触判定を持つか(ブロックごとに管理)
     public               String         map_file_path;    //衝突データ導出に使ったファイルへのパス
     public               Stage          belong;           //どのステージに所属しているか
 
@@ -41,8 +41,8 @@ public class mapObj {
      * データ指定形コンストラクタ(汎用)
      * 引数  ：なし
      */
-    public mapObj(point<Integer> _size_block, String      _csv_iscollisionable, boolean _use_img,
-                  String         _img_or_spritesheet, Stage _belong){
+    public mapObj(point<Integer> _size_block        , String _csv_iscollisionable, boolean _use_img,
+                  String         _img_or_spritesheet, Stage  _belong             ){
         init(_size_block, _csv_iscollisionable,  _use_img, _img_or_spritesheet, _belong);
 
     }

@@ -29,7 +29,7 @@ public class dmgObj extends rect {
 
     private                texture        texture_m;      //テクスチャ
 
-    private   static final int           TIMER_STOP = -1; //タイマー変数の停止状態用
+    private   static final int            TIMER_STOP = -1; //タイマー変数の停止状態用
 
     /* コンストラクタ */
     /*
@@ -155,7 +155,7 @@ public class dmgObj extends rect {
         point<Integer> location_i   = new point<Integer>(location.x.intValue(), location.y.intValue()); //現在位置(int)
         point<Integer> dest_i       = new point<Integer>((int)(new BigDecimal(location.x + accel.x).                                                 //目的位置(int)
                                                                  setScale(0, BigDecimal.ROUND_DOWN).doubleValue() + ((accel.x < 0)? -1.0d : 1.0d)),
-                                                       (int)(new BigDecimal(location.y + accel.y).
+                                                         (int)(new BigDecimal(location.y + accel.y).
                                                                  setScale(0, BigDecimal.ROUND_DOWN).doubleValue() + ((accel.y < 0)? -1.0d : 1.0d)));
         point<Integer> accel_i      = new point<Integer>(dest_i.x - location_i.x, dest_i.y - location_i.y); //移動サイズ(int)
 
