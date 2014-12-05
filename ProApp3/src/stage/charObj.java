@@ -60,12 +60,7 @@ public class charObj extends rect {
      * 引数：なし
      */
     public charObj() {
-/*
-        init(new rect(), new point<Double>(),  ""           , ""            ,
-                0.0    , new point<Double>(),           0.0d, Direction.LEFT,
-                false  , false              , Force.NEUTRAL ,
-                ""     , ai_op.AI_NO_USE    ,    null       );
-        */
+        
     }
 
     /* コピーコンストラクタ

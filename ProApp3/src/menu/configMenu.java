@@ -27,7 +27,7 @@ public class configMenu extends selector{
     private mainMenu  belong;
 
     private boolean   elm_is_run;
-    
+
     private boolean startup_debug_flg;
 
     /* 定数 */
@@ -47,8 +47,8 @@ public class configMenu extends selector{
      * 引数  ：親メニュー
      */
     public configMenu(mainMenu _belong){
-    	startup_debug_flg = Main._DEBUG;
-    	
+        startup_debug_flg = Main._DEBUG;
+
         ArrayList<String> elm_name = new ArrayList<String>();
         elm_name.add("music        volume");
         elm_name.add("sound effect volume");
@@ -85,13 +85,13 @@ public class configMenu extends selector{
                     case 15:
                         reflesh(true);
                 }
-                
+
                 if(index == 2){
-            		if(!(Main.user_input.get(0).ok &&
+                    if(!(Main.user_input.get(0).ok &&
                          Main.user_input.get(1).ok)){
-            			Main._DEBUG = !Main._DEBUG;
-            		}
-            	}
+                        Main._DEBUG = !Main._DEBUG;
+                    }
+                }
 
                 if(index >= 3 && index <= 14){
                     elm_is_run = true;
@@ -281,7 +281,7 @@ public class configMenu extends selector{
         g.drawString(str, window_center - ttf_m.getWidth(str) / 2.0f, window.SIZE.y.floatValue() - font_size * (float)4);
 
         str       = "cancel : Go back without save";
-        
+
         g.drawString(str, window_center - ttf_m.getWidth(str) / 2.0f, window.SIZE.y.floatValue() - font_size * (float)3);
 
         //フォント，色データを元に戻す

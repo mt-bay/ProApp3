@@ -179,7 +179,7 @@ public class stageSelector extends selector{
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_stage_list_file_path)));
             String str;
             if(Main._DEBUG){
-            	System.out.println("Stage selector load : " + window.file_path_corres(_stage_list_file_path));
+                debugLog.getInstance().write("Stage selector load : " + window.file_path_corres(_stage_list_file_path));
             }
             while((str = bRead.readLine()) != null){
                 str = window.file_path_corres(script_path + str);
