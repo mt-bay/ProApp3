@@ -15,6 +15,7 @@ import IO.bgm;
 import IO.config;
 import IO.debugLog;
 import IO.soundEffect;
+
 import common.point;
 
 /*
@@ -26,6 +27,8 @@ public class configMenu extends selector{
     private mainMenu  belong;
 
     private boolean   elm_is_run;
+    
+    private boolean startup_debug_flg;
 
     /* 定数 */
     private final int INPUT_NONE = 0;
@@ -44,9 +47,12 @@ public class configMenu extends selector{
      * 引数  ：親メニュー
      */
     public configMenu(mainMenu _belong){
+    	startup_debug_flg = Main._DEBUG;
+    	
         ArrayList<String> elm_name = new ArrayList<String>();
         elm_name.add("music        volume");
         elm_name.add("sound effect volume");
+        elm_name.add("debug flag");
 
         elm_name.addAll(config.getInstance().name_toStringAL());
 
@@ -63,10 +69,10 @@ public class configMenu extends selector{
      */
     public void update(GameContainer gc){
         if(elm_is_run){
-            if(index >= 2){
+            if(index >= 3){
                 if(!(Main.user_input.get(0).ok &&
                      Main.user_input.get(1).ok)){
-                    renew_key(config.name.index_to_name(index - 2), gc);
+                    renew_key(config.name.index_to_name(index - 3), gc);
                 }
             }
             return;
@@ -76,11 +82,18 @@ public class configMenu extends selector{
         if(Main.user_input.get(0).ok){
             if(!Main.user_input.get(1).ok){
                 switch(index){
-                    case 14:
+                    case 15:
                         reflesh(true);
                 }
+                
+                if(index == 2){
+            		if(!(Main.user_input.get(0).ok &&
+                         Main.user_input.get(1).ok)){
+            			Main._DEBUG = !Main._DEBUG;
+            		}
+            	}
 
-                if(index >= 2 && index <= 13){
+                if(index >= 3 && index <= 14){
                     elm_is_run = true;
                 }
                 return;
@@ -202,39 +215,42 @@ public class configMenu extends selector{
                     str = soundEffect.getInstance().vol.toString()  + "[%]";
                     break;
                 case  2:
-                    str = Input.getKeyName(config.getInstance().attack );
+                    str = (Main._DEBUG)? "true" : "false";
                     break;
                 case  3:
-                    str = Input.getKeyName(config.getInstance().jump   );
+                    str = Input.getKeyName(config.getInstance().attack );
                     break;
                 case  4:
-                    str = Input.getKeyName(config.getInstance().highsp );
+                    str = Input.getKeyName(config.getInstance().jump   );
                     break;
                 case  5:
-                    str = Input.getKeyName(config.getInstance().change );
+                    str = Input.getKeyName(config.getInstance().highsp );
                     break;
                 case  6:
-                    str = Input.getKeyName(config.getInstance().left   );
+                    str = Input.getKeyName(config.getInstance().change );
                     break;
                 case  7:
-                    str = Input.getKeyName(config.getInstance().down   );
+                    str = Input.getKeyName(config.getInstance().left   );
                     break;
                 case  8:
-                    str = Input.getKeyName(config.getInstance().up     );
+                    str = Input.getKeyName(config.getInstance().down   );
                     break;
                 case  9:
-                    str = Input.getKeyName(config.getInstance().right  );
+                    str = Input.getKeyName(config.getInstance().up     );
                     break;
                 case 10:
-                    str = Input.getKeyName(config.getInstance().quit   );
+                    str = Input.getKeyName(config.getInstance().right  );
                     break;
                 case 11:
-                    str = Input.getKeyName(config.getInstance().restart);
+                    str = Input.getKeyName(config.getInstance().quit   );
                     break;
                 case 12:
-                    str = Input.getKeyName(config.getInstance().ok     );
+                    str = Input.getKeyName(config.getInstance().restart);
                     break;
                 case 13:
+                    str = Input.getKeyName(config.getInstance().ok     );
+                    break;
+                case 14:
                     str = Input.getKeyName(config.getInstance().cancel );
                     break;
                 default:
@@ -246,8 +262,7 @@ public class configMenu extends selector{
                 str = "please press key";
             }
 
-            float str_width = get_string_width(str);
-            g.drawString(str, _data_right - (str_width / 2.0f), _upper_left.y + font_size * (float)i);
+            g.drawString(str, _data_right - ttf_m.getWidth(str), _upper_left.y + font_size * (float)i);
 
         }
 
@@ -263,12 +278,11 @@ public class configMenu extends selector{
         float window_center = (window.SIZE.x.floatValue() / 2.0f);
 
         str       = "left or right : volume : +- 5[%], high speed + left or right : +- 10[%]";
-        float str_width = get_string_width(str);
-        g.drawString(str, window_center - (str_width / 4.0f), window.SIZE.y.floatValue() - font_size * (float)4);
+        g.drawString(str, window_center - ttf_m.getWidth(str) / 2.0f, window.SIZE.y.floatValue() - font_size * (float)4);
 
         str       = "cancel : Go back without save";
-        str_width = get_string_width(str);
-        g.drawString(str, window_center - (str_width / 4.0f), window.SIZE.y.floatValue() - font_size * (float)3);
+        
+        g.drawString(str, window_center - ttf_m.getWidth(str) / 2.0f, window.SIZE.y.floatValue() - font_size * (float)3);
 
         //フォント，色データを元に戻す
         g.setColor(base_color);
@@ -298,6 +312,7 @@ public class configMenu extends selector{
         else{
             try{
                 config.getInstance().read();
+                Main._DEBUG = startup_debug_flg;
             }
             catch(Exception e){
                 e.printStackTrace();

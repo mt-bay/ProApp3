@@ -34,13 +34,13 @@ public class Main extends BasicGame {
     public static       mainMenu             mm;                                     //メインメニュー
     //デバッグ用
     public static       TrueTypeFont         debug_ttf;                              //デバッグ用フォント
-
+    public static       float               debug_ttf_width;                       //デバッグ用フォント幅
+    public static       boolean             _DEBUG          = false;               //デバッグモードかどうか
+    
     /* 定数 */
     //ユーザ入力
     public static final int                  USER_INPUT_MAX   = 5;                   //ユーザインプットの最大記録数
     //デバッグ用
-    public static final boolean              _DEBUG           = false;               //デバッグモードかどうか
-    public static final float                DEBUG_FONT_SIZE  = 11.0f;               //デバッグ用の文字サイズ
     public static final Color                DEBUG_FONT_COLOR = new Color(0x777777); //デバッグ用の文字色
 
 
@@ -81,7 +81,8 @@ public class Main extends BasicGame {
         //各種音量の初期設定
 
         //
-        debug_ttf = new TrueTypeFont(new Font("consolas", 0, (int)DEBUG_FONT_SIZE), false);
+        debug_ttf = new TrueTypeFont(new Font("consola.ttf", 0, 11), false);
+        debug_ttf_width = debug_ttf.getWidth(" ");
         get_input(gc);
 
         mm = new mainMenu(this);
@@ -121,11 +122,11 @@ public class Main extends BasicGame {
             org.newdawn.slick.Font  base_font  = g.getFont();
             g.setFont(debug_ttf);
             g.setColor(DEBUG_FONT_COLOR);
-            g.drawString("user input[0] = " + user_input.get(0).toString(), DEBUG_FONT_SIZE, window.SIZE.y.floatValue() - (DEBUG_FONT_SIZE * 7));
-            g.drawString("user input[1] = " + user_input.get(1).toString(), DEBUG_FONT_SIZE, window.SIZE.y.floatValue() - (DEBUG_FONT_SIZE * 6));
-            g.drawString("user input[2] = " + user_input.get(2).toString(), DEBUG_FONT_SIZE, window.SIZE.y.floatValue() - (DEBUG_FONT_SIZE * 5));
-            g.drawString("user input[3] = " + user_input.get(3).toString(), DEBUG_FONT_SIZE, window.SIZE.y.floatValue() - (DEBUG_FONT_SIZE * 4));
-            g.drawString("user input[4] = " + user_input.get(4).toString(), DEBUG_FONT_SIZE, window.SIZE.y.floatValue() - (DEBUG_FONT_SIZE * 3));
+            g.drawString("user input[0] = " + user_input.get(0).toString(), debug_ttf_width, window.SIZE.y.floatValue() - (float)(debug_ttf.getHeight() * 7));
+            g.drawString("user input[1] = " + user_input.get(1).toString(), debug_ttf_width, window.SIZE.y.floatValue() - (float)(debug_ttf.getHeight() * 6));
+            g.drawString("user input[2] = " + user_input.get(2).toString(), debug_ttf_width, window.SIZE.y.floatValue() - (float)(debug_ttf.getHeight() * 5));
+            g.drawString("user input[3] = " + user_input.get(3).toString(), debug_ttf_width, window.SIZE.y.floatValue() - (float)(debug_ttf.getHeight() * 4));
+            g.drawString("user input[4] = " + user_input.get(4).toString(), debug_ttf_width, window.SIZE.y.floatValue() - (float)(debug_ttf.getHeight() * 3));
 
             g.setColor(base_color);
             g.setFont(base_font);

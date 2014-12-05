@@ -136,9 +136,8 @@ public class stageSelector extends selector{
         }
 
         String str       = "OK : Select, cancel : Go back, up or down : Move corsor";
-        float  str_width = get_string_width(str);
         //文字列を中央揃えに描画
-        g.drawString(str, (window.SIZE.x.floatValue() / 2.0f) - (str_width / 4.0f), window.SIZE.y.floatValue() - font_size * 3.0f);
+        g.drawString(str, (window.SIZE.x.floatValue() / 2.0f) - ttf_m.getWidth(str) / 2.0f, window.SIZE.y.floatValue() - font_size * 3.0f);
 
         g.setColor(base_color);
         g.setFont(base_font);
@@ -179,6 +178,9 @@ public class stageSelector extends selector{
 
             BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(_stage_list_file_path)));
             String str;
+            if(Main._DEBUG){
+            	System.out.println("Stage selector load : " + window.file_path_corres(_stage_list_file_path));
+            }
             while((str = bRead.readLine()) != null){
                 str = window.file_path_corres(script_path + str);
                 index_path.add(str);

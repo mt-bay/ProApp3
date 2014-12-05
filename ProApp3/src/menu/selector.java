@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.TrueTypeFont;
 
 import IO.debugLog;
+
 import common.point;
 
 
@@ -30,7 +31,7 @@ public class selector {
     protected               TrueTypeFont      ttf_m;      //描画時のフォント
 
     /* 定数 */
-    protected static final  String            FONT_NAME = "Consolas";  //描画時のフォント名
+    protected static final  String            FONT_NAME = "consola.ttf";  //描画時のフォント名
 
 
     /* コンストラクタ */
@@ -151,10 +152,8 @@ public class selector {
 
             g.setColor(dw_col);
 
-            float str_width = get_string_width(str);
-
             //文字列を中央揃えに描画
-            g.drawString(str, _upper_center.x - (str_width / 4.0f), _upper_center.y + font_size * (float)i);
+            g.drawString(str, _upper_center.x - ttf_m.getWidth(str) / 2.0f, _upper_center.y + font_size * (float)i);
         }
 
         //フォント，色データを元に戻す
@@ -191,28 +190,6 @@ public class selector {
             e.printStackTrace();
             ttf_m = null;
         }
-    }
-
-    /* 文字列の長さを取得する
-     * 引数  ：長さを取得したい文字列
-     * 戻り値：長さ
-     */
-    protected float get_string_width(String _source){
-        float  str_wid   = 0.0f;
-        char[] source_ca = _source.toCharArray();
-        for(int i = 0; i < _source.length(); i++){
-            //半角文字の場合
-            if((source_ca[i] <= '\u007e')                            ||
-               (source_ca[i] == '\u00a5')                            ||
-               (source_ca[i] == '\u203e')                            ||
-               (source_ca[i] >= '\uff61' && source_ca[i] <= '\uff9f'))
-                str_wid += font_size;
-            //全角文字の場合
-            else{
-                str_wid += font_size * 2;
-            }
-        }
-        return str_wid;
     }
 
 

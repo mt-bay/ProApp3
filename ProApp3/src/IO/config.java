@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Input;
 
+import window.Main;
 import window.window;
 
 import common.volume;
@@ -103,7 +104,7 @@ public class config {
             // ファイル読み込みに失敗したら、コンフィグファイルを作成
             try {
 
-                init(Input.KEY_Z    , Input.KEY_X   , Input.KEY_LSHIFT, Input.KEY_V    ,
+                init(false, Input.KEY_Z    , Input.KEY_X   , Input.KEY_LSHIFT, Input.KEY_V    ,
                      Input.KEY_LEFT , Input.KEY_DOWN, Input.KEY_UP    , Input.KEY_RIGHT,
                      Input.KEY_Q    , Input.KEY_R   ,
                      Input.KEY_Z    , Input.KEY_X   ,
@@ -138,10 +139,14 @@ public class config {
     public void write() throws IOException {
         BufferedWriter bWrite = new BufferedWriter(new FileWriter(window.file_path_corres(fName)));
         // ファイルに書き込む内容
-        String sWrite = String.format("%08X", attack) + String.format("%08X", jump   ) + String.format("%08X", highsp) + String.format("%08X", change)
-                      + String.format("%08X", left  ) + String.format("%08X", down   ) + String.format("%08X", up    ) + String.format("%08X", right )
-                      + String.format("%08X", quit  ) + String.format("%08X", restart)
-                      + String.format("%08X", ok    ) + String.format("%08X", cancel );
+        String sWrite = String.format("%01X", ((Main._DEBUG)? 1 : 0));
+        bWrite.write(sWrite);
+        bWrite.newLine();
+        
+        sWrite = String.format("%08X", attack) + String.format("%08X", jump   ) + String.format("%08X", highsp) + String.format("%08X", change)
+               + String.format("%08X", left  ) + String.format("%08X", down   ) + String.format("%08X", up    ) + String.format("%08X", right )
+               + String.format("%08X", quit  ) + String.format("%08X", restart)
+               + String.format("%08X", ok    ) + String.format("%08X", cancel );
         bWrite.write(sWrite);
 
         bWrite.newLine();
@@ -160,10 +165,13 @@ public class config {
     public void read() throws IOException {
         // ファイル入力
         BufferedReader bRead = new BufferedReader(new FileReader(window.file_path_corres(fName)));
-        String fst = bRead.readLine();
-
+        
         // データ用に文字列分割
-        String[] str_key = new String[KEY_MAX];
+        String   fst       = bRead.readLine();
+        String   str_debug = ((fst != "0")? "true" : "false");
+        
+        fst                = bRead.readLine();
+        String[] str_key   = new String[KEY_MAX];
         for (int i = 0; i < str_key.length; i++)
             str_key[i] = fst.substring(i * 8, (i + 1) * 8);
 
@@ -175,11 +183,11 @@ public class config {
         bRead.close();
 
         // データ挿入
-        // 求：もっといい感じの代入方法
-        init(Integer.parseInt(str_key[ 0] , 16), Integer.parseInt(str_key[ 1] , 16), Integer.parseInt(str_key[ 2], 16), Integer.parseInt(str_key[ 3], 16),
-             Integer.parseInt(str_key[ 4] , 16), Integer.parseInt(str_key[ 5] , 16), Integer.parseInt(str_key[ 6], 16), Integer.parseInt(str_key[ 7], 16),
-             Integer.parseInt(str_key[ 8] , 16), Integer.parseInt(str_key[ 9] , 16),
-             Integer.parseInt(str_key[10] , 16), Integer.parseInt(str_key[11] , 16),
+        int index = -1;
+        init(Boolean.parseBoolean(str_debug)       , Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16),
+        	 Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16),
+        	 Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16), Integer.parseInt(str_key[++index], 16),
+        	 Integer.parseInt(str_key[++index], 16),
              Integer.parseInt(str_sound[0], 16), Integer.parseInt(str_sound[1], 16));
 
         return;
@@ -261,11 +269,13 @@ public class config {
      * 使用ボタンセット
      * 引数：それぞれのデータ
      */
-    private void init(int _attack   , int _jump   , int _highsp, int _change,
+    private void init(boolean _debug,int _attack   , int _jump   , int _highsp, int _change,
                       int _left     , int _down   , int _up    , int _right ,
                       int _quit     , int _restart,
                       int _ok       , int _cancel ,
                       int _music_vol, int _se_vol ) {
+    	
+    	Main._DEBUG = _debug;
 
         attack  = _attack;
         jump    = _jump;

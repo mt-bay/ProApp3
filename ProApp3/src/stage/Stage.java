@@ -58,7 +58,7 @@ public class Stage {
     public final int           TIMER_STOP = -1; //タイマー変数の停止状態を表す
     public final int           PREV_MAX   =  5; //過去のオブジェクトデータの最大保存数
     private static final float font_size  =  30.0f;
-    private static final TrueTypeFont ttf = new TrueTypeFont(new java.awt.Font("consolas", 0, (int)font_size), false);
+    private static final TrueTypeFont ttf = new TrueTypeFont(new java.awt.Font("consola.ttf", 0, (int)font_size), false);
 
     /* コンストラクタ */
 
@@ -296,7 +296,7 @@ public class Stage {
 
             g.setFont(ttf);
             g.setColor(new Color(0xffffff));
-            g.drawString("Restart", 0.0f, window.SIZE.y.floatValue() - font_size);
+            g.drawString("Restart", 0.0f, window.SIZE.y.floatValue() - ttf.getHeight());
 
             g.setFont(prev_font);
             g.setColor(prev_color);
@@ -308,7 +308,7 @@ public class Stage {
 
             g.setFont(ttf);
             g.setColor(new Color(0xffffff));
-            g.drawString("Game Over!", 0.0f, window.SIZE.y.floatValue() - font_size);
+            g.drawString("Game Over!", 0.0f, window.SIZE.y.floatValue() - ttf.getHeight());
 
             g.setFont(prev_font);
             g.setColor(prev_color);
@@ -319,7 +319,7 @@ public class Stage {
 
             g.setFont(ttf);
             g.setColor(new Color(0xffffff));
-            g.drawString("Clear!", 0.0f, window.SIZE.y.floatValue() - font_size);
+            g.drawString("Clear!", 0.0f, window.SIZE.y.floatValue() - ttf.getHeight());
 
             g.setFont(prev_font);
             g.setColor(prev_color);
@@ -361,12 +361,12 @@ public class Stage {
             g.setFont(Main.debug_ttf);
             g.setColor(Main.DEBUG_FONT_COLOR);
             int line = 2;
-            g.drawString("camera = " + camera_location, Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
-            g.drawString("player - location = " + player_data.location.toString(), Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
-            g.drawString("player - is_gnd   = " + player_data.is_gnd             , Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
-            g.drawString("player - ai - move    = " + player_data.ai.move  , Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
-            g.drawString("player - ai - attack  = " + player_data.ai.attack, Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE * (float)++line);
-            g.drawString("player - timer_reload = " + player_data.timer_reload.toString(), Main.DEBUG_FONT_SIZE, Main.DEBUG_FONT_SIZE  * (float)++line);
+            g.drawString("camera = " + camera_location, Main.debug_ttf_width, Main.debug_ttf.getHeight() * (float)++line);
+            g.drawString("player - location = " + player_data.location.toString(), Main.debug_ttf_width, Main.debug_ttf.getHeight() * (float)++line);
+            g.drawString("player - is_gnd   = " + player_data.is_gnd             , Main.debug_ttf_width, Main.debug_ttf.getHeight() * (float)++line);
+            g.drawString("player - ai - move    = " + player_data.ai.move  , Main.debug_ttf_width, Main.debug_ttf.getHeight() * (float)++line);
+            g.drawString("player - ai - attack  = " + player_data.ai.attack, Main.debug_ttf_width, Main.debug_ttf.getHeight() * (float)++line);
+            g.drawString("player - timer_reload = " + player_data.timer_reload.toString(), Main.debug_ttf_width, Main.debug_ttf.getHeight()  * (float)++line);
 
             g.setColor(prev_color);
         }
