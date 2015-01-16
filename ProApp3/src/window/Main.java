@@ -35,7 +35,7 @@ public class Main extends BasicGame {
     //デバッグ用
     public static       TrueTypeFont         debug_ttf;                              //デバッグ用フォント
     public static       float               debug_ttf_width;                       //デバッグ用フォント幅
-    public static       boolean             _DEBUG          = false;               //デバッグモードかどうか
+    public static       boolean             _DEBUG;               //デバッグモードかどうか
     
     /* 定数 */
     //ユーザ入力
@@ -75,12 +75,7 @@ public class Main extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
-
-        gc.setShowFPS((_DEBUG)?true : false);
-
         //各種音量の初期設定
-
-        //
         debug_ttf = new TrueTypeFont(new Font("consola.ttf", 0, 11), false);
         debug_ttf_width = debug_ttf.getWidth(" ");
         get_input(gc);
@@ -100,8 +95,8 @@ public class Main extends BasicGame {
     public void update(GameContainer gc, int delta) throws SlickException {
         get_input(gc);
         mm.update(gc);
-//        stg_test.update();
 
+        gc.setShowFPS(_DEBUG);
         gc.setMusicVolume(bgm.getInstance().vol.get_nomalization_volume());
         gc.setSoundVolume(soundEffect.getInstance().vol.get_nomalization_volume());
     }

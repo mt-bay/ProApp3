@@ -139,7 +139,7 @@ public class config {
     public void write() throws IOException {
         BufferedWriter bWrite = new BufferedWriter(new FileWriter(window.file_path_corres(fName)));
         // ファイルに書き込む内容
-        String sWrite = String.format("%01X", ((Main._DEBUG)? 1 : 0));
+        String sWrite = (Main._DEBUG)? "true" : "false";
         bWrite.write(sWrite);
         bWrite.newLine();
         
@@ -168,7 +168,7 @@ public class config {
         
         // データ用に文字列分割
         String   fst       = bRead.readLine();
-        String   str_debug = ((fst != "0")? "true" : "false");
+        String   str_debug = fst;
         
         fst                = bRead.readLine();
         String[] str_key   = new String[KEY_MAX];
